@@ -161,10 +161,26 @@ def run_self_report(session: dict, questions: dict) -> None:
     app.exec()
 
 
-def run_exploration(session: dict, questions: dict) -> None:
-    """Stage 2 + Stage 3: Explore flagged criteria, record + transcribe + rate."""
+def _run_exploration_gui(criteria: list[dict], language: str) -> dict:
+    """Launch ExplorationGUI and block until done. Returns {criterion_id: transcript}."""
     from PySide6.QtWidgets import QApplication
     from modules.gui import ExplorationGUI
+
+    app = QApplication.instance() or QApplication(sys.argv)
+    gui = ExplorationGUI(criteria, language=language)
+    results = {}
+
+    def on_finished(transcripts: dict):
+        results.update(transcripts)
+
+    gui.finished.connect(on_finished)
+    gui.show()
+    app.exec()
+    return results
+
+
+def run_exploration(session: dict, questions: dict) -> None:
+    """Stage 2 + Stage 3: Explore flagged criteria, record + transcribe + rate."""
     from modules.rater import evaluate_response, evaluate_with_clarification
 
     flagged = get_flagged_criteria(session, questions)
@@ -184,73 +200,52 @@ def run_exploration(session: dict, questions: dict) -> None:
         save_session(session)
         return
 
-    app = QApplication.instance() or QApplication(sys.argv)
+    # --- Phase A: Initial exploration ---
+    transcripts = _run_exploration_gui(remaining, language=session.get("language", "de"))
 
-    gui = ExplorationGUI(remaining, language=session.get("language", "de"))
+    # Rate each transcript
+    for crit_id, transcript in transcripts.items():
+        crit_data = None
+        for c in flagged:
+            if c["criterion_id"] == crit_id:
+                crit_data = c
+                break
+        if not crit_data:
+            continue
 
-    def on_exploration_finished(transcripts: dict):
-        # Rate each transcript
-        for crit_id, transcript in transcripts.items():
-            # Find criterion data
-            crit_data = None
+        print(f"Rating criterion {crit_id}...")
+        result = evaluate_response(transcript, crit_data, session.get("language", "de"))
+        result["transcript"] = transcript
+        result["clarification_transcript"] = None
+
+        session["exploration_results"][crit_id] = result
+        save_session(session)
+
+    # --- Phase B: Clarification for unresolved criteria ---
+    needs_clarification = []
+    for crit_id, result in session["exploration_results"].items():
+        if result.get("unresolved") and not result.get("clarification_transcript"):
             for c in flagged:
                 if c["criterion_id"] == crit_id:
-                    crit_data = c
+                    needs_clarification.append({
+                        **c,
+                        "clarifying_question": result.get("clarifying_question"),
+                    })
                     break
-            if not crit_data:
-                continue
 
-            print(f"Rating criterion {crit_id}...")
-            result = evaluate_response(transcript, crit_data, session.get("language", "de"))
-            result["transcript"] = transcript
-            result["clarification_transcript"] = None
+    if needs_clarification:
+        print(f"\n{len(needs_clarification)} criterion/criteria need clarification.")
 
-            session["exploration_results"][crit_id] = result
-            save_session(session)
+        clarification_transcripts = _run_exploration_gui(
+            needs_clarification, language=session.get("language", "de")
+        )
 
-        # Check for unresolved criteria needing clarification
-        needs_clarification = []
-        for crit_id, result in session["exploration_results"].items():
-            if result.get("unresolved") and not result.get("clarification_transcript"):
-                # Find criterion data
-                for c in flagged:
-                    if c["criterion_id"] == crit_id:
-                        needs_clarification.append({
-                            **c,
-                            "clarifying_question": result.get("clarifying_question"),
-                        })
-                        break
-
-        if needs_clarification:
-            print(f"\n{len(needs_clarification)} criterion/criteria need clarification.")
-            run_clarification(session, questions, needs_clarification, flagged)
-        else:
-            session["stage"] = "EVALUATION"
-            save_session(session)
-
-    gui.finished.connect(on_exploration_finished)
-    gui.show()
-    app.exec()
-
-
-def run_clarification(session: dict, questions: dict, criteria: list[dict], all_flagged: list[dict]) -> None:
-    """Run clarification round for unresolved criteria (max 1 attempt each)."""
-    from PySide6.QtWidgets import QApplication
-    from modules.gui import ExplorationGUI
-    from modules.rater import evaluate_with_clarification
-
-    app = QApplication.instance() or QApplication(sys.argv)
-
-    gui = ExplorationGUI(criteria, language=session.get("language", "de"))
-
-    def on_clarification_finished(transcripts: dict):
-        for crit_id, clarification_transcript in transcripts.items():
+        for crit_id, clarification_transcript in clarification_transcripts.items():
             original_result = session["exploration_results"].get(crit_id, {})
             original_transcript = original_result.get("transcript", "")
 
-            # Find criterion data
             crit_data = None
-            for c in all_flagged:
+            for c in flagged:
                 if c["criterion_id"] == crit_id:
                     crit_data = c
                     break
@@ -267,12 +262,8 @@ def run_clarification(session: dict, questions: dict, criteria: list[dict], all_
             session["exploration_results"][crit_id] = new_result
             save_session(session)
 
-        session["stage"] = "EVALUATION"
-        save_session(session)
-
-    gui.finished.connect(on_clarification_finished)
-    gui.show()
-    app.exec()
+    session["stage"] = "EVALUATION"
+    save_session(session)
 
 
 def run_evaluation(session: dict, questions: dict) -> None:
