@@ -30,11 +30,34 @@ from modules.exploration_engine import AudioRecorder, transcribe_audio
 
 
 # ---------------------------------------------------------------------------
+# Shared: Single persistent window that hosts all GUI phases
+# ---------------------------------------------------------------------------
+
+
+class PipelineWindow(QMainWindow):
+    """Main application window — stays open across all three GUI phases."""
+
+    def show_widget(self, widget: QWidget) -> None:
+        """Swap the central widget, cleaning up threads on the old one first."""
+        old = self.centralWidget()
+        if old is not None and hasattr(old, "_stop_threads"):
+            old._stop_threads()
+        self.setCentralWidget(widget)
+
+    def closeEvent(self, event):
+        """Clean up threads in the active widget before closing."""
+        w = self.centralWidget()
+        if w is not None and hasattr(w, "_stop_threads"):
+            w._stop_threads()
+        super().closeEvent(event)
+
+
+# ---------------------------------------------------------------------------
 # Stage 1: Self-Report Questionnaire
 # ---------------------------------------------------------------------------
 
 
-class SelfReportGUI(QMainWindow):
+class SelfReportGUI(QWidget):
     """One-question-at-a-time screening questionnaire."""
 
     # Emitted when the user finishes all questions
@@ -72,12 +95,9 @@ class SelfReportGUI(QMainWindow):
         self._update_display()
 
     def _setup_ui(self):
-        self.setWindowTitle("SCID-5-PD Self-Report Screening")
         self.setMinimumSize(700, 400)
 
-        central = QWidget()
-        self.setCentralWidget(central)
-        layout = QVBoxLayout(central)
+        layout = QVBoxLayout(self)
         layout.setSpacing(15)
         layout.setContentsMargins(30, 20, 30, 20)
 
@@ -216,7 +236,6 @@ class SelfReportGUI(QMainWindow):
             return
         self.session["screening_responses"] = self.responses
         self.finished.emit(self.responses)
-        self.close()
 
 
 # ---------------------------------------------------------------------------
@@ -256,7 +275,7 @@ class TranscriptionThread(QThread):
         self.finished.emit(transcript)
 
 
-class ExplorationGUI(QMainWindow):
+class ExplorationGUI(QWidget):
     """Follow-up question interview with audio recording."""
 
     # Emitted when all explorations are done: {criterion_id: transcript}
@@ -285,12 +304,9 @@ class ExplorationGUI(QMainWindow):
         self._update_display()
 
     def _setup_ui(self):
-        self.setWindowTitle("SCID-5-PD Follow-up Exploration")
         self.setMinimumSize(700, 500)
 
-        central = QWidget()
-        self.setCentralWidget(central)
-        layout = QVBoxLayout(central)
+        layout = QVBoxLayout(self)
         layout.setSpacing(12)
         layout.setContentsMargins(30, 20, 30, 20)
 
@@ -467,9 +483,6 @@ class ExplorationGUI(QMainWindow):
         self.current_index = 0
         self.results = {}
         self._current_audio = None
+        self.progress_bar.setMaximum(len(criteria))
         self._update_display()
 
-    def closeEvent(self, event):
-        """Clean up threads before the window is destroyed."""
-        self._stop_threads()
-        super().closeEvent(event)

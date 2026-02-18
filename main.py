@@ -142,131 +142,111 @@ def compute_disorder_verdicts(session: dict, questions: dict) -> dict:
     return verdicts
 
 
-def run_self_report(session: dict, questions: dict) -> None:
-    """Stage 1: Launch the self-report GUI."""
-    from PySide6.QtWidgets import QApplication
-    from modules.gui import SelfReportGUI
+def run_gui_pipeline(session: dict, questions: dict) -> None:
+    """Run all GUI phases in a single persistent window.
 
-    app = QApplication.instance() or QApplication(sys.argv)
-
-    gui = SelfReportGUI(questions, session)
-
-    def on_finished(responses):
-        session["screening_responses"] = responses
-        session["stage"] = "SELF_REPORT"
-        save_session(session)
-
-    gui.finished.connect(on_finished)
-    gui.show()
-    app.exec()
-
-
-def run_exploration(session: dict, questions: dict) -> None:
-    """Stage 2 + Stage 3: Explore flagged criteria, record + transcribe + rate.
-
-    Uses a single GUI window that stays open across exploration and clarification.
+    Handles INIT → SELF_REPORT → EXPLORATION → (CLARIFICATION →) EVALUATION
+    without closing the window between phases.
     """
     from PySide6.QtWidgets import QApplication
-    from modules.gui import ExplorationGUI
+    from modules.gui import PipelineWindow, SelfReportGUI, ExplorationGUI
     from modules.rater import evaluate_response, evaluate_with_clarification
 
-    flagged = get_flagged_criteria(session, questions)
-
-    if not flagged:
-        print("No criteria flagged for exploration. Moving to evaluation.")
-        session["stage"] = "EVALUATION"
-        save_session(session)
-        return
-
-    # Filter out already-explored criteria
-    remaining = [c for c in flagged if c["criterion_id"] not in session["exploration_results"]]
-
-    if not remaining:
-        print("All flagged criteria already explored. Moving to evaluation.")
-        session["stage"] = "EVALUATION"
-        save_session(session)
-        return
-
     app = QApplication.instance() or QApplication(sys.argv)
-    gui = ExplorationGUI(remaining, language=session.get("language", "de"))
-    state = {"phase": "exploration"}  # mutable dict to track phase across callbacks
+    window = PipelineWindow()
+    window.setWindowTitle("SCID-5-PD Assessment")
+    window.setMinimumSize(700, 500)
+    window.show()
 
-    def on_finished(transcripts: dict):
-        if state["phase"] == "exploration":
-            # --- Rate each transcript ---
-            for crit_id, transcript in transcripts.items():
-                crit_data = None
-                for c in flagged:
-                    if c["criterion_id"] == crit_id:
-                        crit_data = c
-                        break
-                if not crit_data:
-                    continue
+    def start_exploration():
+        flagged = get_flagged_criteria(session, questions)
+        remaining = [c for c in flagged if c["criterion_id"] not in session["exploration_results"]]
 
-                print(f"Rating criterion {crit_id}...")
-                result = evaluate_response(transcript, crit_data, session.get("language", "de"))
-                result["transcript"] = transcript
-                result["clarification_transcript"] = None
-
-                session["exploration_results"][crit_id] = result
-                save_session(session)
-
-            # --- Check for unresolved criteria ---
-            needs_clarification = []
-            for crit_id, result in session["exploration_results"].items():
-                if result.get("unresolved") and not result.get("clarification_transcript"):
-                    for c in flagged:
-                        if c["criterion_id"] == crit_id:
-                            needs_clarification.append({
-                                **c,
-                                "clarifying_question": result.get("clarifying_question"),
-                            })
-                            break
-
-            if needs_clarification:
-                print(f"\n{len(needs_clarification)} criterion/criteria need clarification.")
-                state["phase"] = "clarification"
-                gui.load_criteria(needs_clarification)
-                # GUI stays open — user continues with clarification questions
-            else:
-                session["stage"] = "EVALUATION"
-                save_session(session)
-                gui.close()
-
-        elif state["phase"] == "clarification":
-            # --- Re-rate with clarification ---
-            for crit_id, clarification_transcript in transcripts.items():
-                original_result = session["exploration_results"].get(crit_id, {})
-                original_transcript = original_result.get("transcript", "")
-
-                crit_data = None
-                for c in flagged:
-                    if c["criterion_id"] == crit_id:
-                        crit_data = c
-                        break
-                if not crit_data:
-                    continue
-
-                print(f"Re-rating criterion {crit_id} with clarification...")
-                new_result = evaluate_with_clarification(
-                    original_transcript, clarification_transcript, crit_data, session.get("language", "de")
-                )
-                new_result["transcript"] = original_transcript
-                new_result["clarification_transcript"] = clarification_transcript
-
-                session["exploration_results"][crit_id] = new_result
-                save_session(session)
-
+        if not remaining:
+            print("No criteria to explore. Moving to evaluation.")
             session["stage"] = "EVALUATION"
             save_session(session)
-            gui.close()
+            window.close()
+            return
 
-    gui.finished.connect(on_finished)
-    gui.show()
+        gui = ExplorationGUI(remaining, language=session.get("language", "de"))
+        state = {"phase": "exploration"}
+
+        def on_finished(transcripts: dict):
+            if state["phase"] == "exploration":
+                for crit_id, transcript in transcripts.items():
+                    crit_data = next((c for c in flagged if c["criterion_id"] == crit_id), None)
+                    if not crit_data:
+                        continue
+                    print(f"Rating criterion {crit_id}...")
+                    result = evaluate_response(transcript, crit_data, session.get("language", "de"))
+                    result["transcript"] = transcript
+                    result["clarification_transcript"] = None
+                    session["exploration_results"][crit_id] = result
+                    save_session(session)
+
+                needs_clarification = []
+                for crit_id, result in session["exploration_results"].items():
+                    if result.get("unresolved") and not result.get("clarification_transcript"):
+                        crit_data = next((c for c in flagged if c["criterion_id"] == crit_id), None)
+                        if crit_data:
+                            needs_clarification.append({
+                                **crit_data,
+                                "clarifying_question": result.get("clarifying_question"),
+                            })
+
+                if needs_clarification:
+                    print(f"\n{len(needs_clarification)} criterion/criteria need clarification.")
+                    state["phase"] = "clarification"
+                    gui.load_criteria(needs_clarification)
+                else:
+                    session["stage"] = "EVALUATION"
+                    save_session(session)
+                    window.close()
+
+            elif state["phase"] == "clarification":
+                for crit_id, clarification_transcript in transcripts.items():
+                    original_result = session["exploration_results"].get(crit_id, {})
+                    original_transcript = original_result.get("transcript", "")
+                    crit_data = next((c for c in flagged if c["criterion_id"] == crit_id), None)
+                    if not crit_data:
+                        continue
+                    print(f"Re-rating criterion {crit_id} with clarification...")
+                    new_result = evaluate_with_clarification(
+                        original_transcript, clarification_transcript, crit_data, session.get("language", "de")
+                    )
+                    new_result["transcript"] = original_transcript
+                    new_result["clarification_transcript"] = clarification_transcript
+                    session["exploration_results"][crit_id] = new_result
+                    save_session(session)
+
+                session["stage"] = "EVALUATION"
+                save_session(session)
+                window.close()
+
+        gui.finished.connect(on_finished)
+        window.show_widget(gui)
+
+    if session["stage"] == "INIT":
+        self_report = SelfReportGUI(questions, session)
+
+        def on_self_report_finished(responses):
+            session["screening_responses"] = responses
+            session["stage"] = "SELF_REPORT"
+            save_session(session)
+            flagged_count = len(get_flagged_criteria(session, questions))
+            print(f"\n{flagged_count} criteria flagged for exploration.")
+            session["stage"] = "EXPLORATION"
+            save_session(session)
+            start_exploration()
+
+        self_report.finished.connect(on_self_report_finished)
+        window.show_widget(self_report)
+    else:
+        # Resume from SELF_REPORT or EXPLORATION
+        start_exploration()
+
     app.exec()
-
-    session["stage"] = "EVALUATION"
-    save_session(session)
 
 
 def run_evaluation(session: dict, questions: dict) -> None:
@@ -320,19 +300,8 @@ def main():
     # State machine
     stage = session["stage"]
 
-    if stage == "INIT":
-        run_self_report(session, questions)
-        stage = session["stage"]
-
-    if stage == "SELF_REPORT":
-        flagged = get_flagged_criteria(session, questions)
-        print(f"\n{len(flagged)} criteria flagged for exploration.")
-        session["stage"] = "EXPLORATION"
-        save_session(session)
-        stage = "EXPLORATION"
-
-    if stage == "EXPLORATION":
-        run_exploration(session, questions)
+    if stage in ("INIT", "SELF_REPORT", "EXPLORATION"):
+        run_gui_pipeline(session, questions)
         stage = session["stage"]
 
     if stage == "EVALUATION":
