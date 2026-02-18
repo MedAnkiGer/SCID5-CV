@@ -454,9 +454,20 @@ class ExplorationGUI(QMainWindow):
         self.current_index += 1
         if self.current_index >= len(self.criteria):
             self.finished.emit(self.results)
-            self.close()
         else:
             self._update_display()
+
+    def load_criteria(self, criteria: list[dict]) -> None:
+        """Load new criteria into the GUI without closing the window.
+
+        Used to transition from exploration to clarification seamlessly.
+        """
+        self._stop_threads()
+        self.criteria = criteria
+        self.current_index = 0
+        self.results = {}
+        self._current_audio = None
+        self._update_display()
 
     def closeEvent(self, event):
         """Clean up threads before the window is destroyed."""
