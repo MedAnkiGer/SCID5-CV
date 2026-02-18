@@ -1,0 +1,192 @@
+{
+  "metadata": {
+    "version": "0.1-mock",
+    "language": "de",
+    "total_screening_items": 15,
+    "note": "Mock data for development. Replace with real SCID-5-PD questions."
+  },
+  "disorders": {
+    "paranoid": {
+      "cluster": "A",
+      "dsm5_code": "301.0",
+      "name_de": "Paranoide Persoenlichkeitsstoerung",
+      "name_en": "Paranoid Personality Disorder",
+      "threshold": 4,
+      "criteria": {
+        "PPD_1": {
+          "description_de": "Verdaechtigt andere ohne ausreichende Grundlage, ihn/sie auszunutzen, zu schaedigen oder zu taeuschen",
+          "description_en": "Suspects others of exploiting, harming, or deceiving without sufficient basis",
+          "screening_item_ids": ["Q1", "Q2"],
+          "followup_question_de": "Sie haben angegeben, dass Sie anderen Menschen oft misstrauen. Koennten Sie mir ein konkretes Beispiel aus der letzten Zeit nennen, in dem Sie das Gefuehl hatten, dass jemand Sie ausnutzen oder taeuschen wollte?",
+          "followup_question_en": "You indicated that you often distrust others. Could you give me a specific recent example where you felt someone was trying to exploit or deceive you?"
+        },
+        "PPD_2": {
+          "description_de": "Ist uebermaeßig mit ungerechtfertigten Zweifeln an der Loyalitaet oder Vertrauenswuerdigkeit von Freunden oder Partnern beschaeftigt",
+          "description_en": "Preoccupied with unjustified doubts about loyalty or trustworthiness of friends or associates",
+          "screening_item_ids": ["Q3"],
+          "followup_question_de": "Sie haben angegeben, dass Sie oft an der Treue oder Vertrauenswuerdigkeit von Freunden oder nahestehenden Personen zweifeln. Koennten Sie mir beschreiben, wie sich das in Ihren Beziehungen aeußert?",
+          "followup_question_en": "You indicated that you often doubt the loyalty or trustworthiness of friends or close people. Could you describe how this manifests in your relationships?"
+        },
+        "PPD_3": {
+          "description_de": "Ist widerwillig, sich anderen anzuvertrauen, aus ungerechtfertigter Angst, die Informationen koennten boeswillig gegen ihn/sie verwendet werden",
+          "description_en": "Reluctant to confide in others due to unwarranted fear that information will be used maliciously",
+          "screening_item_ids": ["Q4", "Q5"],
+          "followup_question_de": "Sie haben angegeben, dass es Ihnen schwer faellt, sich anderen gegenueber zu oeffnen. Koennten Sie mir erzaehlen, was Sie befuerchten, wenn Sie jemandem etwas Persoenliches anvertrauen?",
+          "followup_question_en": "You indicated that you find it hard to open up to others. Could you tell me what you fear might happen if you confide something personal to someone?"
+        }
+      }
+    },
+    "borderline": {
+      "cluster": "B",
+      "dsm5_code": "301.83",
+      "name_de": "Borderline-Persoenlichkeitsstoerung",
+      "name_en": "Borderline Personality Disorder",
+      "threshold": 5,
+      "criteria": {
+        "BPD_1": {
+          "description_de": "Verzweifeltes Bemuehen, ein tatsaechliches oder vorgestelltes Verlassenwerden zu vermeiden",
+          "description_en": "Frantic efforts to avoid real or imagined abandonment",
+          "screening_item_ids": ["Q6"],
+          "followup_question_de": "Sie haben angegeben, dass Sie sich große Sorgen machen, verlassen zu werden. Koennten Sie mir ein Beispiel geben, wie Sie reagieren, wenn Sie befuerchten, dass jemand Wichtiges Sie verlassen koennte?",
+          "followup_question_en": "You indicated that you worry a lot about being abandoned. Could you give me an example of how you react when you fear someone important might leave you?"
+        },
+        "BPD_2": {
+          "description_de": "Ein Muster instabiler und intensiver zwischenmenschlicher Beziehungen, das durch einen Wechsel zwischen den Extremen der Idealisierung und Entwertung gekennzeichnet ist",
+          "description_en": "Pattern of unstable and intense interpersonal relationships with alternating extremes of idealization and devaluation",
+          "screening_item_ids": ["Q7", "Q8"],
+          "followup_question_de": "Sie haben angegeben, dass Ihre Beziehungen oft zwischen Extremen schwanken. Koennten Sie mir beschreiben, wie sich das zeigt — zum Beispiel, dass Sie jemanden erst sehr bewundern und dann sehr enttaeuscht von der Person sind?",
+          "followup_question_en": "You indicated that your relationships often swing between extremes. Could you describe how that manifests — for example, greatly admiring someone at first and then being very disappointed in them?"
+        },
+        "BPD_3": {
+          "description_de": "Identitaetsstoerung: ausgepraegt und andauernd instabiles Selbstbild oder Gefuehl fuer sich selbst",
+          "description_en": "Identity disturbance: markedly unstable self-image or sense of self",
+          "screening_item_ids": ["Q9", "Q10"],
+          "followup_question_de": "Sie haben angegeben, dass Sie oft unsicher sind, wer Sie eigentlich sind. Koennten Sie beschreiben, wie sich das anfuehlt? Aendert sich zum Beispiel Ihre Meinung ueber sich selbst, Ihre Ziele oder Ihre Werte haeufig?",
+          "followup_question_en": "You indicated that you often feel uncertain about who you really are. Could you describe how that feels? For example, do your opinions about yourself, your goals, or values change frequently?"
+        }
+      }
+    },
+    "avoidant": {
+      "cluster": "C",
+      "dsm5_code": "301.82",
+      "name_de": "Vermeidend-selbstunsichere Persoenlichkeitsstoerung",
+      "name_en": "Avoidant Personality Disorder",
+      "threshold": 4,
+      "criteria": {
+        "APD_1": {
+          "description_de": "Vermeidet berufliche Aktivitaeten, die engere zwischenmenschliche Kontakte mit sich bringen, aus Angst vor Kritik, Missbilligung oder Zurueckweisung",
+          "description_en": "Avoids occupational activities involving significant interpersonal contact due to fear of criticism, disapproval, or rejection",
+          "screening_item_ids": ["Q11"],
+          "followup_question_de": "Sie haben angegeben, dass Sie bestimmte berufliche Situationen vermeiden, weil Sie Angst vor Kritik haben. Koennten Sie mir ein Beispiel geben, welche Situationen das sind und was genau Sie befuerchten?",
+          "followup_question_en": "You indicated that you avoid certain work situations due to fear of criticism. Could you give me an example of what situations those are and what exactly you fear?"
+        },
+        "APD_2": {
+          "description_de": "Laesst sich nur widerwillig auf Menschen ein, es sei denn, er/sie ist sicher, gemocht zu werden",
+          "description_en": "Unwilling to get involved with people unless certain of being liked",
+          "screening_item_ids": ["Q12", "Q13"],
+          "followup_question_de": "Sie haben angegeben, dass Sie sich nur schwer auf neue Menschen einlassen koennen. Koennten Sie beschreiben, was passieren muss, damit Sie sich mit jemandem wohlfuehlen? Brauchen Sie vorher Zeichen, dass die Person Sie mag?",
+          "followup_question_en": "You indicated that you find it hard to engage with new people. Could you describe what needs to happen for you to feel comfortable with someone? Do you need signs that the person likes you first?"
+        },
+        "APD_3": {
+          "description_de": "Zeigt Zurueckhaltung in intimen Beziehungen aus Angst, beschaemt oder laecherlich gemacht zu werden",
+          "description_en": "Shows restraint within intimate relationships due to fear of being shamed or ridiculed",
+          "screening_item_ids": ["Q14", "Q15"],
+          "followup_question_de": "Sie haben angegeben, dass Sie sich in engen Beziehungen zurueckhalten. Koennten Sie mir erzaehlen, was Sie davon abhaelt, sich gegenueber Ihrem Partner oder engen Freunden ganz zu oeffnen?",
+          "followup_question_en": "You indicated that you hold back in close relationships. Could you tell me what prevents you from fully opening up to your partner or close friends?"
+        }
+      }
+    }
+  },
+  "screening_items": {
+    "Q1": {
+      "text_de": "Haben Sie oft das Gefuehl, dass andere Menschen Sie ausnutzen oder Ihnen schaden wollen?",
+      "text_en": "Do you often feel that other people want to take advantage of you or harm you?",
+      "maps_to_criteria": ["PPD_1"],
+      "disorder": "paranoid"
+    },
+    "Q2": {
+      "text_de": "Misstrauen Sie den Absichten anderer Menschen haeufig, auch wenn es keinen konkreten Grund dafuer gibt?",
+      "text_en": "Do you frequently distrust the intentions of others, even when there is no concrete reason?",
+      "maps_to_criteria": ["PPD_1"],
+      "disorder": "paranoid"
+    },
+    "Q3": {
+      "text_de": "Zweifeln Sie oft an der Treue oder Zuverlaessigkeit Ihrer Freunde oder Ihres Partners?",
+      "text_en": "Do you often doubt the loyalty or reliability of your friends or partner?",
+      "maps_to_criteria": ["PPD_2"],
+      "disorder": "paranoid"
+    },
+    "Q4": {
+      "text_de": "Faellt es Ihnen schwer, anderen Menschen persoenliche Dinge anzuvertrauen, weil Sie befuerchten, dass diese Informationen gegen Sie verwendet werden koennten?",
+      "text_en": "Do you find it hard to confide personal things in others because you fear the information could be used against you?",
+      "maps_to_criteria": ["PPD_3"],
+      "disorder": "paranoid"
+    },
+    "Q5": {
+      "text_de": "Halten Sie Informationen ueber sich zurueck, weil Sie befuerchten, dass andere diese gegen Sie verwenden koennten?",
+      "text_en": "Do you withhold information about yourself because you fear others might use it against you?",
+      "maps_to_criteria": ["PPD_3"],
+      "disorder": "paranoid"
+    },
+    "Q6": {
+      "text_de": "Haben Sie große Angst davor, von Menschen, die Ihnen wichtig sind, verlassen zu werden?",
+      "text_en": "Are you very afraid of being abandoned by people who are important to you?",
+      "maps_to_criteria": ["BPD_1"],
+      "disorder": "borderline"
+    },
+    "Q7": {
+      "text_de": "Schwanken Ihre Beziehungen oft zwischen extremer Naehe und heftigem Streit oder Enttaeuschung?",
+      "text_en": "Do your relationships often swing between extreme closeness and intense conflict or disappointment?",
+      "maps_to_criteria": ["BPD_2"],
+      "disorder": "borderline"
+    },
+    "Q8": {
+      "text_de": "Kommt es vor, dass Sie jemanden erst sehr bewundern und kurz darauf sehr enttaeuscht von dieser Person sind?",
+      "text_en": "Does it happen that you greatly admire someone and shortly after become very disappointed in them?",
+      "maps_to_criteria": ["BPD_2"],
+      "disorder": "borderline"
+    },
+    "Q9": {
+      "text_de": "Sind Sie oft unsicher darueber, wer Sie eigentlich sind oder was Sie im Leben wollen?",
+      "text_en": "Are you often uncertain about who you really are or what you want in life?",
+      "maps_to_criteria": ["BPD_3"],
+      "disorder": "borderline"
+    },
+    "Q10": {
+      "text_de": "Aendern sich Ihre Meinungen ueber sich selbst, Ihre Ziele oder Ihre Werte haeufig und stark?",
+      "text_en": "Do your opinions about yourself, your goals, or your values change frequently and drastically?",
+      "maps_to_criteria": ["BPD_3"],
+      "disorder": "borderline"
+    },
+    "Q11": {
+      "text_de": "Vermeiden Sie berufliche Taetigkeiten, die viel Kontakt mit anderen Menschen erfordern, weil Sie Angst vor Kritik oder Ablehnung haben?",
+      "text_en": "Do you avoid professional activities that require a lot of contact with others because you fear criticism or rejection?",
+      "maps_to_criteria": ["APD_1"],
+      "disorder": "avoidant"
+    },
+    "Q12": {
+      "text_de": "Lassen Sie sich nur schwer auf neue Menschen ein, es sei denn, Sie sind sicher, dass diese Sie moegen?",
+      "text_en": "Do you find it difficult to get involved with new people unless you are sure they like you?",
+      "maps_to_criteria": ["APD_2"],
+      "disorder": "avoidant"
+    },
+    "Q13": {
+      "text_de": "Brauchen Sie deutliche Zeichen der Zuneigung, bevor Sie sich auf eine Freundschaft oder Beziehung einlassen?",
+      "text_en": "Do you need clear signs of affection before engaging in a friendship or relationship?",
+      "maps_to_criteria": ["APD_2"],
+      "disorder": "avoidant"
+    },
+    "Q14": {
+      "text_de": "Halten Sie sich in engen Beziehungen zurueck, weil Sie Angst haben, beschaemt oder ausgelacht zu werden?",
+      "text_en": "Do you hold back in close relationships because you are afraid of being shamed or ridiculed?",
+      "maps_to_criteria": ["APD_3"],
+      "disorder": "avoidant"
+    },
+    "Q15": {
+      "text_de": "Vermeiden Sie es, in Beziehungen ueber Ihre Gefuehle oder Wuensche zu sprechen, aus Angst vor Zurueckweisung?",
+      "text_en": "Do you avoid talking about your feelings or desires in relationships due to fear of rejection?",
+      "maps_to_criteria": ["APD_3"],
+      "disorder": "avoidant"
+    }
+  }
+}
