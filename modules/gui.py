@@ -278,6 +278,8 @@ class ExplorationGUI(QMainWindow):
         self.results: dict[str, str] = {}  # criterion_id -> transcript
         self.recorder = AudioRecorder()
         self._current_audio = None
+        self._rec_thread = None
+        self._trans_thread = None
 
         self._setup_ui()
         self._update_display()
@@ -398,7 +400,7 @@ class ExplorationGUI(QMainWindow):
         self.rerecord_btn.setEnabled(False)
 
         self.recorder = AudioRecorder()
-        self._rec_thread = RecordingThread(self.recorder)
+        self._rec_thread = RecordingThread(self.recorder, parent=self)
         self._rec_thread.finished.connect(self._on_recording_done)
         self._rec_thread.start()
 
@@ -414,7 +416,7 @@ class ExplorationGUI(QMainWindow):
         self.status_label.setText("Transcribing...")
 
         wav_bytes = self.recorder.get_wav_bytes(audio_data)
-        self._trans_thread = TranscriptionThread(wav_bytes, self.language)
+        self._trans_thread = TranscriptionThread(wav_bytes, self.language, parent=self)
         self._trans_thread.finished.connect(self._on_transcription_done)
         self._trans_thread.start()
 
@@ -425,11 +427,24 @@ class ExplorationGUI(QMainWindow):
         self.rerecord_btn.setEnabled(True)
 
     def _rerecord(self):
+        self._stop_threads()
         self._current_audio = None
         self.transcript_edit.clear()
         self.status_label.setText("")
         self.accept_btn.setEnabled(False)
         self.rerecord_btn.setEnabled(False)
+
+    def _stop_threads(self):
+        """Ensure all background threads are stopped before proceeding."""
+        # Stop any active recording
+        if self.recorder.is_recording:
+            self.recorder.stop_recording()
+        # Wait for recording thread to finish
+        if self._rec_thread is not None and self._rec_thread.isRunning():
+            self._rec_thread.wait(5000)
+        # Wait for transcription thread to finish
+        if self._trans_thread is not None and self._trans_thread.isRunning():
+            self._trans_thread.wait(10000)
 
     def _accept(self):
         crit = self.criteria[self.current_index]
@@ -442,3 +457,8 @@ class ExplorationGUI(QMainWindow):
             self.close()
         else:
             self._update_display()
+
+    def closeEvent(self, event):
+        """Clean up threads before the window is destroyed."""
+        self._stop_threads()
+        super().closeEvent(event)
