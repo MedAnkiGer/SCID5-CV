@@ -1,6 +1,9 @@
 .env
+.env.txt
+.env.local
 __pycache__/
 *.pyc
 data/sessions/
 *.pdf
 .venv/
+.claude/
