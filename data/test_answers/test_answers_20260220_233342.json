@@ -1,0 +1,50 @@
+{
+  "metadata": {
+    "generated_at": "2026-02-20T23:33:42.699602",
+    "model": "claude-sonnet-4-6",
+    "language": "de",
+    "variants_per_score": 1,
+    "scores": [
+      "?",
+      "0",
+      "1",
+      "2"
+    ],
+    "total_items": 4,
+    "source_questions_version": "0.1-mock"
+  },
+  "answers": [
+    {
+      "criterion_id": "PPD_1",
+      "disorder": "paranoid",
+      "ground_truth_score": "?",
+      "language": "de",
+      "variant": 1,
+      "transcript": "Ja, also... das ist halt so ein Gefühl, das ich manchmal hab. Schwer zu erklären."
+    },
+    {
+      "criterion_id": "PPD_1",
+      "disorder": "paranoid",
+      "ground_truth_score": 0,
+      "language": "de",
+      "variant": 1,
+      "transcript": "Ja, also ich würde nicht sagen, dass ich anderen grundsätzlich misstraue. Klar, es gibt mal Situationen, wo man vorsichtig sein muss – zum Beispiel hab ich letzten Monat einen Anruf bekommen, wo jemand behauptet hat, er sei von meiner Bank, und da war ich natürlich skeptisch und hab aufgelegt. Aber das war ja auch berechtigt, weil solche Betrugsversuche wirklich passieren. Ansonsten – meine Kollegen, meine Nachbarn, meine Familie – da geh ich eigentlich davon aus, dass die es gut mit mir meinen. Wenn mal was schiefläuft, denk ich nicht gleich, dass die mich absichtlich reinlegen wollen."
+    },
+    {
+      "criterion_id": "PPD_1",
+      "disorder": "paranoid",
+      "ground_truth_score": 1,
+      "language": "de",
+      "variant": 1,
+      "transcript": "Na ja, also... es gibt schon manchmal Momente, wo ich so ein komisches Bauchgefühl habe. Zum Beispiel hat mir mein Kollege letzte Woche gesagt, er hätte meine E-Mail nicht bekommen, aber ich weiß genau, dass ich sie abgeschickt habe. Da hab ich kurz gedacht, ob er das vielleicht absichtlich sagt, damit er nicht für die Verzögerung verantwortlich ist. Aber ich mein... wahrscheinlich lag's wirklich nur am Computerproblem, das hatten wir öfter in letzter Zeit. Ich bin dann auch nicht weiter drüber nachgegrübelt. So was passiert mir hin und wieder, aber ich glaub, das ist eher so ein flüchtiger Gedanke, nichts Ernstes."
+    },
+    {
+      "criterion_id": "PPD_1",
+      "disorder": "paranoid",
+      "ground_truth_score": 2,
+      "language": "de",
+      "variant": 1,
+      "transcript": "Ja, da gibt es einiges. Also, zum Beispiel mein Kollege Thomas — der hat letzte Woche gefragt, ob er mein Projekt sehen darf, angeblich nur um \"Feedback zu geben\". Ich hab das sofort gespürt, der will meine Ideen klauen und dann beim Chef als seine eigenen verkaufen. Ich hab ihm natürlich nichts gezeigt. Das ist nämlich nicht das erste Mal — vor ein paar Monaten hat mein Nachbar plötzlich angefangen, so freundlich zu sein, hat mir angeboten, meinen Briefkasten zu leeren wenn ich im Urlaub bin. Warum sollte jemand sowas einfach so anbieten? Der wollte wissen, wann ich weg bin, damit er... naja, ich weiß nicht genau was, aber irgendetwas stimmt da nicht. Selbst meine Schwester — die fragt immer wie's mir geht, wie meine Finanzen so sind, und ich denk mir dann, die will irgendwas von mir, die hat bestimmt irgendwelche Hintergedanken. Das ist einfach so ein Grundgefühl, das ich schon immer hatte, dass die Leute einen nicht einfach so nett behandeln, da steckt immer irgendwas dahinter."
+    }
+  ]
+}
