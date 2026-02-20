@@ -64,7 +64,7 @@ def list_sessions() -> list[dict]:
     sessions = []
     if not SESSIONS_DIR.exists():
         return sessions
-    for d in sorted(SESSIONS_DIR.iterdir()):
+    for d in SESSIONS_DIR.iterdir():
         state_file = d / "state.json"
         if state_file.exists():
             with open(state_file, "r", encoding="utf-8") as f:
@@ -74,6 +74,7 @@ def list_sessions() -> list[dict]:
                 "created_at": s["created_at"],
                 "stage": s["stage"],
             })
+    sessions.sort(key=lambda s: s["created_at"])
     return sessions
 
 

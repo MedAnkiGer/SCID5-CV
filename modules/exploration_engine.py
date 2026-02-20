@@ -22,9 +22,9 @@ load_dotenv()
 SAMPLE_RATE = 16000  # 16kHz mono — optimal for Whisper
 CHANNELS = 1
 DTYPE = "int16"
-MAX_DURATION_S = 120  # Maximum recording duration (seconds)
+MAX_DURATION_S = 300  # Maximum recording duration (seconds)
 SILENCE_THRESHOLD_RMS = 300  # RMS amplitude below which is considered silence
-SILENCE_DURATION_S = 3.0  # Seconds of silence before auto-stop
+SILENCE_DURATION_S = 60.0  # Seconds of silence before auto-stop (allows long reflective pauses)
 BLOCK_SIZE = 1024  # Frames per callback block
 
 

@@ -64,7 +64,7 @@ class SelfReportGUI(QWidget):
     """Block-by-block screening questionnaire — all questions of one disorder on one page."""
 
     # ---- colour palette ----
-    _C_BG        = "#F5F7F7"   # window / widget background
+    _C_BG        = "#FFFFFF"   # window / widget background
     _C_ROW_ODD   = "#FFFFFF"   # question row, odd
     _C_ROW_EVEN  = "#EAF4F4"   # question row, even (light teal)
     _C_TEAL      = "#00897B"   # progress bar fill, accents
