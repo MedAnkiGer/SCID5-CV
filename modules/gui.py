@@ -1,7 +1,8 @@
 """Stage 1: Self-Report GUI — PySide6 questionnaire.
 
-Presents all screening items one at a time with Yes/No buttons,
-progress bar, language selector, and back/forward navigation.
+Presents all screening items grouped by disorder block (one block per page),
+with a scrollable list of Yes/No rows, overall progress bar, language selector,
+and block-by-block navigation.
 
 Stage 2 Exploration GUI is also here: shows follow-up questions with
 recording controls and transcript review.
@@ -15,12 +16,14 @@ from PySide6.QtCore import Qt, Signal, QThread
 from PySide6.QtWidgets import (
     QApplication,
     QComboBox,
+    QFrame,
     QHBoxLayout,
     QLabel,
     QMainWindow,
     QMessageBox,
     QPushButton,
     QProgressBar,
+    QScrollArea,
     QTextEdit,
     QVBoxLayout,
     QWidget,
@@ -58,9 +61,8 @@ class PipelineWindow(QMainWindow):
 
 
 class SelfReportGUI(QWidget):
-    """One-question-at-a-time screening questionnaire."""
+    """Block-by-block screening questionnaire — all questions of one disorder on one page."""
 
-    # Emitted when the user finishes all questions
     finished = Signal(dict)  # {item_id: bool, ...}
 
     def __init__(self, questions: dict, session: dict, parent=None):
@@ -74,34 +76,47 @@ class SelfReportGUI(QWidget):
         self.session = session
         self.language = session.get("language", "de")
 
-        # Build ordered list of screening items
+        # Ordered list of all screening item IDs
         self.item_ids = sorted(questions["screening_items"].keys(), key=lambda x: int(x[1:]))
-        self.current_index = 0
 
         # Restore progress from session
         self.responses: dict[str, bool] = dict(session.get("screening_responses", {}))
-        # Convert string 'true'/'false' to bool if needed
         for k, v in self.responses.items():
             if isinstance(v, str):
                 self.responses[k] = v.lower() == "true"
 
-        # Skip to first unanswered
-        while self.current_index < len(self.item_ids) and self.item_ids[self.current_index] in self.responses:
-            self.current_index += 1
-        if self.current_index >= len(self.item_ids):
-            self.current_index = len(self.item_ids) - 1
+        # Build blocks: list of (disorder_key, [item_ids]) in disorders dict order
+        self.blocks: list[tuple[str, list[str]]] = []
+        for disorder_key in questions["disorders"]:
+            block_items = [
+                iid for iid in self.item_ids
+                if questions["screening_items"][iid].get("disorder") == disorder_key
+            ]
+            if block_items:
+                self.blocks.append((disorder_key, block_items))
+
+        # Start on the first block that still has unanswered questions
+        self.current_block_index = 0
+        for i, (_, block_items) in enumerate(self.blocks):
+            if any(iid not in self.responses for iid in block_items):
+                self.current_block_index = i
+                break
+
+        # Per-row button references: item_id -> (yes_btn, no_btn)
+        self._row_buttons: dict[str, tuple[QPushButton, QPushButton]] = {}
 
         self._setup_ui()
-        self._update_display()
+        self._build_block_page()
 
     def _setup_ui(self):
-        self.setMinimumSize(700, 400)
+        self.setMinimumSize(750, 560)
 
         layout = QVBoxLayout(self)
-        layout.setSpacing(15)
+        layout.setSpacing(10)
         layout.setContentsMargins(30, 20, 30, 20)
+        self.main_layout = layout
 
-        # Top bar: language selector + progress
+        # Top bar: language selector + block indicator
         top_bar = QHBoxLayout()
 
         lang_label = QLabel("Language:")
@@ -113,122 +128,162 @@ class SelfReportGUI(QWidget):
         top_bar.addWidget(self.lang_combo)
         top_bar.addStretch()
 
-        self.progress_label = QLabel()
-        top_bar.addWidget(self.progress_label)
+        self.block_label = QLabel()
+        self.block_label.setStyleSheet("font-weight: bold; color: #555;")
+        top_bar.addWidget(self.block_label)
         layout.addLayout(top_bar)
 
-        # Progress bar
+        # Overall progress bar
         self.progress_bar = QProgressBar()
         self.progress_bar.setMaximum(len(self.item_ids))
+        self.progress_bar.setFormat("%v / %m")
         layout.addWidget(self.progress_bar)
 
-        # Question display
-        self.question_label = QLabel()
-        self.question_label.setWordWrap(True)
-        self.question_label.setStyleSheet("font-size: 16px; padding: 20px;")
-        self.question_label.setAlignment(Qt.AlignCenter)
-        self.question_label.setMinimumHeight(120)
-        layout.addWidget(self.question_label)
 
-        # Item ID label
-        self.item_id_label = QLabel()
-        self.item_id_label.setStyleSheet("color: gray; font-size: 10px;")
-        self.item_id_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.item_id_label)
+        # Scroll area containing the question rows
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+        layout.addWidget(self.scroll_area)
 
-        # Answer buttons
-        btn_layout = QHBoxLayout()
-        btn_layout.addStretch()
-
-        self.yes_btn = QPushButton("Ja / Yes")
-        self.yes_btn.setMinimumSize(120, 50)
-        self.yes_btn.setStyleSheet("font-size: 14px; font-weight: bold;")
-        self.yes_btn.clicked.connect(lambda: self._answer(True))
-        btn_layout.addWidget(self.yes_btn)
-
-        btn_layout.addSpacing(30)
-
-        self.no_btn = QPushButton("Nein / No")
-        self.no_btn.setMinimumSize(120, 50)
-        self.no_btn.setStyleSheet("font-size: 14px; font-weight: bold;")
-        self.no_btn.clicked.connect(lambda: self._answer(False))
-        btn_layout.addWidget(self.no_btn)
-
-        btn_layout.addStretch()
-        layout.addLayout(btn_layout)
+        self.scroll_widget = QWidget()
+        self.scroll_layout = QVBoxLayout(self.scroll_widget)
+        self.scroll_layout.setSpacing(0)
+        self.scroll_layout.setContentsMargins(0, 0, 0, 0)
+        self.scroll_area.setWidget(self.scroll_widget)
 
         # Navigation
         nav_layout = QHBoxLayout()
 
         self.back_btn = QPushButton("<< Back")
-        self.back_btn.clicked.connect(self._go_back)
+        self.back_btn.clicked.connect(self._prev_block)
         nav_layout.addWidget(self.back_btn)
 
         nav_layout.addStretch()
 
+        self.next_btn = QPushButton("Next Block >>")
+        self.next_btn.setStyleSheet("font-size: 13px; font-weight: bold;")
+        self.next_btn.clicked.connect(self._next_block)
+        nav_layout.addWidget(self.next_btn)
+
         self.finish_btn = QPushButton("Finish")
+        self.finish_btn.setStyleSheet("font-size: 13px; font-weight: bold;")
         self.finish_btn.clicked.connect(self._finish)
-        self.finish_btn.setEnabled(False)
         nav_layout.addWidget(self.finish_btn)
 
         layout.addLayout(nav_layout)
 
+    def _build_block_page(self):
+        """Clear the scroll area and rebuild question rows for the current block."""
+        while self.scroll_layout.count():
+            item = self.scroll_layout.takeAt(0)
+            w = item.widget()
+            if w:
+                w.deleteLater()
+        self._row_buttons.clear()
+
+        _disorder_key, item_ids = self.blocks[self.current_block_index]
+        lang = self.language
+
+        # Update header label
+        self.block_label.setText(f"Block {self.current_block_index + 1} / {len(self.blocks)}")
+
+        # Build one row per question
+        for q_num, item_id in enumerate(item_ids, 1):
+            item = self.questions["screening_items"][item_id]
+            text = item.get(f"text_{lang}", item.get("text_en", "???"))
+
+            row = QWidget()
+            bg = "#f7f7f7" if q_num % 2 == 0 else "#ffffff"
+            row.setStyleSheet(f"background-color: {bg};")
+
+            row_layout = QHBoxLayout(row)
+            row_layout.setContentsMargins(10, 8, 10, 8)
+            row_layout.setSpacing(12)
+
+            q_label = QLabel(f"{q_num}.  {text}")
+            q_label.setWordWrap(True)
+            q_label.setStyleSheet(f"font-size: 13px; background-color: {bg};")
+            row_layout.addWidget(q_label, stretch=1)
+
+            yes_btn = QPushButton("Ja" if lang == "de" else "Yes")
+            yes_btn.setFixedSize(90, 34)
+            yes_btn.clicked.connect(
+                lambda checked=False, iid=item_id: self._row_answer(iid, True)
+            )
+            row_layout.addWidget(yes_btn, 0, Qt.AlignTop)
+
+            no_btn = QPushButton("Nein" if lang == "de" else "No")
+            no_btn.setFixedSize(90, 34)
+            no_btn.clicked.connect(
+                lambda checked=False, iid=item_id: self._row_answer(iid, False)
+            )
+            row_layout.addWidget(no_btn, 0, Qt.AlignTop)
+
+            self._row_buttons[item_id] = (yes_btn, no_btn)
+            self.scroll_layout.addWidget(row)
+
+            if item_id in self.responses:
+                self._apply_row_style(item_id, self.responses[item_id])
+
+        self.scroll_layout.addStretch()
+        self._update_nav()
+        self._update_progress()
+
+    def _apply_row_style(self, item_id: str, value: bool):
+        yes_btn, no_btn = self._row_buttons[item_id]
+        if value:
+            yes_btn.setStyleSheet(
+                "font-size: 12px; font-weight: bold; background-color: #4CAF50; color: white;"
+            )
+            no_btn.setStyleSheet("font-size: 12px;")
+        else:
+            yes_btn.setStyleSheet("font-size: 12px;")
+            no_btn.setStyleSheet(
+                "font-size: 12px; font-weight: bold; background-color: #f44336; color: white;"
+            )
+
+    def _row_answer(self, item_id: str, value: bool):
+        self.responses[item_id] = value
+        self.session["screening_responses"] = self.responses
+        self._apply_row_style(item_id, value)
+        self._update_nav()
+        self._update_progress()
+
+    def _update_progress(self):
+        self.progress_bar.setValue(len(self.responses))
+
+    def _update_nav(self):
+        _, item_ids = self.blocks[self.current_block_index]
+        all_answered = all(iid in self.responses for iid in item_ids)
+        is_last = self.current_block_index == len(self.blocks) - 1
+
+        self.back_btn.setEnabled(self.current_block_index > 0)
+        self.next_btn.setVisible(not is_last)
+        self.next_btn.setEnabled(all_answered)
+        self.finish_btn.setVisible(is_last)
+        self.finish_btn.setEnabled(len(self.responses) == len(self.item_ids))
+
+    def _prev_block(self):
+        if self.current_block_index > 0:
+            self.current_block_index -= 1
+            self._build_block_page()
+
+    def _next_block(self):
+        _, item_ids = self.blocks[self.current_block_index]
+        if not all(iid in self.responses for iid in item_ids):
+            QMessageBox.warning(
+                self, "Incomplete",
+                "Please answer all questions in this block before continuing."
+            )
+            return
+        self.current_block_index += 1
+        self._build_block_page()
+
     def _on_language_changed(self, index):
         self.language = "de" if index == 0 else "en"
         self.session["language"] = self.language
-        self._update_display()
-
-    def _update_display(self):
-        """Update the question text, progress bar, and button states."""
-        total = len(self.item_ids)
-        answered = len(self.responses)
-
-        self.progress_bar.setValue(answered)
-        self.progress_label.setText(f"{answered} / {total}")
-
-        if self.current_index < total:
-            item_id = self.item_ids[self.current_index]
-            item = self.questions["screening_items"][item_id]
-            lang_key = f"text_{self.language}"
-            text = item.get(lang_key, item.get("text_en", "???"))
-            self.question_label.setText(text)
-            self.item_id_label.setText(f"[{item_id} — {item.get('disorder', '?')}]")
-
-            # Highlight if already answered
-            if item_id in self.responses:
-                prev = self.responses[item_id]
-                self.yes_btn.setStyleSheet(
-                    "font-size: 14px; font-weight: bold; background-color: #4CAF50; color: white;"
-                    if prev else "font-size: 14px; font-weight: bold;"
-                )
-                self.no_btn.setStyleSheet(
-                    "font-size: 14px; font-weight: bold; background-color: #f44336; color: white;"
-                    if not prev else "font-size: 14px; font-weight: bold;"
-                )
-            else:
-                self.yes_btn.setStyleSheet("font-size: 14px; font-weight: bold;")
-                self.no_btn.setStyleSheet("font-size: 14px; font-weight: bold;")
-
-        self.back_btn.setEnabled(self.current_index > 0)
-        self.finish_btn.setEnabled(answered == total)
-
-    def _answer(self, value: bool):
-        """Record answer and advance to next question."""
-        item_id = self.item_ids[self.current_index]
-        self.responses[item_id] = value
-
-        # Auto-save to session
-        self.session["screening_responses"] = self.responses
-
-        # Advance
-        if self.current_index < len(self.item_ids) - 1:
-            self.current_index += 1
-        self._update_display()
-
-    def _go_back(self):
-        if self.current_index > 0:
-            self.current_index -= 1
-            self._update_display()
+        self._build_block_page()
 
     def _finish(self):
         if len(self.responses) < len(self.item_ids):
