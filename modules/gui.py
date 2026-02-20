@@ -63,6 +63,36 @@ class PipelineWindow(QMainWindow):
 class SelfReportGUI(QWidget):
     """Block-by-block screening questionnaire — all questions of one disorder on one page."""
 
+    # ---- colour palette ----
+    _C_BG        = "#F5F7F7"   # window / widget background
+    _C_ROW_ODD   = "#FFFFFF"   # question row, odd
+    _C_ROW_EVEN  = "#EAF4F4"   # question row, even (light teal)
+    _C_TEAL      = "#00897B"   # progress bar fill, accents
+    _C_TEAL_DARK = "#00695C"   # nav buttons
+    _C_TEAL_MID  = "#B2DFDB"   # disabled button tint
+    _C_TEXT      = "#212121"   # primary text
+
+    # yes/no button styles — default (subtle hint) and selected (saturated)
+    _S_YES_DEFAULT  = ("font-size: 12px; background-color: #E8F5E9; color: #2E7D32;"
+                       " border: 1px solid #A5D6A7; border-radius: 4px;")
+    _S_YES_SELECTED = ("font-size: 12px; font-weight: bold; background-color: #43A047;"
+                       " color: white; border: none; border-radius: 4px;")
+    _S_NO_DEFAULT   = ("font-size: 12px; background-color: #FFEBEE; color: #C62828;"
+                       " border: 1px solid #EF9A9A; border-radius: 4px;")
+    _S_NO_SELECTED  = ("font-size: 12px; font-weight: bold; background-color: #E53935;"
+                       " color: white; border: none; border-radius: 4px;")
+
+    _S_NAV_BTN = """
+        QPushButton {{
+            background-color: {bg}; color: white;
+            border: none; border-radius: 4px;
+            font-size: 13px; font-weight: bold;
+            padding: 6px 18px;
+        }}
+        QPushButton:hover  {{ background-color: #00796B; }}
+        QPushButton:disabled {{ background-color: #B2DFDB; color: #FFFFFF; }}
+    """
+
     finished = Signal(dict)  # {item_id: bool, ...}
 
     def __init__(self, questions: dict, session: dict, parent=None):
@@ -110,6 +140,7 @@ class SelfReportGUI(QWidget):
 
     def _setup_ui(self):
         self.setMinimumSize(750, 560)
+        self.setStyleSheet(f"background-color: {self._C_BG}; color: {self._C_TEXT};")
 
         layout = QVBoxLayout(self)
         layout.setSpacing(10)
@@ -129,7 +160,7 @@ class SelfReportGUI(QWidget):
         top_bar.addStretch()
 
         self.block_label = QLabel()
-        self.block_label.setStyleSheet("font-weight: bold; color: #555;")
+        self.block_label.setStyleSheet(f"font-weight: bold; color: {self._C_TEAL_DARK};")
         top_bar.addWidget(self.block_label)
         layout.addLayout(top_bar)
 
@@ -137,8 +168,18 @@ class SelfReportGUI(QWidget):
         self.progress_bar = QProgressBar()
         self.progress_bar.setMaximum(len(self.item_ids))
         self.progress_bar.setFormat("%v / %m")
+        self.progress_bar.setStyleSheet(f"""
+            QProgressBar {{
+                border: none; border-radius: 4px;
+                background-color: {self._C_TEAL_MID};
+                text-align: center; color: {self._C_TEXT};
+                height: 16px;
+            }}
+            QProgressBar::chunk {{
+                background-color: {self._C_TEAL}; border-radius: 4px;
+            }}
+        """)
         layout.addWidget(self.progress_bar)
-
 
         # Scroll area containing the question rows
         self.scroll_area = QScrollArea()
@@ -147,6 +188,7 @@ class SelfReportGUI(QWidget):
         layout.addWidget(self.scroll_area)
 
         self.scroll_widget = QWidget()
+        self.scroll_widget.setStyleSheet(f"background-color: {self._C_BG};")
         self.scroll_layout = QVBoxLayout(self.scroll_widget)
         self.scroll_layout.setSpacing(0)
         self.scroll_layout.setContentsMargins(0, 0, 0, 0)
@@ -155,19 +197,21 @@ class SelfReportGUI(QWidget):
         # Navigation
         nav_layout = QHBoxLayout()
 
+        _nav = self._S_NAV_BTN.format(bg=self._C_TEAL_DARK)
         self.back_btn = QPushButton("<< Back")
+        self.back_btn.setStyleSheet(_nav)
         self.back_btn.clicked.connect(self._prev_block)
         nav_layout.addWidget(self.back_btn)
 
         nav_layout.addStretch()
 
         self.next_btn = QPushButton("Next Block >>")
-        self.next_btn.setStyleSheet("font-size: 13px; font-weight: bold;")
+        self.next_btn.setStyleSheet(_nav)
         self.next_btn.clicked.connect(self._next_block)
         nav_layout.addWidget(self.next_btn)
 
         self.finish_btn = QPushButton("Finish")
-        self.finish_btn.setStyleSheet("font-size: 13px; font-weight: bold;")
+        self.finish_btn.setStyleSheet(_nav)
         self.finish_btn.clicked.connect(self._finish)
         nav_layout.addWidget(self.finish_btn)
 
@@ -194,7 +238,7 @@ class SelfReportGUI(QWidget):
             text = item.get(f"text_{lang}", item.get("text_en", "???"))
 
             row = QWidget()
-            bg = "#f7f7f7" if q_num % 2 == 0 else "#ffffff"
+            bg = self._C_ROW_EVEN if q_num % 2 == 0 else self._C_ROW_ODD
             row.setStyleSheet(f"background-color: {bg};")
 
             row_layout = QHBoxLayout(row)
@@ -203,11 +247,14 @@ class SelfReportGUI(QWidget):
 
             q_label = QLabel(f"{q_num}.  {text}")
             q_label.setWordWrap(True)
-            q_label.setStyleSheet(f"font-size: 13px; background-color: {bg};")
+            q_label.setStyleSheet(
+                f"font-size: 13px; background-color: {bg}; color: {self._C_TEXT};"
+            )
             row_layout.addWidget(q_label, stretch=1)
 
             yes_btn = QPushButton("Ja" if lang == "de" else "Yes")
             yes_btn.setFixedSize(90, 34)
+            yes_btn.setStyleSheet(self._S_YES_DEFAULT)
             yes_btn.clicked.connect(
                 lambda checked=False, iid=item_id: self._row_answer(iid, True)
             )
@@ -215,6 +262,7 @@ class SelfReportGUI(QWidget):
 
             no_btn = QPushButton("Nein" if lang == "de" else "No")
             no_btn.setFixedSize(90, 34)
+            no_btn.setStyleSheet(self._S_NO_DEFAULT)
             no_btn.clicked.connect(
                 lambda checked=False, iid=item_id: self._row_answer(iid, False)
             )
@@ -233,15 +281,11 @@ class SelfReportGUI(QWidget):
     def _apply_row_style(self, item_id: str, value: bool):
         yes_btn, no_btn = self._row_buttons[item_id]
         if value:
-            yes_btn.setStyleSheet(
-                "font-size: 12px; font-weight: bold; background-color: #4CAF50; color: white;"
-            )
-            no_btn.setStyleSheet("font-size: 12px;")
+            yes_btn.setStyleSheet(self._S_YES_SELECTED)
+            no_btn.setStyleSheet(self._S_NO_DEFAULT)
         else:
-            yes_btn.setStyleSheet("font-size: 12px;")
-            no_btn.setStyleSheet(
-                "font-size: 12px; font-weight: bold; background-color: #f44336; color: white;"
-            )
+            yes_btn.setStyleSheet(self._S_YES_DEFAULT)
+            no_btn.setStyleSheet(self._S_NO_SELECTED)
 
     def _row_answer(self, item_id: str, value: bool):
         self.responses[item_id] = value
