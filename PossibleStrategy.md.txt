@@ -1,47 +1,16 @@
-Prompt 3: Data Ingestion (The PDF Logic)
+human:
+- populate the question bank for initial questions
+- populate the question bank for yes/no questions
+- populate the question bank for exploration
 
-    "Read claude.md. We need to populate the QuestionBank. Create a script pdf_parser.py that uses PyMuPDF (fitz) to extract text from my SCID-5 PDF. For now, create a JSON structure in data/questions.json that maps each question ID to the exact follow-up phrasing found in the PDF. If the PDF is not yet available, create a robust mock JSON with 5 sample personality disorder exploration questions."
 
-Prompt 4: The "Ear" (Audio & Whisper Integration)
+claude:
+- build audio input and transcription loop for initial questions; these questions should inform later rating of exploration
+- based on yes/no questions => generate synthetic answers (generate_test_answers.py) to be evaluated by evaluation loop: calculate and plot interrater reliability
 
-    "Develop exploration_engine.py. Create a function record_and_transcribe(question_id, language='de'). It should:
 
-        Use sounddevice to record until silence or a max of 30 seconds.
 
-        Send the audio to OpenAI Whisper API using the language parameter.
+scientific tinkering
+- run the evaluation loop over 100 datasets of synthetic answers
+- run the evaluation loop with different ai models
 
-        Save the transcript to the current session in data/session_state.json.
-
-        Ensure it uses the API key from the .env file via os.getenv()."
-
-Prompt 5: The "Judge" (Claude Rater Agent)
-
-    "Build rater.py. Create a function evaluate_response(transcript, criteria).
-
-        It must call the Anthropic API with a system prompt that enforces the 0/1/2 scoring scale.
-
-        It must return a JSON object containing: score, rationale (citing evidence from the transcript), and unresolved (boolean).
-
-        If unresolved is true, it should also suggest a specific clarifying question to ask the user."
-
-Prompt 6: The "Interviewer" Loop (Stage 2)
-
-    "Update main.py to handle the EXPLORATION state. It should:
-
-        Loop through all 'Yes' IDs in session_state.json.
-
-        Use exploration_engine.py to ask the question and get the transcript.
-
-        Immediately call rater.py to get a score.
-
-        If unresolved, repeat the record_and_transcribe step with the suggested clarifying question once before moving on."
-
-Prompt 7: The "Report Card" (PDF Generation)
-
-    "Create reporter.py. It should read the final session_state.json and generate a professional PDF using fpdf2. The report must include:
-
-        A summary table of all scores (0, 1, 2).
-
-        For every 'Yes' answer, show the original question, the user's transcript, and the AI's clinical rationale.
-
-        A final section flagging any 'unresolved' items for human clinician review."
