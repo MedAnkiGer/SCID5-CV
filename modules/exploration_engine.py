@@ -38,17 +38,20 @@ class AudioRecorder:
         max_duration: int = MAX_DURATION_S,
         silence_threshold: int = SILENCE_THRESHOLD_RMS,
         silence_duration: float = SILENCE_DURATION_S,
+        require_speech_first: bool = False,
     ):
         self.sample_rate = sample_rate
         self.channels = channels
         self.max_duration = max_duration
         self.silence_threshold = silence_threshold
         self.silence_duration = silence_duration
+        self.require_speech_first = require_speech_first
 
         self._frames: list[np.ndarray] = []
         self._is_recording = False
         self._silence_start: float | None = None
         self._stopped_by_silence = False
+        self._speech_detected = False
 
     @property
     def is_recording(self) -> bool:
@@ -68,14 +71,15 @@ class AudioRecorder:
         # Check RMS for silence detection
         rms = np.sqrt(np.mean(indata.astype(np.float32) ** 2))
 
-        if rms < self.silence_threshold:
+        if rms >= self.silence_threshold:
+            self._speech_detected = True
+            self._silence_start = None
+        elif not self.require_speech_first or self._speech_detected:
             if self._silence_start is None:
                 self._silence_start = time.time()
             elif time.time() - self._silence_start >= self.silence_duration:
                 self._stopped_by_silence = True
                 self._is_recording = False
-        else:
-            self._silence_start = None
 
     def start_recording(self) -> None:
         """Begin recording audio from the default input device."""
@@ -83,6 +87,7 @@ class AudioRecorder:
         self._is_recording = True
         self._silence_start = None
         self._stopped_by_silence = False
+        self._speech_detected = False
 
         self._stream = sd.InputStream(
             samplerate=self.sample_rate,

@@ -1,11 +1,8 @@
-"""Stage 1: Self-Report GUI — PySide6 questionnaire.
+"""SCID-5-PD GUI components.
 
-Presents all screening items grouped by disorder block (one block per page),
-with a scrollable list of Yes/No rows, overall progress bar, language selector,
-and block-by-block navigation.
-
-Stage 2 Exploration GUI is also here: shows follow-up questions with
-recording controls and transcript review.
+Stage 1  — SelfReportGUI: 106-item screening questionnaire
+Overview — OverviewGUI: Demographics, psychopathology & personality interview
+Stage 2  — ExplorationGUI: Criterion-targeted follow-up with audio recording
 """
 
 import json
@@ -203,6 +200,16 @@ class SelfReportGUI(QWidget):
         self.back_btn.clicked.connect(self._prev_block)
         nav_layout.addWidget(self.back_btn)
 
+        # [DEV] fill all remaining unanswered items with No
+        self.fill_no_btn = QPushButton("⚡ Alle Nein")
+        self.fill_no_btn.setToolTip("Alle noch unbeantworteten Fragen mit Nein beantworten (Testmodus)")
+        self.fill_no_btn.setStyleSheet(
+            "font-size: 12px; font-weight: bold; background-color: #FF8F00;"
+            " color: white; border: none; border-radius: 4px; padding: 6px 14px;"
+        )
+        self.fill_no_btn.clicked.connect(self._fill_remaining_no)
+        nav_layout.addWidget(self.fill_no_btn)
+
         nav_layout.addStretch()
 
         self.next_btn = QPushButton("Next Block >>")
@@ -328,6 +335,18 @@ class SelfReportGUI(QWidget):
         self.language = "de" if index == 0 else "en"
         self.session["language"] = self.language
         self._build_block_page()
+
+    def _fill_remaining_no(self):
+        """[DEV] Answer all unanswered items with No, then refresh the current page."""
+        for iid in self.item_ids:
+            if iid not in self.responses:
+                self.responses[iid] = False
+        self.session["screening_responses"] = self.responses
+        # Refresh button styles for the currently visible block
+        for iid, (yes_btn, no_btn) in self._row_buttons.items():
+            self._apply_row_style(iid, self.responses[iid])
+        self._update_nav()
+        self._update_progress()
 
     def _finish(self):
         if len(self.responses) < len(self.item_ids):
@@ -584,4 +603,327 @@ class ExplorationGUI(QWidget):
         self._current_audio = None
         self.progress_bar.setMaximum(len(criteria))
         self._update_display()
+
+
+# ---------------------------------------------------------------------------
+# Overview: Demographics, Psychopathology & Personality Interview
+# ---------------------------------------------------------------------------
+
+
+class OverviewGUI(QWidget):
+    """Structured interview with branching logic, audio recording per question.
+
+    Walks through overview_questions.json, presenting one question at a time.
+    For yes/no questions, answer buttons control which branch sub-questions
+    are shown next. All responses are captured as transcribed audio or
+    button selections.
+    """
+
+    _SECTION_LABELS = {
+        "demographics": "Demographische Daten",
+        "education_work": "Ausbildung und Beruf",
+        "psychopathology": "Aktuelle und frühere Psychopathologie",
+        "personality_overview": "Überblick zur Persönlichkeit",
+    }
+
+    finished = Signal(dict)  # {question_id: {"answer": ..., "transcript": ...}, ...}
+
+    def __init__(self, overview_data: dict, language: str = "de",
+                 existing_responses: dict | None = None, parent=None):
+        super().__init__(parent)
+        self.overview_data = overview_data
+        self.language = language
+        self.responses: dict = dict(existing_responses or {})
+        self.recorder = AudioRecorder(silence_duration=3.0, require_speech_first=True)
+        self._rec_thread = None
+        self._trans_thread = None
+        self._current_audio = None
+
+        # Flatten the question tree into a linear walk-through list.
+        # We rebuild this as answers come in (branching).
+        self._question_queue: list[dict] = []
+        self._rebuild_queue()
+        self._queue_index = 0
+
+        # Skip already-answered questions on resume
+        while (self._queue_index < len(self._question_queue)
+               and self._question_queue[self._queue_index]["id"] in self.responses):
+            self._queue_index += 1
+
+        self._setup_ui()
+        self._update_display()
+
+    def _rebuild_queue(self):
+        """Flatten the branching question tree based on current answers."""
+        self._question_queue = []
+        self._flatten(self.overview_data["questions"])
+
+    def _flatten(self, questions: list[dict]):
+        """Recursively flatten questions, inserting branch sub-questions inline."""
+        for q in questions:
+            self._question_queue.append(q)
+
+            # Check if we already have an answer that triggers a branch
+            answer = self.responses.get(q["id"], {}).get("answer")
+            if answer is not None and q.get("branches"):
+                for branch in q["branches"]:
+                    if self._branch_matches(branch, q, answer):
+                        self._flatten(branch.get("questions", []))
+
+    def _branch_matches(self, branch: dict, question: dict, answer) -> bool:
+        """Check if a branch condition matches the given answer."""
+        condition = branch["condition"]
+        if condition == "yes" and answer is True:
+            return True
+        if condition == "no" and answer is False:
+            return True
+        # String match conditions (for AI-evaluated conditions)
+        if condition == answer:
+            return True
+        return False
+
+    def _setup_ui(self):
+        self.setMinimumSize(700, 500)
+        self.setStyleSheet("background-color: #FFFFFF; color: #212121;")
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(12)
+        layout.setContentsMargins(30, 20, 30, 20)
+
+        # Section header
+        self.section_label = QLabel()
+        self.section_label.setStyleSheet(
+            "font-size: 16px; font-weight: bold; color: #00695C; padding: 5px 0;"
+        )
+        layout.addWidget(self.section_label)
+
+        # Progress
+        self.progress_label = QLabel()
+        self.progress_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.progress_label)
+
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setStyleSheet("""
+            QProgressBar {
+                border: none; border-radius: 4px;
+                background-color: #B2DFDB; text-align: center;
+                color: #212121; height: 16px;
+            }
+            QProgressBar::chunk {
+                background-color: #00897B; border-radius: 4px;
+            }
+        """)
+        layout.addWidget(self.progress_bar)
+
+        # Question text
+        self.question_label = QLabel()
+        self.question_label.setWordWrap(True)
+        self.question_label.setStyleSheet(
+            "font-size: 14px; padding: 15px; font-weight: bold;"
+            "background-color: #EAF4F4; border-radius: 6px;"
+        )
+        self.question_label.setMinimumHeight(60)
+        layout.addWidget(self.question_label)
+
+        # Yes / No buttons (shown only for yes_no questions)
+        self.yn_layout = QHBoxLayout()
+        self.yn_layout.addStretch()
+
+        _btn_style = """
+            QPushButton {{
+                font-size: 14px; font-weight: bold;
+                padding: 8px 30px; border-radius: 4px;
+                background-color: {bg}; color: white; border: none;
+            }}
+            QPushButton:hover {{ background-color: {hover}; }}
+        """
+        self.yes_btn = QPushButton("Ja")
+        self.yes_btn.setStyleSheet(_btn_style.format(bg="#43A047", hover="#388E3C"))
+        self.yes_btn.clicked.connect(lambda: self._answer_yn(True))
+        self.yn_layout.addWidget(self.yes_btn)
+
+        self.no_btn = QPushButton("Nein")
+        self.no_btn.setStyleSheet(_btn_style.format(bg="#E53935", hover="#C62828"))
+        self.no_btn.clicked.connect(lambda: self._answer_yn(False))
+        self.yn_layout.addWidget(self.no_btn)
+
+        self.yn_layout.addStretch()
+        layout.addLayout(self.yn_layout)
+
+        # Recording controls (shown for open / yes_no_open questions)
+        rec_layout = QHBoxLayout()
+        rec_layout.addStretch()
+
+        self.record_btn = QPushButton("Aufnahme starten")
+        self.record_btn.setMinimumSize(160, 45)
+        self.record_btn.setStyleSheet(
+            "font-size: 13px; font-weight: bold; background-color: #00897B;"
+            " color: white; border: none; border-radius: 4px; padding: 8px 20px;"
+        )
+        self.record_btn.clicked.connect(self._toggle_recording)
+        rec_layout.addWidget(self.record_btn)
+
+        self.status_label = QLabel("")
+        self.status_label.setStyleSheet("font-size: 12px; color: #C62828;")
+        rec_layout.addWidget(self.status_label)
+
+        rec_layout.addStretch()
+        layout.addLayout(rec_layout)
+        self._rec_layout_widgets = [self.record_btn, self.status_label]
+
+        # Transcript
+        self.transcript_edit = QTextEdit()
+        self.transcript_edit.setPlaceholderText("Transkript erscheint hier nach der Aufnahme...")
+        self.transcript_edit.setReadOnly(True)
+        self.transcript_edit.setMaximumHeight(120)
+        layout.addWidget(self.transcript_edit)
+
+        # Action buttons
+        action_layout = QHBoxLayout()
+
+        self.rerecord_btn = QPushButton("Erneut aufnehmen")
+        self.rerecord_btn.clicked.connect(self._rerecord)
+        self.rerecord_btn.setEnabled(False)
+        action_layout.addWidget(self.rerecord_btn)
+
+        action_layout.addStretch()
+
+        # Continue / intro-only button
+        self.continue_btn = QPushButton("Weiter")
+        self.continue_btn.setStyleSheet(
+            "font-size: 13px; font-weight: bold; background-color: #00695C;"
+            " color: white; border: none; border-radius: 4px; padding: 8px 20px;"
+        )
+        self.continue_btn.clicked.connect(self._accept_open)
+        self.continue_btn.setEnabled(False)
+        action_layout.addWidget(self.continue_btn)
+
+        layout.addLayout(action_layout)
+
+    def _update_display(self):
+        if self._queue_index >= len(self._question_queue):
+            self.finished.emit(self.responses)
+            return
+
+        q = self._question_queue[self._queue_index]
+        qtype = q.get("type", "open")
+        section = q.get("section", "")
+
+        # Update section header
+        self.section_label.setText(self._SECTION_LABELS.get(section, section))
+
+        # Update progress
+        self.progress_bar.setMaximum(len(self._question_queue))
+        self.progress_bar.setValue(self._queue_index)
+        self.progress_label.setText(
+            f"Frage {self._queue_index + 1} / {len(self._question_queue)}"
+        )
+
+        # Show question
+        text_key = f"text_{self.language}"
+        text = q.get(text_key, q.get("text_de", ""))
+        self.question_label.setText(text)
+
+        # Reset controls
+        self.transcript_edit.clear()
+        self.status_label.setText("")
+        self.rerecord_btn.setEnabled(False)
+        self._current_audio = None
+
+        # Show/hide controls based on question type
+        is_yn = qtype in ("yes_no",)
+        is_open = qtype in ("open", "yes_no_open")
+        is_intro = qtype == "intro"
+
+        self.yes_btn.setVisible(is_yn)
+        self.no_btn.setVisible(is_yn)
+        self.record_btn.setVisible(is_open)
+        self.transcript_edit.setVisible(is_open)
+        self.rerecord_btn.setVisible(is_open)
+        self.continue_btn.setVisible(is_open or is_intro)
+        self.continue_btn.setEnabled(is_intro)  # intro: can continue immediately
+
+        if is_yn:
+            self.continue_btn.setVisible(False)
+
+    def _answer_yn(self, value: bool):
+        q = self._question_queue[self._queue_index]
+        self.responses[q["id"]] = {"answer": value, "transcript": None}
+
+        # Rebuild the queue to incorporate any new branch questions
+        old_len = len(self._question_queue)
+        self._rebuild_queue()
+
+        # Find our position in the new queue and advance
+        for i, qq in enumerate(self._question_queue):
+            if qq["id"] == q["id"]:
+                self._queue_index = i + 1
+                break
+
+        self._update_display()
+
+    def _toggle_recording(self):
+        if self.recorder.is_recording:
+            self.recorder.stop_recording()
+            self.record_btn.setText("Aufnahme starten")
+            self.status_label.setText("Wird verarbeitet...")
+        else:
+            self._start_recording()
+
+    def _start_recording(self):
+        self.record_btn.setText("Aufnahme stoppen")
+        self.status_label.setText("Aufnahme läuft...")
+        self.transcript_edit.clear()
+        self.continue_btn.setEnabled(False)
+        self.rerecord_btn.setEnabled(False)
+
+        self.recorder = AudioRecorder(silence_duration=3.0, require_speech_first=True)
+        self._rec_thread = RecordingThread(self.recorder, parent=self)
+        self._rec_thread.finished.connect(self._on_recording_done)
+        self._rec_thread.start()
+
+    def _on_recording_done(self, audio_data):
+        self.record_btn.setText("Aufnahme starten")
+        if len(audio_data) == 0:
+            self.status_label.setText("Keine Aufnahme.")
+            self.rerecord_btn.setEnabled(True)
+            return
+
+        self._current_audio = audio_data
+        self.status_label.setText("Transkription...")
+
+        wav_bytes = self.recorder.get_wav_bytes(audio_data)
+        self._trans_thread = TranscriptionThread(wav_bytes, self.language, parent=self)
+        self._trans_thread.finished.connect(self._on_transcription_done)
+        self._trans_thread.start()
+
+    def _on_transcription_done(self, transcript: str):
+        self.transcript_edit.setPlainText(transcript)
+        self.status_label.setText(f"Fertig ({self.recorder.duration_seconds:.1f}s)")
+        self.continue_btn.setEnabled(True)
+        self.rerecord_btn.setEnabled(True)
+
+    def _rerecord(self):
+        self._stop_threads()
+        self._current_audio = None
+        self.transcript_edit.clear()
+        self.status_label.setText("")
+        self.continue_btn.setEnabled(False)
+        self.rerecord_btn.setEnabled(False)
+
+    def _accept_open(self):
+        q = self._question_queue[self._queue_index]
+        transcript = self.transcript_edit.toPlainText().strip() or None
+        self.responses[q["id"]] = {"answer": transcript, "transcript": transcript}
+
+        self._queue_index += 1
+        self._update_display()
+
+    def _stop_threads(self):
+        if self.recorder.is_recording:
+            self.recorder.stop_recording()
+        if self._rec_thread is not None and self._rec_thread.isRunning():
+            self._rec_thread.wait(5000)
+        if self._trans_thread is not None and self._trans_thread.isRunning():
+            self._trans_thread.wait(10000)
 
