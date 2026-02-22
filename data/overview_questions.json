@@ -1,0 +1,408 @@
+{
+  "metadata": {
+    "version": "0.1",
+    "phase": "OVERVIEW",
+    "description": "Allgemeiner Überblick — asked after 106-item self-report, before targeted exploration",
+    "source": "SCID-5-PD Interviewheft, pages 2-4",
+    "sections": ["demographics", "education_work", "psychopathology", "personality_overview"]
+  },
+  "intro_de": "Ich werde Sie zu Problemen und Schwierigkeiten befragen, die Sie möglicherweise hatten, und werde mir dazu einige Notizen machen. Haben Sie Fragen, bevor wir beginnen?",
+  "intro_en": "",
+  "questions": [
+    {
+      "id": "OV01",
+      "section": "demographics",
+      "text_de": "Wie alt sind Sie?",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    },
+    {
+      "id": "OV02",
+      "section": "demographics",
+      "text_de": "Sind Sie verheiratet?",
+      "text_en": "",
+      "type": "yes_no",
+      "branches": [
+        {
+          "condition": "no",
+          "questions": [
+            {
+              "id": "OV02a",
+              "text_de": "Leben Sie in einer eheähnlichen Gemeinschaft?",
+              "text_en": "",
+              "type": "yes_no",
+              "branches": [
+                {
+                  "condition": "no",
+                  "questions": [
+                    {
+                      "id": "OV02b",
+                      "text_de": "Waren Sie jemals verheiratet?",
+                      "text_en": "",
+                      "type": "yes_no",
+                      "branches": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OV03",
+      "section": "demographics",
+      "text_de": "Wie lange sind/waren Sie in diesem Familienstand?",
+      "text_en": "",
+      "type": "open",
+      "branches": [
+        {
+          "condition": "ever_married",
+          "note": "Only if OV02=yes or OV02b=yes",
+          "questions": [
+            {
+              "id": "OV03a",
+              "text_de": "Wie oft waren Sie verheiratet?",
+              "text_en": "",
+              "type": "open",
+              "branches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OV04",
+      "section": "demographics",
+      "text_de": "Haben Sie Kinder?",
+      "text_en": "",
+      "type": "yes_no",
+      "branches": [
+        {
+          "condition": "yes",
+          "questions": [
+            {
+              "id": "OV04a",
+              "text_de": "Wie viele? Wie alt sind diese?",
+              "text_en": "",
+              "type": "open",
+              "branches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OV05",
+      "section": "demographics",
+      "text_de": "Mit wem leben Sie zusammen? Wie viele Kinder unter 18 Jahren leben bei Ihnen im Haushalt?",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    },
+    {
+      "id": "OV06",
+      "section": "education_work",
+      "text_de": "Welchen Schulabschluss haben Sie?",
+      "text_en": "",
+      "type": "open",
+      "branches": [
+        {
+          "condition": "education_dropped_out",
+          "note": "If education was abandoned prematurely",
+          "questions": [
+            {
+              "id": "OV06a",
+              "text_de": "Warum haben Sie abgebrochen?",
+              "text_en": "",
+              "type": "open",
+              "branches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OV07",
+      "section": "education_work",
+      "text_de": "Als was arbeiten Sie? Arbeiten Sie außer Haus?",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    },
+    {
+      "id": "OV08",
+      "section": "education_work",
+      "text_de": "Haben Sie diese Arbeit immer gemacht?",
+      "text_en": "",
+      "type": "yes_no",
+      "branches": [
+        {
+          "condition": "no",
+          "questions": [
+            {
+              "id": "OV08a",
+              "text_de": "Welche Arbeit haben Sie früher gemacht?",
+              "text_en": "",
+              "type": "open",
+              "branches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OV09",
+      "section": "education_work",
+      "text_de": "Was war die längste Zeit, die Sie an einer Stelle gearbeitet haben?",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    },
+    {
+      "id": "OV10",
+      "section": "education_work",
+      "text_de": "Haben Sie aktuell eine Anstellung mit Lohnzahlung?",
+      "text_en": "",
+      "type": "yes_no",
+      "branches": [
+        {
+          "condition": "no",
+          "questions": [
+            {
+              "id": "OV10a",
+              "text_de": "Warum nicht?",
+              "text_en": "",
+              "type": "open",
+              "branches": []
+            }
+          ]
+        },
+        {
+          "condition": "unknown",
+          "note": "If it's unclear whether they could work",
+          "questions": [
+            {
+              "id": "OV10b",
+              "text_de": "Gab es einmal eine Zeitspanne, in der Sie nicht fähig waren, zu arbeiten oder in die Schule zu gehen?",
+              "text_en": "",
+              "type": "yes_no",
+              "branches": [
+                {
+                  "condition": "yes",
+                  "questions": [
+                    {
+                      "id": "OV10c",
+                      "text_de": "Woran lag das?",
+                      "text_en": "",
+                      "type": "open",
+                      "branches": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OV11",
+      "section": "education_work",
+      "text_de": "Wurden Sie jemals verhaftet, angeklagt oder hatten andere rechtliche Probleme?",
+      "text_en": "",
+      "type": "yes_no_open",
+      "branches": []
+    },
+    {
+      "id": "OV12",
+      "section": "psychopathology",
+      "text_de": "Haben Sie schon einmal professionelle Hilfe aufgrund emotionaler oder psychiatrischer Probleme aufgesucht?",
+      "text_en": "",
+      "type": "yes_no",
+      "branches": [
+        {
+          "condition": "yes",
+          "questions": [
+            {
+              "id": "OV12a",
+              "text_de": "Was war der Grund? Welche Behandlung(en) haben Sie erhalten? Irgendwelche Medikamente? Wann war das?",
+              "text_en": "",
+              "type": "open",
+              "branches": []
+            }
+          ]
+        },
+        {
+          "condition": "no",
+          "questions": [
+            {
+              "id": "OV12b",
+              "text_de": "Gab es jemals eine Zeit, in der Sie oder jemand anderes dachten, Sie sollten sich aufgrund der Art und Weise, wie Sie sich fühlten oder handelten, Hilfe suchen? Erzählen Sie mir mehr darüber.",
+              "text_en": "",
+              "type": "open",
+              "branches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OV13",
+      "section": "psychopathology",
+      "text_de": "Haben Sie schon einmal professionelle Hilfe aufgrund von Problemen mit Alkohol oder Drogen aufgesucht?",
+      "text_en": "",
+      "type": "yes_no",
+      "branches": [
+        {
+          "condition": "yes",
+          "questions": [
+            {
+              "id": "OV13a",
+              "text_de": "Weswegen? Welche Behandlung(en) haben Sie erhalten? Irgendwelche Medikamente? Wann war das?",
+              "text_en": "",
+              "type": "open",
+              "branches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OV14",
+      "section": "psychopathology",
+      "text_de": "Haben Sie jemals eine Selbsthilfegruppe besucht, wie die Anonymen Alkoholiker, Anonymen Spieler oder Anonymen Esssüchtigen?",
+      "text_en": "",
+      "type": "yes_no",
+      "branches": [
+        {
+          "condition": "yes",
+          "questions": [
+            {
+              "id": "OV14a",
+              "text_de": "Weswegen? Wann war das?",
+              "text_en": "",
+              "type": "open",
+              "branches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OV15",
+      "section": "psychopathology",
+      "text_de": "Haben Sie die meiste Zeit Ihres Lebens viel Alkohol getrunken oder viele Drogen genommen? Erzählen Sie mir davon.",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    },
+    {
+      "id": "OV16",
+      "section": "psychopathology",
+      "text_de": "Wenn Sie an Ihr gesamtes Leben zurückdenken, wann waren Sie am meisten aus dem Gleichgewicht? Erzählen Sie mir darüber: Wie war das für Sie? Wie haben Sie sich gefühlt?",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    },
+    {
+      "id": "OV17",
+      "section": "personality_overview",
+      "text_de": "Ich werde Ihnen nun einige Fragen zu Ihrer Persönlichkeit stellen, d.h. wie Sie sich normalerweise verhalten und wie Sie empfinden.",
+      "text_en": "",
+      "type": "intro",
+      "note": "If an episodic disorder is present, frame questions as 'before the episode'. If not, ask generally.",
+      "branches": []
+    },
+    {
+      "id": "OV18",
+      "section": "personality_overview",
+      "text_de": "Wie würden Sie sich selbst beschreiben?",
+      "text_en": "",
+      "type": "open",
+      "note": "If episodic disorder present, add: '...bevor (SYMPTOME DER STÖRUNG)?'",
+      "branches": []
+    },
+    {
+      "id": "OV19",
+      "section": "personality_overview",
+      "text_de": "Was glauben Sie, wie andere Menschen Sie beschreiben würden?",
+      "text_en": "",
+      "type": "open",
+      "note": "If episodic disorder present, add: '...bevor (SYMPTOME DER STÖRUNG)?'",
+      "branches": []
+    },
+    {
+      "id": "OV20",
+      "section": "personality_overview",
+      "text_de": "Welche Menschen waren und sind in Ihrem Leben wichtig?",
+      "text_en": "",
+      "type": "open",
+      "branches": [
+        {
+          "condition": "only_family_mentioned",
+          "note": "If only family members are mentioned",
+          "questions": [
+            {
+              "id": "OV20a",
+              "text_de": "Wie ist es mit Freunden?",
+              "text_en": "",
+              "type": "open",
+              "branches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OV21",
+      "section": "personality_overview",
+      "text_de": "Wie kommen Sie im Allgemeinen mit diesen aus?",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    },
+    {
+      "id": "OV22",
+      "section": "personality_overview",
+      "text_de": "Haben Sie den Eindruck, dass die Art und Weise, wie Sie üblicherweise auf Dinge reagieren oder sich anderen gegenüber verhalten, zu Problemen mit anderen Menschen geführt hat? Zu Hause? In der Schule? Bei der Arbeit? In welcher Weise?",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    },
+    {
+      "id": "OV23",
+      "section": "personality_overview",
+      "text_de": "Wie erfolgreich sind Sie Ihrer Meinung nach dabei, die Dinge im Leben zu bekommen, die Sie wollen, wie eine zufriedenstellende Beziehung, eine erfüllende Karriere oder enge Freundschaften?",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    },
+    {
+      "id": "OV24",
+      "section": "personality_overview",
+      "text_de": "Wie verbringen Sie Ihre Freizeit?",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    },
+    {
+      "id": "OV25",
+      "section": "personality_overview",
+      "text_de": "Mit wem verbringen Sie diese?",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    },
+    {
+      "id": "OV26",
+      "section": "personality_overview",
+      "text_de": "Wenn Sie Ihre Persönlichkeit in einigen Punkten ändern könnten, in welcher Beziehung wären Sie gern anders?",
+      "text_en": "",
+      "type": "open",
+      "branches": []
+    }
+  ]
+}

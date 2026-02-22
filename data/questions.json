@@ -1,192 +1,1543 @@
 {
   "metadata": {
-    "version": "0.1-mock",
+    "version": "0.4-exploration",
     "language": "de",
-    "total_screening_items": 15,
-    "note": "Mock data for development. Replace with real SCID-5-PD questions."
+    "total_screening_items": 106,
+    "source": "SCID-5-SPQ (Hogrefe, 2019), Deutsche Bearbeitung von Beesdo-Baum, Zaudig, Wittchen",
+    "note": "German screening items + exploration questions populated from SCID-5-SPQ and SCID-5-PD Interviewheft."
   },
   "disorders": {
+    "avoidant": {
+      "cluster": "C",
+      "dsm5_code": "301.82",
+      "name_de": "Vermeidend-selbstunsichere Persönlichkeitsstörung",
+      "name_en": "Avoidant Personality Disorder",
+      "item_range": [
+        1,
+        7
+      ],
+      "threshold": 4,
+      "total_criteria": 7,
+      "criteria": {}
+    },
+    "dependent": {
+      "cluster": "C",
+      "dsm5_code": "301.6",
+      "name_de": "Dependente Persönlichkeitsstörung",
+      "name_en": "Dependent Personality Disorder",
+      "item_range": [
+        8,
+        15
+      ],
+      "threshold": 5,
+      "total_criteria": 8,
+      "criteria": {}
+    },
+    "obsessive_compulsive": {
+      "cluster": "C",
+      "dsm5_code": "301.4",
+      "name_de": "Zwanghafte Persönlichkeitsstörung",
+      "name_en": "Obsessive-Compulsive Personality Disorder",
+      "item_range": [
+        16,
+        24
+      ],
+      "threshold": 4,
+      "total_criteria": 8,
+      "criteria": {}
+    },
     "paranoid": {
       "cluster": "A",
       "dsm5_code": "301.0",
-      "name_de": "Paranoide Persoenlichkeitsstoerung",
+      "name_de": "Paranoide Persönlichkeitsstörung",
       "name_en": "Paranoid Personality Disorder",
+      "item_range": [
+        25,
+        32
+      ],
       "threshold": 4,
-      "criteria": {
-        "PPD_1": {
-          "description_de": "Verdaechtigt andere ohne ausreichende Grundlage, ihn/sie auszunutzen, zu schaedigen oder zu taeuschen",
-          "description_en": "Suspects others of exploiting, harming, or deceiving without sufficient basis",
-          "screening_item_ids": ["Q1", "Q2"],
-          "followup_question_de": "Sie haben angegeben, dass Sie anderen Menschen oft misstrauen. Koennten Sie mir ein konkretes Beispiel aus der letzten Zeit nennen, in dem Sie das Gefuehl hatten, dass jemand Sie ausnutzen oder taeuschen wollte?",
-          "followup_question_en": "You indicated that you often distrust others. Could you give me a specific recent example where you felt someone was trying to exploit or deceive you?"
-        },
-        "PPD_2": {
-          "description_de": "Ist uebermaeßig mit ungerechtfertigten Zweifeln an der Loyalitaet oder Vertrauenswuerdigkeit von Freunden oder Partnern beschaeftigt",
-          "description_en": "Preoccupied with unjustified doubts about loyalty or trustworthiness of friends or associates",
-          "screening_item_ids": ["Q3"],
-          "followup_question_de": "Sie haben angegeben, dass Sie oft an der Treue oder Vertrauenswuerdigkeit von Freunden oder nahestehenden Personen zweifeln. Koennten Sie mir beschreiben, wie sich das in Ihren Beziehungen aeußert?",
-          "followup_question_en": "You indicated that you often doubt the loyalty or trustworthiness of friends or close people. Could you describe how this manifests in your relationships?"
-        },
-        "PPD_3": {
-          "description_de": "Ist widerwillig, sich anderen anzuvertrauen, aus ungerechtfertigter Angst, die Informationen koennten boeswillig gegen ihn/sie verwendet werden",
-          "description_en": "Reluctant to confide in others due to unwarranted fear that information will be used maliciously",
-          "screening_item_ids": ["Q4", "Q5"],
-          "followup_question_de": "Sie haben angegeben, dass es Ihnen schwer faellt, sich anderen gegenueber zu oeffnen. Koennten Sie mir erzaehlen, was Sie befuerchten, wenn Sie jemandem etwas Persoenliches anvertrauen?",
-          "followup_question_en": "You indicated that you find it hard to open up to others. Could you tell me what you fear might happen if you confide something personal to someone?"
-        }
-      }
+      "total_criteria": 7,
+      "criteria": {}
+    },
+    "schizotypal": {
+      "cluster": "A",
+      "dsm5_code": "301.22",
+      "name_de": "Schizotype Persönlichkeitsstörung",
+      "name_en": "Schizotypal Personality Disorder",
+      "item_range": [
+        33,
+        45
+      ],
+      "threshold": 5,
+      "total_criteria": 9,
+      "criteria": {}
+    },
+    "schizoid": {
+      "cluster": "A",
+      "dsm5_code": "301.20",
+      "name_de": "Schizoide Persönlichkeitsstörung",
+      "name_en": "Schizoid Personality Disorder",
+      "item_range": [
+        46,
+        51
+      ],
+      "threshold": 4,
+      "total_criteria": 7,
+      "criteria": {}
+    },
+    "histrionic": {
+      "cluster": "B",
+      "dsm5_code": "301.50",
+      "name_de": "Histrionische Persönlichkeitsstörung",
+      "name_en": "Histrionic Personality Disorder",
+      "item_range": [
+        52,
+        59
+      ],
+      "threshold": 5,
+      "total_criteria": 8,
+      "criteria": {}
+    },
+    "narcissistic": {
+      "cluster": "B",
+      "dsm5_code": "301.81",
+      "name_de": "Narzisstische Persönlichkeitsstörung",
+      "name_en": "Narcissistic Personality Disorder",
+      "item_range": [
+        60,
+        76
+      ],
+      "threshold": 5,
+      "total_criteria": 9,
+      "criteria": {}
     },
     "borderline": {
       "cluster": "B",
       "dsm5_code": "301.83",
-      "name_de": "Borderline-Persoenlichkeitsstoerung",
+      "name_de": "Borderline-Persönlichkeitsstörung",
       "name_en": "Borderline Personality Disorder",
+      "item_range": [
+        77,
+        91
+      ],
       "threshold": 5,
-      "criteria": {
-        "BPD_1": {
-          "description_de": "Verzweifeltes Bemuehen, ein tatsaechliches oder vorgestelltes Verlassenwerden zu vermeiden",
-          "description_en": "Frantic efforts to avoid real or imagined abandonment",
-          "screening_item_ids": ["Q6"],
-          "followup_question_de": "Sie haben angegeben, dass Sie sich große Sorgen machen, verlassen zu werden. Koennten Sie mir ein Beispiel geben, wie Sie reagieren, wenn Sie befuerchten, dass jemand Wichtiges Sie verlassen koennte?",
-          "followup_question_en": "You indicated that you worry a lot about being abandoned. Could you give me an example of how you react when you fear someone important might leave you?"
+      "total_criteria": 9,
+      "criteria": {}
+    },
+    "antisocial": {
+      "cluster": "B",
+      "dsm5_code": "301.7",
+      "name_de": "Antisoziale Persönlichkeitsstörung",
+      "name_en": "Antisocial Personality Disorder",
+      "item_range": [
+        92,
+        106
+      ],
+      "threshold": 3,
+      "total_criteria": 7,
+      "criteria": {},
+      "age_note_de": "Die Fragen 92-104 beziehen sich auf Dinge vor dem Alter von 15 Jahren. Die Fragen 105-106 beziehen sich auf Dinge vor dem Alter von 13 Jahren.",
+      "adult_criteria": {
+        "QA1": {
+          "criterion": "criterion_A1",
+          "main_de": "Nun, seitdem Sie 15 Jahre alt sind... Haben Sie Dinge getan, die gegen das Gesetz verstoßen — auch wenn Sie nicht erwischt wurden — wie Diebstahl, Identitätsdiebstahl, falsche Schecks ausgestellt oder Prostitution.",
+          "probes_de": [
+            "Wurden Sie jemals wegen irgendetwas verhaftet?"
+          ]
         },
-        "BPD_2": {
-          "description_de": "Ein Muster instabiler und intensiver zwischenmenschlicher Beziehungen, das durch einen Wechsel zwischen den Extremen der Idealisierung und Entwertung gekennzeichnet ist",
-          "description_en": "Pattern of unstable and intense interpersonal relationships with alternating extremes of idealization and devaluation",
-          "screening_item_ids": ["Q7", "Q8"],
-          "followup_question_de": "Sie haben angegeben, dass Ihre Beziehungen oft zwischen Extremen schwanken. Koennten Sie mir beschreiben, wie sich das zeigt — zum Beispiel, dass Sie jemanden erst sehr bewundern und dann sehr enttaeuscht von der Person sind?",
-          "followup_question_en": "You indicated that your relationships often swing between extremes. Could you describe how that manifests — for example, greatly admiring someone at first and then being very disappointed in them?"
+        "QA2": {
+          "criterion": "criterion_A2",
+          "main_de": "Lügen Sie oft, um zu erreichen, was Sie wollen, oder einfach nur aus Spaß?",
+          "probes_de": [
+            "Haben Sie schon einmal einen falschen Namen benutzt oder so getan, als seien Sie jemand anderes?",
+            "Haben Sie andere „hereingelegt\", um Ihr Ziel zu erreichen?"
+          ]
         },
-        "BPD_3": {
-          "description_de": "Identitaetsstoerung: ausgepraegt und andauernd instabiles Selbstbild oder Gefuehl fuer sich selbst",
-          "description_en": "Identity disturbance: markedly unstable self-image or sense of self",
-          "screening_item_ids": ["Q9", "Q10"],
-          "followup_question_de": "Sie haben angegeben, dass Sie oft unsicher sind, wer Sie eigentlich sind. Koennten Sie beschreiben, wie sich das anfuehlt? Aendert sich zum Beispiel Ihre Meinung ueber sich selbst, Ihre Ziele oder Ihre Werte haeufig?",
-          "followup_question_en": "You indicated that you often feel uncertain about who you really are. Could you describe how that feels? For example, do your opinions about yourself, your goals, or values change frequently?"
+        "QA3": {
+          "criterion": "criterion_A3",
+          "main_de": "Tun Sie oft Dinge aus dem Moment heraus, ohne dabei an die Folgen für sich oder andere zu denken?",
+          "probes_de": [
+            "Erzählen Sie mir davon. Welche Art von Dingen?",
+            "Haben Sie jemals Ihren Arbeitsplatz aufgegeben, ohne bereits einen neuen zu haben? Wie oft?",
+            "Sind Sie schon einmal irgendwo ausgezogen, ohne bereits einen neuen Wohnsitz zu haben? Erzählen Sie mir davon."
+          ]
+        },
+        "QA4": {
+          "criterion": "criterion_A4",
+          "main_de": "Waren Sie in Schlägereien verwickelt?",
+          "probes_de": [
+            "Wie oft?",
+            "Haben Sie jemals so wütend, dass Sie andere Personen, einschließlich Partner, geschlagen oder mit Gegenständen nach ihnen geworfen haben? Wie oft?",
+            "Haben Sie jemals ein Kind heftig geschlagen? Erzählen Sie mir davon. Wie oft?",
+            "Haben Sie jemanden körperlich bedroht oder geschlagen? Erzählen Sie mir davon. Wie oft?"
+          ]
+        },
+        "QA5": {
+          "criterion": "criterion_A5",
+          "main_de": "Sind Sie schon einmal Auto gefahren, während Sie betrunken waren oder Drogen genommen hatten?",
+          "probes_de": [
+            "Wie viele Straftaten haben Sie für Fahren mit überhöhter Geschwindigkeit bekommen oder waren Sie an Autounfällen beteiligt?",
+            "Benutzen Sie immer Kondome, wenn Sie mit einer Person, die Sie nicht gut kennen, Geschlechtsverkehr haben?"
+          ]
+        },
+        "QA6": {
+          "criterion": "criterion_A6",
+          "main_de": "Wie lange haben Sie in den letzten fünf Jahren nicht gearbeitet?",
+          "probes_de": [
+            "Hätten Sie die Möglichkeit gehabt, zu arbeiten?",
+            "Wenn Sie Arbeit hatten, haben Sie da oft gefehlt? Warum?",
+            "Hatten Sie je Schulden bei anderen, die Sie nicht zurückgezahlt haben? Wie oft?",
+            "Haben Sie versäumt, Unterhalt für ein Kind zu zahlen bzw. Kindern oder Anderen, die von Ihnen abhängig sind, Geld zu geben?"
+          ]
+        },
+        "QA7": {
+          "criterion": "criterion_A7",
+          "main_de": "Was denken Sie über Ihre antisozialen Handlungen?",
+          "probes_de": [
+            "Denken Sie, dass das, was Sie getan haben, in irgendeiner Weise falsch war?",
+            "Denken Sie, dass die Handlungen gerechtfertigt waren?",
+            "Denken Sie, dass die andere Person das verdient hat?"
+          ]
         }
       }
     },
-    "avoidant": {
-      "cluster": "C",
-      "dsm5_code": "301.82",
-      "name_de": "Vermeidend-selbstunsichere Persoenlichkeitsstoerung",
-      "name_en": "Avoidant Personality Disorder",
-      "threshold": 4,
-      "criteria": {
-        "APD_1": {
-          "description_de": "Vermeidet berufliche Aktivitaeten, die engere zwischenmenschliche Kontakte mit sich bringen, aus Angst vor Kritik, Missbilligung oder Zurueckweisung",
-          "description_en": "Avoids occupational activities involving significant interpersonal contact due to fear of criticism, disapproval, or rejection",
-          "screening_item_ids": ["Q11"],
-          "followup_question_de": "Sie haben angegeben, dass Sie bestimmte berufliche Situationen vermeiden, weil Sie Angst vor Kritik haben. Koennten Sie mir ein Beispiel geben, welche Situationen das sind und was genau Sie befuerchten?",
-          "followup_question_en": "You indicated that you avoid certain work situations due to fear of criticism. Could you give me an example of what situations those are and what exactly you fear?"
-        },
-        "APD_2": {
-          "description_de": "Laesst sich nur widerwillig auf Menschen ein, es sei denn, er/sie ist sicher, gemocht zu werden",
-          "description_en": "Unwilling to get involved with people unless certain of being liked",
-          "screening_item_ids": ["Q12", "Q13"],
-          "followup_question_de": "Sie haben angegeben, dass Sie sich nur schwer auf neue Menschen einlassen koennen. Koennten Sie beschreiben, was passieren muss, damit Sie sich mit jemandem wohlfuehlen? Brauchen Sie vorher Zeichen, dass die Person Sie mag?",
-          "followup_question_en": "You indicated that you find it hard to engage with new people. Could you describe what needs to happen for you to feel comfortable with someone? Do you need signs that the person likes you first?"
-        },
-        "APD_3": {
-          "description_de": "Zeigt Zurueckhaltung in intimen Beziehungen aus Angst, beschaemt oder laecherlich gemacht zu werden",
-          "description_en": "Shows restraint within intimate relationships due to fear of being shamed or ridiculed",
-          "screening_item_ids": ["Q14", "Q15"],
-          "followup_question_de": "Sie haben angegeben, dass Sie sich in engen Beziehungen zurueckhalten. Koennten Sie mir erzaehlen, was Sie davon abhaelt, sich gegenueber Ihrem Partner oder engen Freunden ganz zu oeffnen?",
-          "followup_question_en": "You indicated that you hold back in close relationships. Could you tell me what prevents you from fully opening up to your partner or close friends?"
-        }
-      }
+    "nos": {
+      "cluster": null,
+      "dsm5_code": "301.9",
+      "name_de": "Nicht näher Bezeichnete Persönlichkeitsstörung",
+      "name_en": "Personality Disorder Not Otherwise Specified",
+      "item_range": null,
+      "threshold": null,
+      "total_criteria": null,
+      "criteria": {}
     }
   },
   "screening_items": {
     "Q1": {
-      "text_de": "Haben Sie oft das Gefuehl, dass andere Menschen Sie ausnutzen oder Ihnen schaden wollen?",
-      "text_en": "Do you often feel that other people want to take advantage of you or harm you?",
-      "maps_to_criteria": ["PPD_1"],
-      "disorder": "paranoid"
+      "text_de": "Haben Sie berufliche Tätigkeiten oder Aufgaben vermieden, bei denen man mit vielen Menschen zu tun hat?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "avoidant",
+      "exploration_main_de": "Sie gaben an, Sie haben berufliche Tätigkeiten oder Aufgaben vermieden, bei denen man mit vielen Menschen zu tun hat.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Warum haben Sie solche Tätigkeiten oder Aufgaben vermieden?",
+        "Lag es daran, dass Sie nicht gern mit anderen Menschen zusammen sind, oder befürchten Sie, von anderen kritisiert oder abgelehnt zu werden?"
+      ]
     },
     "Q2": {
-      "text_de": "Misstrauen Sie den Absichten anderer Menschen haeufig, auch wenn es keinen konkreten Grund dafuer gibt?",
-      "text_en": "Do you frequently distrust the intentions of others, even when there is no concrete reason?",
-      "maps_to_criteria": ["PPD_1"],
-      "disorder": "paranoid"
+      "text_de": "Vermeiden Sie es, sich mit anderen Menschen anzufreunden, es sei denn, Sie sind sich ganz sicher, dass diese Sie wirklich mögen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "avoidant",
+      "exploration_main_de": "Sie gaben an, Sie vermeiden es, sich mit anderen Menschen anzufreunden, es sei denn, Sie sind sich ganz sicher, dass diese Sie wirklich mögen.",
+      "exploration_probes_de": [
+        "Melden Sie die Teilnahme an Gruppenaktivitäten, es sei denn, Sie sind sicher, dass Sie willkommen und akzeptiert sein werden?",
+        "Wenn Sie nicht sicher sind, ob jemand Sie mag, würden Sie jemals den ersten Schritt machen?"
+      ]
     },
     "Q3": {
-      "text_de": "Zweifeln Sie oft an der Treue oder Zuverlaessigkeit Ihrer Freunde oder Ihres Partners?",
-      "text_en": "Do you often doubt the loyalty or reliability of your friends or partner?",
-      "maps_to_criteria": ["PPD_2"],
-      "disorder": "paranoid"
+      "text_de": "Fällt es Ihnen schwer, anderen Menschen gegenüber \"offen\" zu sein, selbst wenn diese Ihnen nahestehen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "avoidant",
+      "exploration_main_de": "Sie gaben an, es fällt Ihnen schwer, anderen Menschen gegenüber „offen\" zu sein, selbst wenn diese Ihnen nahestehen.",
+      "exploration_probes_de": [
+        "Woran liegt das?",
+        "Befürchten Sie, dass man sich über Sie lustig macht oder Sie in Verlegenheit bringt?"
+      ]
     },
     "Q4": {
-      "text_de": "Faellt es Ihnen schwer, anderen Menschen persoenliche Dinge anzuvertrauen, weil Sie befuerchten, dass diese Informationen gegen Sie verwendet werden koennten?",
-      "text_en": "Do you find it hard to confide personal things in others because you fear the information could be used against you?",
-      "maps_to_criteria": ["PPD_3"],
-      "disorder": "paranoid"
+      "text_de": "Befürchten Sie oft, von anderen Menschen kritisiert oder abgelehnt zu werden?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_4"
+      ],
+      "disorder": "avoidant",
+      "exploration_main_de": "Sie gaben an, Sie befürchten oft, von anderen Menschen kritisiert oder abgelehnt zu werden.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Verbringen Sie viel Zeit damit, sich darüber zu sorgen?"
+      ]
     },
     "Q5": {
-      "text_de": "Halten Sie Informationen ueber sich zurueck, weil Sie befuerchten, dass andere diese gegen Sie verwenden koennten?",
-      "text_en": "Do you withhold information about yourself because you fear others might use it against you?",
-      "maps_to_criteria": ["PPD_3"],
-      "disorder": "paranoid"
+      "text_de": "Sind Sie gewöhnlich zurückhaltend und schweigsam, wenn Sie neü Leute kennenlernen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_5"
+      ],
+      "disorder": "avoidant",
+      "exploration_main_de": "Sie gaben an, Sie sind gewöhnlich zurückhaltend und schweigsam, wenn Sie neue Leute kennenlernen.",
+      "exploration_probes_de": [
+        "Woran liegt das?",
+        "Liegt es daran, dass Sie sich in irgendeiner Weise unterlegen oder minderwertig fühlen?"
+      ]
     },
     "Q6": {
-      "text_de": "Haben Sie große Angst davor, von Menschen, die Ihnen wichtig sind, verlassen zu werden?",
-      "text_en": "Are you very afraid of being abandoned by people who are important to you?",
-      "maps_to_criteria": ["BPD_1"],
-      "disorder": "borderline"
+      "text_de": "Glauben Sie, dass Sie nicht so gut, so klug oder so attraktiv sind wie die meisten anderen Menschen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_6"
+      ],
+      "disorder": "avoidant",
+      "exploration_main_de": "Sie gaben an, Sie glauben, dass Sie nicht so gut, so klug oder so attraktiv sind wie die meisten anderen Menschen.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
     },
     "Q7": {
-      "text_de": "Schwanken Ihre Beziehungen oft zwischen extremer Naehe und heftigem Streit oder Enttaeuschung?",
-      "text_en": "Do your relationships often swing between extreme closeness and intense conflict or disappointment?",
-      "maps_to_criteria": ["BPD_2"],
-      "disorder": "borderline"
+      "text_de": "Haben Sie Angst davor, Dinge zu tun, die anspruchsvoll sind, oder neü Dinge auszuprobieren?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_7"
+      ],
+      "disorder": "avoidant",
+      "exploration_main_de": "Sie gaben an, Sie haben Angst davor, Dinge zu tun, die anspruchsvoll sind, oder neue Dinge auszuprobieren.",
+      "exploration_probes_de": [
+        "Liegt es daran, dass Sie Angst davor haben, sich zu blamieren?",
+        "Nennen Sie mir einige Beispiele."
+      ]
     },
     "Q8": {
-      "text_de": "Kommt es vor, dass Sie jemanden erst sehr bewundern und kurz darauf sehr enttaeuscht von dieser Person sind?",
-      "text_en": "Does it happen that you greatly admire someone and shortly after become very disappointed in them?",
-      "maps_to_criteria": ["BPD_2"],
-      "disorder": "borderline"
+      "text_de": "Fällt es Ihnen ohne den Ratschlag oder die Bestätigung von anderen schwer, alltägliche Entscheidungen zu treffen, wie zum Beispiel was Sie anziehen oder was Sie in einem Restaurant bestellen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "dependent",
+      "exploration_main_de": "Sie gaben an, es fällt Ihnen ohne den Ratschlag oder die Bestätigung von anderen schwer, alltägliche Entscheidungen zu treffen, wie zum Beispiel was Sie anziehen oder was Sie in einem Restaurant bestellen.",
+      "exploration_probes_de": [
+        "Können Sie mir einige Beispiele für solche Entscheidungen nennen, für die Sie Rat und Bestätigung bei anderen suchen?",
+        "Kommt das die meiste Zeit vor?"
+      ]
     },
     "Q9": {
-      "text_de": "Sind Sie oft unsicher darueber, wer Sie eigentlich sind oder was Sie im Leben wollen?",
-      "text_en": "Are you often uncertain about who you really are or what you want in life?",
-      "maps_to_criteria": ["BPD_3"],
-      "disorder": "borderline"
+      "text_de": "Sind Sie bei der Regelung wichtiger Lebensbereiche, wie zum Beispiel Geldangelegenheiten, Kindererziehung oder Wohnangelegenheiten von anderen Menschen abhängig?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "dependent",
+      "exploration_main_de": "Sie sagten, Sie sind bei der Regelung wichtiger Lebensbereiche, wie zum Beispiel Geldangelegenheiten, Kindererziehung oder Wohnangelegenheiten von anderen Menschen abhängig.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele. Ist das mehr, als Sie von anderen nur beraten zu werden?",
+        "Ist das in den meisten Bereichen Ihres Lebens so?"
+      ]
     },
     "Q10": {
-      "text_de": "Aendern sich Ihre Meinungen ueber sich selbst, Ihre Ziele oder Ihre Werte haeufig und stark?",
-      "text_en": "Do your opinions about yourself, your goals, or your values change frequently and drastically?",
-      "maps_to_criteria": ["BPD_3"],
-      "disorder": "borderline"
+      "text_de": "Fällt es Ihnen schwer, anderen zu widersprechen, selbst wenn Sie denken, dass diese Unrecht haben?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "dependent",
+      "exploration_main_de": "Sie gaben an, es fällt Ihnen schwer, anderen zu widersprechen, selbst wenn Sie denken, dass diese Unrecht haben.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele dafür, wann das so war.",
+        "Was befürchten Sie, könnte passieren, wenn Sie widersprechen würden?"
+      ]
     },
     "Q11": {
-      "text_de": "Vermeiden Sie berufliche Taetigkeiten, die viel Kontakt mit anderen Menschen erfordern, weil Sie Angst vor Kritik oder Ablehnung haben?",
-      "text_en": "Do you avoid professional activities that require a lot of contact with others because you fear criticism or rejection?",
-      "maps_to_criteria": ["APD_1"],
-      "disorder": "avoidant"
+      "text_de": "Fällt es Ihnen schwer, Unternehmungen allein zu beginnen oder Dinge allein zu tun?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_4"
+      ],
+      "disorder": "dependent",
+      "exploration_main_de": "Sie sagten, es fällt Ihnen schwer, Unternehmungen allein zu beginnen oder Dinge allein zu tun.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Woran liegt das? Liegt es daran, dass Sie sich nicht sicher sind, ob Sie es richtig machen können?",
+        "Können Sie es machen, sofern jemand da ist, der Ihnen hilft?"
+      ]
     },
     "Q12": {
-      "text_de": "Lassen Sie sich nur schwer auf neue Menschen ein, es sei denn, Sie sind sicher, dass diese Sie moegen?",
-      "text_en": "Do you find it difficult to get involved with new people unless you are sure they like you?",
-      "maps_to_criteria": ["APD_2"],
-      "disorder": "avoidant"
+      "text_de": "Ist es für Sie so wichtig, dass andere sich um Sie kümmern, dass Sie dazu bereit sind, unangenehme oder unangemessene Dinge für diese zu tun?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_5"
+      ],
+      "disorder": "dependent",
+      "exploration_main_de": "Sie sagten, es ist für Sie so wichtig, dass andere sich um Sie kümmern, dass Sie dazu bereit sind, unangenehme oder unangemessene Dinge für diese zu tun.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele für solche Dinge."
+      ]
     },
     "Q13": {
-      "text_de": "Brauchen Sie deutliche Zeichen der Zuneigung, bevor Sie sich auf eine Freundschaft oder Beziehung einlassen?",
-      "text_en": "Do you need clear signs of affection before engaging in a friendship or relationship?",
-      "maps_to_criteria": ["APD_2"],
-      "disorder": "avoidant"
+      "text_de": "Fühlen Sie sich im Allgemeinen unwohl, wenn Sie allein sind?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_6"
+      ],
+      "disorder": "dependent",
+      "exploration_main_de": "Sie sagten, Sie fühlen sich im Allgemeinen unwohl, wenn Sie allein sind.",
+      "exploration_probes_de": [
+        "Woran liegt das? Liegt es daran, dass Sie jemanden brauchen, der sich um Sie kümmert?"
+      ]
     },
     "Q14": {
-      "text_de": "Halten Sie sich in engen Beziehungen zurueck, weil Sie Angst haben, beschaemt oder ausgelacht zu werden?",
-      "text_en": "Do you hold back in close relationships because you are afraid of being shamed or ridiculed?",
-      "maps_to_criteria": ["APD_3"],
-      "disorder": "avoidant"
+      "text_de": "Wenn eine enge Beziehung endet, haben Sie dann das Gefühl, schnell jemand anderen finden zu müssen, der sich um Sie kümmert?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_7"
+      ],
+      "disorder": "dependent",
+      "exploration_main_de": "Sie sagten, wenn eine enge Beziehung endet, haben Sie das Gefühl, schnell jemand anderen finden zu müssen, der sich um Sie kümmert.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon.",
+        "Haben Sie meistens so reagiert, wenn enge Beziehungen endeten?"
+      ]
     },
     "Q15": {
-      "text_de": "Vermeiden Sie es, in Beziehungen ueber Ihre Gefuehle oder Wuensche zu sprechen, aus Angst vor Zurueckweisung?",
-      "text_en": "Do you avoid talking about your feelings or desires in relationships due to fear of rejection?",
-      "maps_to_criteria": ["APD_3"],
-      "disorder": "avoidant"
+      "text_de": "Machen Sie sich oft Sorgen, allein gelassen zu werden und für sich selbst sorgen zu müssen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_8"
+      ],
+      "disorder": "dependent",
+      "exploration_main_de": "Sie sagten, Sie machen sich oft Sorgen, allein gelassen zu werden und für sich selbst sorgen zu müssen.",
+      "exploration_probes_de": [
+        "Was bringt Sie dazu, zu denken, dass Sie allein gelassen werden und für sich selbst sorgen müssen? Wie realistisch ist diese Angst?",
+        "Wie sehr sind Sie darüber beunruhigt?"
+      ]
+    },
+    "Q16": {
+      "text_de": "Sind Sie jemand, der viel Wert auf Details, Ordnung und Organisation legt oder Listen und Zeitpläne anlegt?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "obsessive_compulsive",
+      "exploration_main_de": "Sie gaben an, Sie sind jemand, der viel Wert auf Details, Ordnung und Organisation legt oder Listen und Zeitpläne anlegt.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon.",
+        "Verbringen Sie so viel Zeit damit, dass Sie aus den Augen verlieren, was Sie eigentlich tun wollten? Verbringen Sie zum Beispiel so viel Zeit damit, eine Liste von Dingen zu erstellen, die Sie erledigen müssen, dass Sie am Ende keine Zeit mehr haben, diese Dinge tatsächlich zu erledigen?"
+      ]
+    },
+    "Q17": {
+      "text_de": "Haben Sie Schwierigkeiten, Dinge zu Ende zu bringen, weil Sie sehr viel Zeit darauf verwenden, alles genau und richtig zu machen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "obsessive_compulsive",
+      "exploration_main_de": "Sie gaben an, Sie haben Schwierigkeiten, Dinge zu Ende zu bringen, weil Sie sehr viel Zeit darauf verwenden, alles genau und richtig zu machen.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Wie oft kommt das vor?"
+      ]
+    },
+    "Q18": {
+      "text_de": "Widmen Sie sich gänzlich Ihrer Arbeit oder streben sehr danach, produktiv zu sein?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "obsessive_compulsive",
+      "exploration_main_de": "Sie gaben an, Sie widmen sich gänzlich Ihrer Arbeit oder streben sehr danach, produktiv zu sein.",
+      "exploration_probes_de": [
+        "Geben Sie sich dem so sehr hin, dass Sie nur selten Zeit mit Ihren Freunden verbringen, in den Urlaub fahren oder Dinge einfach zum Spaß machen?",
+        "Wenn Sie sich frei nehmen, nehmen Sie sich dann immer Arbeit mit, weil Sie es nicht aushalten können, „Zeit zu verschwenden\"?"
+      ]
+    },
+    "Q19": {
+      "text_de": "Haben Sie sehr hohe Massstäbe dafür, was richtig und was falsch ist?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_4"
+      ],
+      "disorder": "obsessive_compulsive",
+      "exploration_main_de": "Sie gaben an, Sie haben sehr hohe Maßstäbe dafür, was richtig und was falsch ist.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele für Ihre hohen Maßstäbe.",
+        "Befolgen Sie Regeln ganz genau, egal worum es geht? Bestehen Sie darauf, dass auch andere diese Regeln einhalten? Können Sie mir einige Beispiele nennen?"
+      ]
+    },
+    "Q20": {
+      "text_de": "Fällt es Ihnen schwer, Dinge wegzuwerfen, weil Sie sie eines Tages vielleicht doch noch einmal gebrauchen könnten?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_5"
+      ],
+      "disorder": "obsessive_compulsive",
+      "exploration_main_de": "Sie gaben an, es fällt Ihnen schwer, Dinge wegzuwerfen, weil Sie sie eines Tages vielleicht doch noch einmal gebrauchen könnten.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele für Dinge, die Sie nicht wegwerfen können.",
+        "Wie steht es um abgenutzte oder wertlose Dinge?"
+      ]
+    },
+    "Q21": {
+      "text_de": "Fällt es Ihnen schwer, mit anderen zusammenzuarbeiten oder andere zu bitten, etwas für Sie zu tun, wenn diese die Dinge nicht genau nach Ihren Vorstellungen erledigen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_6"
+      ],
+      "disorder": "obsessive_compulsive",
+      "exploration_main_de": "Sie gaben an, es fällt Ihnen schwer, mit anderen zusammenzuarbeiten oder andere zu bitten, etwas für Sie zu tun, wenn diese die Dinge nicht genau nach Ihren Vorstellungen erledigen.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon. Kommt das oft vor?",
+        "Erledigen Sie die Dinge oftmals selbst, um sicherzustellen, dass sie richtig erledigt werden?"
+      ]
+    },
+    "Q22": {
+      "text_de": "Fällt es Ihnen schwer, Geld für sich selbst und andere auszugeben?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_7"
+      ],
+      "disorder": "obsessive_compulsive",
+      "exploration_main_de": "Sie gaben an, es fällt Ihnen schwer, Geld für sich selbst und andere auszugeben.",
+      "exploration_probes_de": [
+        "Warum? Liegt es daran, dass Sie befürchten, in Zukunft nicht genug Geld zu haben, wenn Sie es tatsächlich brauchen könnten? Wofür könnten Sie das Geld brauchen?",
+        "Hat jemand über Sie gesagt, dass Sie geizig wären?"
+      ]
+    },
+    "Q23": {
+      "text_de": "Wenn Sie einmal etwas geplant haben, fällt es Ihnen dann schwer, diesen Plan zu ändern?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_8"
+      ],
+      "disorder": "obsessive_compulsive",
+      "exploration_main_de": "Sie gaben an, wenn Sie einmal etwas geplant haben, fällt es Ihnen schwer, diesen Plan zu ändern.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon.",
+        "Ist es Ihnen so wichtig, dass Dinge auf die eine „richtige\" Weise gemacht werden, dass es Ihnen schwerfällt, sich auf Ideen oder Vorschläge anderer einzulassen? Erzählen Sie mir davon."
+      ]
+    },
+    "Q24": {
+      "text_de": "Hat man Ihnen schon einmal gesagt, Sie seien eigensinnig oder stur?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_8"
+      ],
+      "disorder": "obsessive_compulsive",
+      "exploration_main_de": "Sie gaben an, man hat Ihnen schon einmal gesagt, Sie seien eigensinnig oder stur.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q25": {
+      "text_de": "Haben Sie oft das Gefühl, dass andere Menschen Sie ausnutzen, Sie verletzen oder anlügen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "paranoid",
+      "exploration_main_de": "Sie gaben an, Sie haben oft das Gefühl, dass andere Menschen Sie ausnutzen, Sie verletzen oder anlügen.",
+      "exploration_probes_de": [
+        "Wie kommen Sie darauf?"
+      ]
+    },
+    "Q26": {
+      "text_de": "Sind Sie eine sehr vorsichtige Person, die anderen Menschen kaum etwas anvertraut?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "paranoid",
+      "exploration_main_de": "Sie gaben an, Sie sind eine sehr vorsichtige Person, die anderen Menschen kaum etwas anvertraut.",
+      "exploration_probes_de": [
+        "Liegt das daran, dass Sie Ihren Freunden oder Arbeitskollegen nicht vertrauen? Warum vertrauen Sie Ihnen nicht?",
+        "Denken Sie oft darüber nach?"
+      ]
+    },
+    "Q27": {
+      "text_de": "Glauben Sie, dass es am besten ist, andere nicht viel über Sie wissen zu lassen, weil diese es gegen Sie verwenden könnten?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "paranoid",
+      "exploration_main_de": "Sie gaben an, Sie glauben, dass es am besten ist, andere nicht zu viel über Sie wissen zu lassen, weil diese es gegen Sie verwenden könnten.",
+      "exploration_probes_de": [
+        "Wann ist das vorgekommen?",
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q28": {
+      "text_de": "Haben Sie oft das Gefühl, dass andere Menschen Sie bedrohen oder beleidigen durch das, was diese sagen oder tun?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_4"
+      ],
+      "disorder": "paranoid",
+      "exploration_main_de": "Sie gaben an, Sie haben oft das Gefühl, dass andere Menschen Sie bedrohen oder beleidigen durch das, was diese sagen oder tun.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q29": {
+      "text_de": "Sind Sie sehr nachtragend oder brauchen lange, bis Sie jemandem verzeihen, der Sie beleidigt oder gekränkt hat?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_5"
+      ],
+      "disorder": "paranoid",
+      "exploration_main_de": "Sie gaben an, Sie sind sehr nachtragend oder brauchen lange, bis Sie jemandem verzeihen, der Sie beleidigt oder gekränkt hat.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q30": {
+      "text_de": "Gibt es viele Leute, denen Sie nicht verzeihen können, weil diese vor langer Zeit etwas gesagt oder getan haben?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_5"
+      ],
+      "disorder": "paranoid",
+      "exploration_main_de": "Sie gaben an, es gibt viele Leute, denen Sie nicht verzeihen können, weil diese vor langer Zeit etwas gesagt oder getan haben.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q31": {
+      "text_de": "Werden Sie schnell wütend oder reagieren Sie aggressiv, wenn Sie kritisiert oder beleidigt werden?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_6"
+      ],
+      "disorder": "paranoid",
+      "exploration_main_de": "Sie gaben an, Sie werden schnell wütend oder reagieren aggressiv, wenn Sie kritisiert oder beleidigt werden.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Sagen andere, dass Sie sich oft zu schnell angegriffen fühlen?"
+      ]
+    },
+    "Q32": {
+      "text_de": "Haben Sie manchmal den Verdacht gehabt, Ihr Partner/Ihre Partnerin sei untreu?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_7"
+      ],
+      "disorder": "paranoid",
+      "exploration_main_de": "Sie gaben an, Sie haben manchmal den Verdacht gehabt, Ihr Partner/Ihre Partnerin sei untreu.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon.",
+        "Welche Hinweise hatten Sie dafür? Was haben Sie dann unternommen? Hatten Sie recht mit Ihrem Verdacht?"
+      ]
+    },
+    "Q33": {
+      "text_de": "Wenn Sie in der Öffentlichkeit Leute sehen, die sich miteinander unterhalten, denken Sie dann häufig, dass man über Sie redet?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, wenn Sie in der Öffentlichkeit Leute sehen, die sich miteinander unterhalten, denken Sie dann häufig, dass man über Sie redet.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber."
+      ]
+    },
+    "Q34": {
+      "text_de": "Haben Sie, wenn Sie unter Menschen sind, häufig das Gefühl, beobachtet oder angestarrt zu werden?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, Sie haben, wenn Sie unter Menschen sind, häufig das Gefühl, beobachtet oder angestarrt zu werden.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber."
+      ]
+    },
+    "Q35": {
+      "text_de": "Haben Sie oft das Gefühl, dass Textzeilen aus einem Lied oder etwas in einem Film oder im Fernsehen eine besondere Bedeutung speziell für Sie haben?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, Sie haben oft das Gefühl, dass Textzeilen aus einem Lied oder etwas in einem Film oder im Fernsehen eine besondere Bedeutung speziell für Sie haben.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber."
+      ]
+    },
+    "Q36": {
+      "text_de": "Sind Sie ein abergläubischer Mensch?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, Sie sind ein abergläubischer Mensch.",
+      "exploration_probes_de": [
+        "Was beinhaltet Ihr Aberglaube? Wie beeinflusst dieser, was Sie sagen oder tun? Kennen Sie andere Menschen, die so etwas tun?"
+      ]
+    },
+    "Q37": {
+      "text_de": "Hatten Sie jemals den Eindruck, dass Sie Dinge geschehen lassen können, einfach indem Sie sich es wünschen oder daran denken?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, Sie hatten jemals den Eindruck, dass Sie Dinge geschehen lassen können, einfach indem Sie sich es wünschen oder daran denken.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon.",
+        "Wie hat Sie das beeinflusst?"
+      ]
+    },
+    "Q38": {
+      "text_de": "Hatten Sie persönliche Erfahrungen mit übernatürlichen Dingen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, Sie hatten persönliche Erfahrungen mit übernatürlichen Dingen.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon.",
+        "Wie hat Sie das beeinflusst?"
+      ]
+    },
+    "Q39": {
+      "text_de": "Glauben Sie, einen \"sechsten Sinn\" zu haben, so dass Sie Dinge im Voraus wissen und vorhersagen können?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, Sie glauben, einen „sechsten Sinn\" zu haben, so dass Sie Dinge im Voraus wissen und vorhersagen können.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon.",
+        "Wie hat Sie das beeinflusst?"
+      ]
+    },
+    "Q40": {
+      "text_de": "Haben Sie oft das Gefühl, dass alles unwirklich erscheint, dass Sie losgelöst von Körper oder Geist sind oder dass Sie Ihre eigenen Gedanken oder Bewegungen von aussen beobachten?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, Sie haben oft das Gefühl, dass alles unwirklich erscheint, dass Sie losgelöst von Körper oder Geist sind oder dass Sie Ihre eigenen Gedanken oder Bewegungen von außen beobachten.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Haben Sie zu dieser Zeit Alkohol getrunken oder Drogen genommen?"
+      ]
+    },
+    "Q41": {
+      "text_de": "Sehen Sie oft Dinge, die andere Menschen nicht sehen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, Sie sehen oft Dinge, die andere Menschen nicht sehen.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Haben Sie zu dieser Zeit Alkohol getrunken oder Drogen genommen?"
+      ]
+    },
+    "Q42": {
+      "text_de": "Hören Sie oft eine Stimme, die sanft Ihren Namen spricht?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, Sie hören oft eine Stimme, die sanft Ihren Namen spricht.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber.",
+        "Haben Sie zu dieser Zeit Alkohol getrunken oder Drogen genommen?"
+      ]
+    },
+    "Q43": {
+      "text_de": "Haben Sie manchmal das Gefühl, dass eine Person oder Kraft Sie umgibt, obwohl Sie niemanden sehen können?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, Sie haben manchmal das Gefühl, dass eine Person oder Kraft Sie umgibt, obwohl Sie niemanden sehen können.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber.",
+        "Haben Sie zu dieser Zeit Alkohol getrunken oder Drogen genommen?"
+      ]
+    },
+    "Q44": {
+      "text_de": "Gibt es ausserhalb Ihrer Familie nur sehr wenige Menschen, zu denen Sie eine wirklich enge Beziehung haben?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_8"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, es gibt außerhalb Ihrer Familie nur sehr wenige Menschen, zu denen Sie eine wirklich enge Beziehung haben.",
+      "exploration_probes_de": [
+        "Wie viele enge Freunde haben Sie?"
+      ]
+    },
+    "Q45": {
+      "text_de": "Sind Sie oft nervös und ängstlich, wenn Sie unter Menschen sind, die Sie nicht gut kennen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_9"
+      ],
+      "disorder": "schizotypal",
+      "exploration_main_de": "Sie gaben an, Sie sind oft nervös und ängstlich, wenn Sie unter Menschen sind, die Sie nicht gut kennen.",
+      "exploration_probes_de": [
+        "Was macht Sie nervös und ängstlich?",
+        "Liegt es daran, dass Sie befürchten, in irgendeiner Weise ausgenutzt oder verletzt zu werden, anstatt daran, abgelehnt oder kritisiert zu werden?",
+        "Sind Sie auch dann noch ängstlich, wenn Sie andere bereits einige Zeit kennen?"
+      ]
+    },
+    "Q46": {
+      "text_de": "Ist es Ihnen NICHT wichtig, Freunde oder eine Partnerbeziehung zu haben oder mit Ihrer Familie zusammen zu sein?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "schizoid",
+      "exploration_main_de": "Sie gaben an, es ist Ihnen NICHT wichtig, Freunde oder eine Partnerbeziehung zu haben oder mit Ihrer Familie zusammen zu sein.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber."
+      ]
+    },
+    "Q47": {
+      "text_de": "Würden Sie fast immer Dinge lieber allein als mit anderen zusammen machen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "schizoid",
+      "exploration_main_de": "Sie gaben an, Sie würden fast immer Dinge lieber allein als mit anderen zusammen machen.",
+      "exploration_probes_de": [
+        "Gilt das sowohl für Ihre Arbeit als auch für Ihre Freizeit?"
+      ]
+    },
+    "Q48": {
+      "text_de": "Haben Sie wenig oder kein Interesse an sexüllen Erfahrungen mit einem anderen Menschen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "schizoid",
+      "exploration_main_de": "Sie gaben an, Sie haben wenig oder kein Interesse an sexuellen Erfahrungen mit einem anderen Menschen.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber."
+      ]
+    },
+    "Q49": {
+      "text_de": "Gibt es nur ganz wenige Dinge, die Ihnen wirklich Freude bereiten?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_4"
+      ],
+      "disorder": "schizoid",
+      "exploration_main_de": "Sie gaben an, es gibt nur ganz wenige Dinge, die Ihnen wirklich Freude bereiten.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon.",
+        "Wie ist es mit körperlichen Dingen wie einem guten Essen oder Sex?"
+      ]
+    },
+    "Q50": {
+      "text_de": "Ist es Ihnen gleichgültig, was andere über Sie denken?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_6"
+      ],
+      "disorder": "schizoid",
+      "exploration_main_de": "Sie gaben an, es ist Ihnen gleichgültig, was andere über Sie denken.",
+      "exploration_probes_de": [
+        "Wie fühlen Sie sich, wenn andere Sie loben oder kritisieren?"
+      ]
+    },
+    "Q51": {
+      "text_de": "Empfinden Sie selten intensive Gefühle, wie sehr wütend oder sehr freudig zu sein?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_7"
+      ],
+      "disorder": "schizoid",
+      "exploration_main_de": "Sie gaben an, Sie empfinden selten intensive Gefühle, wie sehr wütend oder sehr freudig zu sein.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber."
+      ]
+    },
+    "Q52": {
+      "text_de": "Stehen Sie gern im Mittelpunkt?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "histrionic",
+      "exploration_main_de": "Sie gaben an, Sie stehen gern im Mittelpunkt.",
+      "exploration_probes_de": [
+        "Wie fühlen Sie sich, wenn das nicht der Fall ist? Unwohl?"
+      ]
+    },
+    "Q53": {
+      "text_de": "Neigen Sie dazu, oft zu flirten?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "histrionic",
+      "exploration_main_de": "Sie gaben an, Sie neigen dazu, oft zu flirten.",
+      "exploration_probes_de": [
+        "Hat sich schon einmal jemand darüber beschwert?"
+      ]
+    },
+    "Q54": {
+      "text_de": "Ertappen Sie sich oft dabei, dass Sie andere \"anmachen\"?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "histrionic",
+      "exploration_main_de": "Sie gaben an, Sie ertappen sich oft dabei, dass Sie andere „anmachen\".",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q55": {
+      "text_de": "Ziehen Sie die Aufmerksamkeit anderer gern durch die Art, wie Sie sich kleiden oder aussehen, auf sich?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_4"
+      ],
+      "disorder": "histrionic",
+      "exploration_main_de": "Sie gaben an, Sie ziehen die Aufmerksamkeit anderer gern durch die Art, wie Sie sich kleiden oder aussehen, auf sich.",
+      "exploration_probes_de": [
+        "Beschreiben Sie, was Sie machen.",
+        "Machen Sie Dinge dieser Art die meiste Zeit über?"
+      ]
+    },
+    "Q56": {
+      "text_de": "Neigen Sie dazu, sehr dramatisch aufzutreten oder zu sprechen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_6"
+      ],
+      "disorder": "histrionic",
+      "exploration_main_de": "Sie gaben an, Sie neigen dazu, sehr dramatisch aufzutreten oder zu sprechen.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon.",
+        "Hat Sie schon einmal jemand als „Drama Queen\" oder „Dramatisierer\" bezeichnet?"
+      ]
+    },
+    "Q57": {
+      "text_de": "Sind Sie emotionaler als die meisten anderen Menschen, z.B. schluchzen Sie, wenn Sie eine traurige Geschichte hören?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_6"
+      ],
+      "disorder": "histrionic",
+      "exploration_main_de": "Sie gaben an, Sie sind emotionaler als die meisten anderen Menschen, z.B. schluchzen Sie, wenn Sie eine traurige Geschichte hören.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q58": {
+      "text_de": "Ändern Sie oft Ihre Meinung über Dinge in Abhängigkeit davon, mit welchen Menschen Sie gerade zusammen sind oder was Sie gerade gelesen oder im Fernsehen gesehen haben?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_7"
+      ],
+      "disorder": "histrionic",
+      "exploration_main_de": "Sie gaben an, Sie ändern oft Ihre Meinung über Dinge in Abhängigkeit davon, mit welchen Menschen Sie gerade zusammen sind oder was Sie gerade gelesen oder im Fernsehen gesehen haben.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber."
+      ]
+    },
+    "Q59": {
+      "text_de": "Fühlen Sie sich mit fast allen Menschen gut befreundet, sogar mit Dienstleistern, wie Ihrem Klempner, Ihrem Automechaniker oder Ihrem Arzt?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_8"
+      ],
+      "disorder": "histrionic",
+      "exploration_main_de": "Sie gaben an, Sie fühlen sich mit fast allen Menschen gut befreundet, sogar mit Dienstleistern, wie Ihrem Klempner, Ihrem Automechaniker oder Ihrem Arzt.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q60": {
+      "text_de": "Sind Sie wichtiger, talentierter oder erfolgreicher als die meisten anderen Menschen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, Sie sind wichtiger, talentierter oder erfolgreicher als die meisten anderen Menschen.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q61": {
+      "text_de": "Haben Ihnen andere Menschen schon einmal gesagt, dass Sie eine zu hohe Meinung von sich selbst hätten?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, andere Menschen haben Ihnen schon einmal gesagt, dass Sie eine zu hohe Meinung von sich selbst hätten.",
+      "exploration_probes_de": [
+        "Nennen Sie mir dazu einige Beispiele."
+      ]
+    },
+    "Q62": {
+      "text_de": "Denken Sie oft an die Macht, den Ruhm oder die Anerkennung, die Sie eines Tages haben werden?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, Sie denken oft an die Macht, den Ruhm oder die Anerkennung, die Sie eines Tages haben werden.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber.",
+        "Wie viel Zeit verbringen Sie damit, über solche Dinge nachzudenken?"
+      ]
+    },
+    "Q63": {
+      "text_de": "Denken Sie oft an die ideale Liebe, die Sie eines Tages finden werden?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, Sie denken oft an die ideale Liebe, die Sie eines Tages finden werden.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber.",
+        "Wie viel Zeit verbringen Sie damit, über solche Dinge nachzudenken?"
+      ]
+    },
+    "Q64": {
+      "text_de": "Wenn Sie ein Problem haben, bestehen Sie dann fast immer darauf, den höchsten Vorgesetzten zu sprechen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, wenn Sie ein Problem haben, bestehen Sie dann fast immer darauf, den höchsten Vorgesetzten zu sprechen.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Warum wollen Sie den höchsten Vorgesetzten sprechen? Liegt es daran, dass Sie einzigartig oder besonders sind? Inwiefern?"
+      ]
+    },
+    "Q65": {
+      "text_de": "Versuchen Sie, Zeit mit Menschen zu verbringen, die wichtig oder einflussreich sind?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, Sie versuchen, Zeit mit Menschen zu verbringen, die wichtig oder einflussreich sind.",
+      "exploration_probes_de": [
+        "Warum liegt Ihnen das? Liegt es daran, dass Sie zu besonders oder einzigartig sind, um mit gewöhnlichen Menschen Zeit zu verbringen?"
+      ]
+    },
+    "Q66": {
+      "text_de": "Ist es Ihnen wichtig, dass andere Menschen Sie beachten oder Sie in irgendeiner Weise bewundern?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_4"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, es ist Ihnen wichtig, dass andere Menschen Sie beachten oder Sie in irgendeiner Weise bewundern.",
+      "exploration_probes_de": [
+        "Erzählen Sie mehr darüber."
+      ]
+    },
+    "Q67": {
+      "text_de": "Halten Sie sich für jemanden, der eine Sonderbehandlung verdient oder für den andere Menschen automatisch das tun sollten, was Sie wollen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_5"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, Sie halten sich für jemanden, der eine Sonderbehandlung verdient oder für den andere Menschen automatisch das tun sollten, was Sie wollen.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q68": {
+      "text_de": "Stellen Sie Ihre eigenen Bedürfnisse oftmals über die Bedürfnisse anderer Menschen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_6"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, Sie stellen Ihre eigenen Bedürfnisse oftmals über die Bedürfnisse anderer Menschen.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele dafür, wann das vorkommt."
+      ]
+    },
+    "Q69": {
+      "text_de": "Haben sich andere beschwert, dass Sie Menschen ausnutzen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_6"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, andere haben sich beschwert, dass Sie Menschen ausnutzen.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q70": {
+      "text_de": "Denken Sie generell, dass die Bedürfnisse oder Gefühle anderer Menschen nicht Ihr Problem sind?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_7"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, Sie denken generell, dass die Bedürfnisse oder Gefühle anderer Menschen nicht Ihr Problem sind.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q71": {
+      "text_de": "Halten Sie die Probleme anderer oft für langweilig?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_7"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, Sie halten die Probleme anderer oft für langweilig.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q72": {
+      "text_de": "Haben sich andere bei Ihnen darüber beschwert, dass Sie ihnen nicht zuhören oder Ihnen ihre Gefühle egal sind?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_7"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, andere Menschen haben sich bei Ihnen darüber beschwert, dass Sie ihnen nicht zuhören oder Ihnen ihre Gefühle egal sind.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q73": {
+      "text_de": "Wenn Sie jemanden Erfolgreiches sehen, haben Sie dann das Gefühl, diesen Erfolg mehr zu verdienen als der oder die andere?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_8"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, wenn Sie jemanden Erfolgreiches sehen, haben Sie das Gefühl, diesen Erfolg mehr zu verdienen als der oder die andere.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Wie häufig haben Sie dieses Gefühl?"
+      ]
+    },
+    "Q74": {
+      "text_de": "Haben Sie den Eindruck, dass andere oft neidisch auf Sie sind?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_8"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, Sie haben den Eindruck, dass andere oft neidisch auf Sie sind.",
+      "exploration_probes_de": [
+        "Was beneiden die anderen an Ihnen?"
+      ]
+    },
+    "Q75": {
+      "text_de": "Glauben Sie, dass nur sehr wenige Menschen Ihre Zeit und Ihre Aufmerksamkeit verdienen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_9"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, Sie glauben, dass nur sehr wenige Menschen Ihre Zeit und Ihre Aufmerksamkeit verdienen.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q76": {
+      "text_de": "Haben sich andere Menschen darüber beschwert, dass Sie sich überheblich oder arrogant verhalten?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_9"
+      ],
+      "disorder": "narcissistic",
+      "exploration_main_de": "Sie gaben an, andere Menschen haben sich darüber beschwert, dass Sie sich überheblich oder arrogant verhalten.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q77": {
+      "text_de": "Geraten Sie leicht ausser sich, wenn Sie denken, dass jemand, der Ihnen viel bedeutet, Sie verlässt?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_1"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, dass Sie leicht außer sich geraten, wenn Sie denken, dass jemand, der Ihnen viel bedeutet, Sie verlässt.",
+      "exploration_probes_de": [
+        "Was haben Sie dann gemacht? Haben Sie ihm/ihr gedroht oder ihn/sie bedrängt?",
+        "Wie oft ist das vorgekommen?"
+      ]
+    },
+    "Q78": {
+      "text_de": "Sind Ihre Beziehungen zu Menschen, an denen Ihnen viel liegt, häufig von einem extremen Auf und Ab gekennzeichnet?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_2"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Ihre Beziehungen zu Menschen, an denen Ihnen viel liegt, häufig von einem extremen Auf und Ab gekennzeichnet sind.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon.",
+        "Gab es Zeiten, in denen Sie dachten, dass diese Menschen perfekt waren oder alles, was Sie wollten, und dann zu anderen Zeiten, dass sie ganz schrecklich waren? Wie viele Ihrer Beziehungen waren oder sind so?"
+      ]
+    },
+    "Q79": {
+      "text_de": "Ändert sich Ihr Gefühl darüber, wer Sie sind, häufig drastisch?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, dass sich Ihr Gefühl darüber, wer Sie sind, häufig drastisch ändert.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber."
+      ]
+    },
+    "Q80": {
+      "text_de": "Sind Sie unterschiedlich im Kontakt mit verschiedenen Menschen oder in verschiedenen Situationen, so dass Sie manchmal nicht wissen, wer Sie wirklich sind?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Sie sind unterschiedlich im Kontakt mit verschiedenen Menschen oder in verschiedenen Situationen, so dass Sie manchmal nicht wissen, wer Sie wirklich sind.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele dafür. Fühlen Sie sich häufig so?"
+      ]
+    },
+    "Q81": {
+      "text_de": "Haben Sie schon oft plötzlich Ihre Zielsetzungen, Ihre beruflichen Pläne oder religiösen Anschauungen geändert?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Sie haben schon oft plötzlich Ihre Zielsetzungen, Ihre beruflichen Pläne oder religiösen Anschauungen geändert.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber."
+      ]
+    },
+    "Q82": {
+      "text_de": "Haben Sie schon oft plötzlich Ihr freundschaftliches Umfeld oder Ihre sexülle Identität geändert?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_3"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Sie haben schon oft plötzlich Ihr freundschaftliches Umfeld oder Ihre sexuelle Identität geändert.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber."
+      ]
+    },
+    "Q83": {
+      "text_de": "Haben Sie oft impulsiv gehandelt?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_4"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Sie haben oft impulsiv gehandelt.",
+      "exploration_probes_de": [
+        "Bei welchen Dingen?",
+        "Sachen zu kaufen, die Sie sich nicht leisten können? Sexuellen Kontakt mit Menschen zu haben, die Sie kaum kennen, oder ungeschützten Verkehr zu haben? Zu viel Alkohol zu trinken oder Drogen zu nehmen? Rücksichtslos Auto zu fahren? Unkontrolliert zu essen?",
+        "Erzählen Sie mir davon. Wie oft kommt das vor?"
+      ]
+    },
+    "Q84": {
+      "text_de": "Haben Sie jemals versucht, sich selbst zu verletzen oder umzubringen, oder haben Sie daran gedacht?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_5"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Sie haben jemals versucht, sich selbst zu verletzen oder umzubringen, oder haben Sie daran gedacht.",
+      "exploration_probes_de": [
+        "Wann ist das zum letzten Mal vorgekommen?"
+      ]
+    },
+    "Q85": {
+      "text_de": "Haben Sie sich jemals absichtlich geschnitten, Brandwunden zugefügt oder geritzt?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_5"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Sie haben sich jemals absichtlich geschnitten, Brandwunden zugefügt oder geritzt.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q86": {
+      "text_de": "Ändert sich Ihre Stimmung oft innerhalb eines Tages, je nachdem, was gerade in Ihrem Leben passiert?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_6"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Ihre Stimmung ändert sich oft innerhalb eines Tages, je nachdem, was gerade in Ihrem Leben passiert.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon. Welche Dinge verändern Ihre Stimmung?",
+        "Wie lange dauert Ihre „schlechte\" Stimmung normalerweise an?"
+      ]
+    },
+    "Q87": {
+      "text_de": "Fühlen Sie sich oft innerlich leer?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_7"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Sie fühlen sich oft innerlich leer.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir mehr darüber."
+      ]
+    },
+    "Q88": {
+      "text_de": "Haben Sie oft Wutausbrüche oder werden so ärgerlich, dass Sie die Kontrolle verlieren?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_8"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Sie haben oft Wutausbrüche oder werden so ärgerlich, dass Sie die Kontrolle verlieren.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele."
+      ]
+    },
+    "Q89": {
+      "text_de": "Schlagen Sie andere Personen, wenn Sie wütend sind, oder werfen mit Dingen nach ihnen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_8"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Sie schlagen andere Personen, wenn Sie wütend sind, oder werfen mit Dingen nach ihnen.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Kommt das oft vor?"
+      ]
+    },
+    "Q90": {
+      "text_de": "Können selbst Kleinigkeiten Sie sehr wütend machen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_8"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, selbst Kleinigkeiten können Sie sehr wütend machen.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Kommt das oft vor?"
+      ]
+    },
+    "Q91": {
+      "text_de": "Werden Sie, wenn Sie sich sehr aufregen, anderen gegenüber argwöhnisch, oder fühlen sich losgelöst von Ihrem Körper oder empfinden die Dinge als unwirklich?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_9"
+      ],
+      "disorder": "borderline",
+      "exploration_main_de": "Sie gaben an, Sie werden, wenn Sie sich sehr aufregen, anderen gegenüber argwöhnisch, oder fühlen sich losgelöst von Ihrem Körper oder empfinden die Dinge als unwirklich.",
+      "exploration_probes_de": [
+        "In welchen Situationen ist das passiert?"
+      ]
+    },
+    "Q92": {
+      "text_de": "Haben Sie vor dem Alter von 15 Jahren andere Kinder schikaniert, bedroht oder eingeschüchtert?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C1"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 15 Jahren andere Kinder schikaniert, bedroht oder eingeschüchtert.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Wie oft ist das vorgekommen?"
+      ]
+    },
+    "Q93": {
+      "text_de": "Haben Sie vor dem Alter von 15 Jahren Schlägereien angefangen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C2"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 15 Jahren Schlägereien angefangen.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Wie oft ist das vorgekommen?"
+      ]
+    },
+    "Q94": {
+      "text_de": "Haben Sie vor dem Alter von 15 Jahren jemanden mit einer Waffe verletzt oder bedroht, wie z.B. mit einem Schlagstock, einem Ziegelstein, einer zerbrochenen Flasche, einem Messer oder einer Schusswaffe?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C3"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 15 Jahren jemanden mit einer Waffe verletzt oder bedroht, wie z.B. mit einem Schlagstock, einem Ziegelstein, einer zerbrochenen Flasche, einem Messer oder einer Schusswaffe.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q95": {
+      "text_de": "Haben Sie vor dem Alter von 15 Jahren jemandem grausame Dinge angetan, die ihm/ihr körperliche Schmerzen oder Leid zufügten?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C4"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 15 Jahren jemandem grausame Dinge angetan, die ihm/ihr körperliche Schmerzen oder Leid zufügten.",
+      "exploration_probes_de": [
+        "Was haben Sie getan?"
+      ]
+    },
+    "Q96": {
+      "text_de": "Haben Sie vor dem Alter von 15 Jahren Tiere absichtlich gequält?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C5"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 15 Jahren Tiere absichtlich gequält.",
+      "exploration_probes_de": [
+        "Was haben Sie getan?"
+      ]
+    },
+    "Q97": {
+      "text_de": "Haben Sie vor dem Alter von 15 Jahren jemanden ausgeraubt, überfallen oder haben jemandem etwas gewaltsam weggenommen, indem Sie ihn/sie bedroht haben?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C6"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 15 Jahren jemanden ausgeraubt, überfallen oder haben jemandem etwas gewaltsam weggenommen, indem Sie ihn/sie bedroht haben.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q98": {
+      "text_de": "Haben Sie vor dem Alter von 15 Jahren jemanden zu sexüllen Handlungen gezwungen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C7"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 15 Jahren jemanden zu sexuellen Handlungen gezwungen.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q99": {
+      "text_de": "Haben Sie vor dem Alter von 15 Jahren absichtlich Feür gelegt?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C8"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 15 Jahren absichtlich Feuer gelegt.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon.",
+        "Haben Sie gehofft, schweren Schaden zu verursachen?"
+      ]
+    },
+    "Q100": {
+      "text_de": "Haben Sie vor dem Alter von 15 Jahren vorsätzlich Dinge zerstört, die nicht Ihnen gehörten?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C9"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 15 Jahren vorsätzlich Dinge zerstört, die nicht Ihnen gehörten.",
+      "exploration_probes_de": [
+        "Was haben Sie getan?"
+      ]
+    },
+    "Q101": {
+      "text_de": "Sind Sie vor dem Alter von 15 Jahren in Häuser, andere Gebäude oder Autos eingebrochen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C10"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie sind vor dem Alter von 15 Jahren in Häuser, andere Gebäude oder Autos eingebrochen.",
+      "exploration_probes_de": [
+        "Erzählen Sie mir davon."
+      ]
+    },
+    "Q102": {
+      "text_de": "Haben Sie vor dem Alter von 15 Jahren häufig gelogen oder andere reingelegt, um etwas zu bekommen, was Sie wollten, oder um zu umgehen, was Sie nicht tun wollten?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C11"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 15 Jahren häufig gelogen oder andere reingelegt, um etwas zu bekommen, was Sie wollten, oder um etwas zu umgehen, was Sie nicht tun wollten.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele.",
+        "Wie oft haben Sie das getan?"
+      ]
+    },
+    "Q103": {
+      "text_de": "Haben Sie vor dem Alter von 15 Jahren Ladendiebstahl begangen, jemanden bestohlen oder eine Unterschrift gefälscht, um an Geld zu kommen?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C12"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 15 Jahren Ladendiebstahl begangen, jemanden bestohlen oder eine Unterschrift gefälscht, um an Geld zu kommen.",
+      "exploration_probes_de": [
+        "Nennen Sie mir einige Beispiele."
+      ]
+    },
+    "Q104": {
+      "text_de": "Sind Sie vor dem Alter von 15 Jahren von zu Hause weggelaufen und über Nacht weggeblieben?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C13"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie sind vor dem Alter von 15 Jahren von zu Hause weggelaufen und über Nacht weggeblieben.",
+      "exploration_probes_de": [
+        "Ist das mehr als einmal vorgekommen?",
+        "Bei wem haben Sie zu der Zeit gewohnt?"
+      ]
+    },
+    "Q105": {
+      "text_de": "Sind Sie vor dem Alter von 13 Jahren abends oft wesentlich später nach Hause gekommen, als Sie durften?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C14"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie sind vor dem Alter von 13 Jahren abends oft wesentlich später nach Hause gekommen, als Sie durften.",
+      "exploration_probes_de": [
+        "Wie oft?"
+      ]
+    },
+    "Q106": {
+      "text_de": "Haben Sie vor dem Alter von 13 Jahren oft die Schule geschwänzt?",
+      "text_en": "",
+      "maps_to_criteria": [
+        "criterion_C15"
+      ],
+      "disorder": "antisocial",
+      "exploration_main_de": "Sie gaben an, Sie haben vor dem Alter von 13 Jahren oft die Schule geschwänzt.",
+      "exploration_probes_de": [
+        "Wie oft?"
+      ]
     }
   }
 }

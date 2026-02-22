@@ -8,3 +8,4 @@ data/sessions/
 !project_workflow.pdf
 .venv/
 .claude/
+data/Questions_input/

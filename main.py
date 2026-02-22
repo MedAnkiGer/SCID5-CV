@@ -1,7 +1,7 @@
 """SCID-5-PD AI Pipeline — Main Orchestrator.
 
 State machine that ties all stages together:
-    INIT -> SELF_REPORT -> EXPLORATION -> EVALUATION -> REPORT -> COMPLETE
+    INIT -> SELF_REPORT -> OVERVIEW -> EXPLORATION -> EVALUATION -> REPORT -> COMPLETE
 
 Sessions are resumable: state is saved after every step.
 """
@@ -18,11 +18,17 @@ load_dotenv()
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 QUESTIONS_PATH = DATA_DIR / "questions.json"
+OVERVIEW_PATH = DATA_DIR / "overview_questions.json"
 SESSIONS_DIR = DATA_DIR / "sessions"
 
 
 def load_questions() -> dict:
     with open(QUESTIONS_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def load_overview_questions() -> dict:
+    with open(OVERVIEW_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -34,6 +40,7 @@ def create_session(language: str = "de") -> dict:
         "language": language,
         "stage": "INIT",
         "screening_responses": {},
+        "overview_responses": {},
         "exploration_results": {},
         "disorder_verdicts": {},
     }
@@ -146,7 +153,7 @@ def compute_disorder_verdicts(session: dict, questions: dict) -> dict:
 def run_gui_pipeline(session: dict, questions: dict) -> None:
     """Run all GUI phases in a single persistent window.
 
-    Handles INIT → SELF_REPORT → EXPLORATION → (CLARIFICATION →) EVALUATION
+    Handles INIT → SELF_REPORT → OVERVIEW → EXPLORATION → (CLARIFICATION →) EVALUATION
     without closing the window between phases.
     """
     from PySide6.QtWidgets import QApplication
@@ -158,6 +165,30 @@ def run_gui_pipeline(session: dict, questions: dict) -> None:
     window.setWindowTitle("SCID-5-PD Assessment")
     window.setMinimumSize(700, 500)
     window.show()
+
+    overview_data = load_overview_questions()
+
+    def start_overview():
+        """Run the overview interview (demographics, psychopathology, personality)."""
+        from modules.gui import OverviewGUI
+
+        gui = OverviewGUI(
+            overview_data,
+            language=session.get("language", "de"),
+            existing_responses=session.get("overview_responses", {}),
+        )
+
+        def on_overview_finished(responses: dict):
+            session["overview_responses"] = responses
+            session["stage"] = "OVERVIEW"
+            save_session(session)
+            print(f"\nOverview complete. {len(responses)} responses collected.")
+            session["stage"] = "EXPLORATION"
+            save_session(session)
+            start_exploration()
+
+        gui.finished.connect(on_overview_finished)
+        window.show_widget(gui)
 
     def start_exploration():
         flagged = get_flagged_criteria(session, questions)
@@ -228,7 +259,8 @@ def run_gui_pipeline(session: dict, questions: dict) -> None:
         gui.finished.connect(on_finished)
         window.show_widget(gui)
 
-    if session["stage"] == "INIT":
+    stage = session["stage"]
+    if stage == "INIT":
         self_report = SelfReportGUI(questions, session)
 
         def on_self_report_finished(responses):
@@ -237,14 +269,15 @@ def run_gui_pipeline(session: dict, questions: dict) -> None:
             save_session(session)
             flagged_count = len(get_flagged_criteria(session, questions))
             print(f"\n{flagged_count} criteria flagged for exploration.")
-            session["stage"] = "EXPLORATION"
-            save_session(session)
-            start_exploration()
+            start_overview()
 
         self_report.finished.connect(on_self_report_finished)
         window.show_widget(self_report)
-    else:
-        # Resume from SELF_REPORT or EXPLORATION
+    elif stage in ("SELF_REPORT",):
+        # Resume into overview
+        start_overview()
+    elif stage in ("OVERVIEW", "EXPLORATION"):
+        # Resume into exploration
         start_exploration()
 
     app.exec()
@@ -301,7 +334,7 @@ def main():
     # State machine
     stage = session["stage"]
 
-    if stage in ("INIT", "SELF_REPORT", "EXPLORATION"):
+    if stage in ("INIT", "SELF_REPORT", "OVERVIEW", "EXPLORATION"):
         run_gui_pipeline(session, questions)
         stage = session["stage"]
 

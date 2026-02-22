@@ -1,0 +1,594 @@
+# SCID-5-PD Exploration Questions — Review File
+# ================================================
+# Source: SCID_5_PD_Interviewheft.pdf (pages 11-44)
+#
+# FORMAT:
+#   ### Q<number> | <disorder> | <criterion>
+#   MAIN: The opening reference to the screening answer
+#   PROBE: Follow-up probing questions (one per line)
+#
+# INSTRUCTIONS FOR REVIEW:
+#   - Edit any line to fix OCR errors
+#   - Do NOT change the ### header format
+#   - Lines starting with # are comments (ignored by importer)
+#   - Run: python tools/import_exploration.py  to import into questions.json
+#
+# ================================================
+
+# ============================================================
+# VERMEIDEND-SELBSTUNSICHERE PERSÖNLICHKEITSSTÖRUNG (AVOIDANT)
+# Items 1-7, Criteria 1-7, Threshold: 4 of 7
+# ============================================================
+
+### Q1 | avoidant | criterion_1
+MAIN: Sie gaben an, Sie haben berufliche Tätigkeiten oder Aufgaben vermieden, bei denen man mit vielen Menschen zu tun hat.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Warum haben Sie solche Tätigkeiten oder Aufgaben vermieden?
+PROBE: Lag es daran, dass Sie nicht gern mit anderen Menschen zusammen sind, oder befürchten Sie, von anderen kritisiert oder abgelehnt zu werden?
+
+### Q2 | avoidant | criterion_2
+MAIN: Sie gaben an, Sie vermeiden es, sich mit anderen Menschen anzufreunden, es sei denn, Sie sind sich ganz sicher, dass diese Sie wirklich mögen.
+PROBE: Melden Sie die Teilnahme an Gruppenaktivitäten, es sei denn, Sie sind sicher, dass Sie willkommen und akzeptiert sein werden?
+PROBE: Wenn Sie nicht sicher sind, ob jemand Sie mag, würden Sie jemals den ersten Schritt machen?
+
+### Q3 | avoidant | criterion_3
+MAIN: Sie gaben an, es fällt Ihnen schwer, anderen Menschen gegenüber „offen" zu sein, selbst wenn diese Ihnen nahestehen.
+PROBE: Woran liegt das?
+PROBE: Befürchten Sie, dass man sich über Sie lustig macht oder Sie in Verlegenheit bringt?
+
+### Q4 | avoidant | criterion_4
+MAIN: Sie gaben an, Sie befürchten oft, von anderen Menschen kritisiert oder abgelehnt zu werden.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Verbringen Sie viel Zeit damit, sich darüber zu sorgen?
+
+### Q5 | avoidant | criterion_5
+MAIN: Sie gaben an, Sie sind gewöhnlich zurückhaltend und schweigsam, wenn Sie neue Leute kennenlernen.
+PROBE: Woran liegt das?
+PROBE: Liegt es daran, dass Sie sich in irgendeiner Weise unterlegen oder minderwertig fühlen?
+
+### Q6 | avoidant | criterion_6
+MAIN: Sie gaben an, Sie glauben, dass Sie nicht so gut, so klug oder so attraktiv sind wie die meisten anderen Menschen.
+PROBE: Erzählen Sie mir davon.
+
+### Q7 | avoidant | criterion_7
+MAIN: Sie gaben an, Sie haben Angst davor, Dinge zu tun, die anspruchsvoll sind, oder neue Dinge auszuprobieren.
+PROBE: Liegt es daran, dass Sie Angst davor haben, sich zu blamieren?
+PROBE: Nennen Sie mir einige Beispiele.
+
+# ============================================================
+# DEPENDENTE PERSÖNLICHKEITSSTÖRUNG (DEPENDENT)
+# Items 8-15, Criteria 1-8, Threshold: 5 of 8
+# ============================================================
+
+### Q8 | dependent | criterion_1
+MAIN: Sie gaben an, es fällt Ihnen ohne den Ratschlag oder die Bestätigung von anderen schwer, alltägliche Entscheidungen zu treffen, wie zum Beispiel was Sie anziehen oder was Sie in einem Restaurant bestellen.
+PROBE: Können Sie mir einige Beispiele für solche Entscheidungen nennen, für die Sie Rat und Bestätigung bei anderen suchen?
+PROBE: Kommt das die meiste Zeit vor?
+
+### Q9 | dependent | criterion_2
+MAIN: Sie sagten, Sie sind bei der Regelung wichtiger Lebensbereiche, wie zum Beispiel Geldangelegenheiten, Kindererziehung oder Wohnangelegenheiten von anderen Menschen abhängig.
+PROBE: Nennen Sie mir einige Beispiele. Ist das mehr, als Sie von anderen nur beraten zu werden?
+PROBE: Ist das in den meisten Bereichen Ihres Lebens so?
+
+### Q10 | dependent | criterion_3
+MAIN: Sie gaben an, es fällt Ihnen schwer, anderen zu widersprechen, selbst wenn Sie denken, dass diese Unrecht haben.
+PROBE: Nennen Sie mir einige Beispiele dafür, wann das so war.
+PROBE: Was befürchten Sie, könnte passieren, wenn Sie widersprechen würden?
+
+### Q11 | dependent | criterion_4
+MAIN: Sie sagten, es fällt Ihnen schwer, Unternehmungen allein zu beginnen oder Dinge allein zu tun.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Woran liegt das? Liegt es daran, dass Sie sich nicht sicher sind, ob Sie es richtig machen können?
+PROBE: Können Sie es machen, sofern jemand da ist, der Ihnen hilft?
+
+### Q12 | dependent | criterion_5
+MAIN: Sie sagten, es ist für Sie so wichtig, dass andere sich um Sie kümmern, dass Sie dazu bereit sind, unangenehme oder unangemessene Dinge für diese zu tun.
+PROBE: Nennen Sie mir einige Beispiele für solche Dinge.
+
+### Q13 | dependent | criterion_6
+MAIN: Sie sagten, Sie fühlen sich im Allgemeinen unwohl, wenn Sie allein sind.
+PROBE: Woran liegt das? Liegt es daran, dass Sie jemanden brauchen, der sich um Sie kümmert?
+
+### Q14 | dependent | criterion_7
+MAIN: Sie sagten, wenn eine enge Beziehung endet, haben Sie das Gefühl, schnell jemand anderen finden zu müssen, der sich um Sie kümmert.
+PROBE: Erzählen Sie mir davon.
+PROBE: Haben Sie meistens so reagiert, wenn enge Beziehungen endeten?
+
+### Q15 | dependent | criterion_8
+MAIN: Sie sagten, Sie machen sich oft Sorgen, allein gelassen zu werden und für sich selbst sorgen zu müssen.
+PROBE: Was bringt Sie dazu, zu denken, dass Sie allein gelassen werden und für sich selbst sorgen müssen? Wie realistisch ist diese Angst?
+PROBE: Wie sehr sind Sie darüber beunruhigt?
+
+# ============================================================
+# ZWANGHAFTE PERSÖNLICHKEITSSTÖRUNG (OBSESSIVE-COMPULSIVE)
+# Items 16-24, Criteria 1-8, Threshold: 4 of 8
+# ============================================================
+
+### Q16 | obsessive_compulsive | criterion_1
+MAIN: Sie gaben an, Sie sind jemand, der viel Wert auf Details, Ordnung und Organisation legt oder Listen und Zeitpläne anlegt.
+PROBE: Erzählen Sie mir davon.
+PROBE: Verbringen Sie so viel Zeit damit, dass Sie aus den Augen verlieren, was Sie eigentlich tun wollten? Verbringen Sie zum Beispiel so viel Zeit damit, eine Liste von Dingen zu erstellen, die Sie erledigen müssen, dass Sie am Ende keine Zeit mehr haben, diese Dinge tatsächlich zu erledigen?
+
+### Q17 | obsessive_compulsive | criterion_2
+MAIN: Sie gaben an, Sie haben Schwierigkeiten, Dinge zu Ende zu bringen, weil Sie sehr viel Zeit darauf verwenden, alles genau und richtig zu machen.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Wie oft kommt das vor?
+
+### Q18 | obsessive_compulsive | criterion_3
+MAIN: Sie gaben an, Sie widmen sich gänzlich Ihrer Arbeit oder streben sehr danach, produktiv zu sein.
+PROBE: Geben Sie sich dem so sehr hin, dass Sie nur selten Zeit mit Ihren Freunden verbringen, in den Urlaub fahren oder Dinge einfach zum Spaß machen?
+PROBE: Wenn Sie sich frei nehmen, nehmen Sie sich dann immer Arbeit mit, weil Sie es nicht aushalten können, „Zeit zu verschwenden"?
+
+### Q19 | obsessive_compulsive | criterion_4
+MAIN: Sie gaben an, Sie haben sehr hohe Maßstäbe dafür, was richtig und was falsch ist.
+PROBE: Nennen Sie mir einige Beispiele für Ihre hohen Maßstäbe.
+PROBE: Befolgen Sie Regeln ganz genau, egal worum es geht? Bestehen Sie darauf, dass auch andere diese Regeln einhalten? Können Sie mir einige Beispiele nennen?
+
+### Q20 | obsessive_compulsive | criterion_5
+MAIN: Sie gaben an, es fällt Ihnen schwer, Dinge wegzuwerfen, weil Sie sie eines Tages vielleicht doch noch einmal gebrauchen könnten.
+PROBE: Nennen Sie mir einige Beispiele für Dinge, die Sie nicht wegwerfen können.
+PROBE: Wie steht es um abgenutzte oder wertlose Dinge?
+
+### Q21 | obsessive_compulsive | criterion_6
+MAIN: Sie gaben an, es fällt Ihnen schwer, mit anderen zusammenzuarbeiten oder andere zu bitten, etwas für Sie zu tun, wenn diese die Dinge nicht genau nach Ihren Vorstellungen erledigen.
+PROBE: Erzählen Sie mir davon. Kommt das oft vor?
+PROBE: Erledigen Sie die Dinge oftmals selbst, um sicherzustellen, dass sie richtig erledigt werden?
+
+### Q22 | obsessive_compulsive | criterion_7
+MAIN: Sie gaben an, es fällt Ihnen schwer, Geld für sich selbst und andere auszugeben.
+PROBE: Warum? Liegt es daran, dass Sie befürchten, in Zukunft nicht genug Geld zu haben, wenn Sie es tatsächlich brauchen könnten? Wofür könnten Sie das Geld brauchen?
+PROBE: Hat jemand über Sie gesagt, dass Sie geizig wären?
+
+### Q23 | obsessive_compulsive | criterion_8
+MAIN: Sie gaben an, wenn Sie einmal etwas geplant haben, fällt es Ihnen schwer, diesen Plan zu ändern.
+PROBE: Erzählen Sie mir davon.
+PROBE: Ist es Ihnen so wichtig, dass Dinge auf die eine „richtige" Weise gemacht werden, dass es Ihnen schwerfällt, sich auf Ideen oder Vorschläge anderer einzulassen? Erzählen Sie mir davon.
+
+### Q24 | obsessive_compulsive | criterion_8
+MAIN: Sie gaben an, man hat Ihnen schon einmal gesagt, Sie seien eigensinnig oder stur.
+PROBE: Erzählen Sie mir davon.
+
+# ============================================================
+# PARANOIDE PERSÖNLICHKEITSSTÖRUNG (PARANOID)
+# Items 25-32, Criteria 1-7, Threshold: 4 of 7
+# ============================================================
+
+### Q25 | paranoid | criterion_1
+MAIN: Sie gaben an, Sie haben oft das Gefühl, dass andere Menschen Sie ausnutzen, Sie verletzen oder anlügen.
+PROBE: Wie kommen Sie darauf?
+
+### Q26 | paranoid | criterion_2
+MAIN: Sie gaben an, Sie sind eine sehr vorsichtige Person, die anderen Menschen kaum etwas anvertraut.
+PROBE: Liegt das daran, dass Sie Ihren Freunden oder Arbeitskollegen nicht vertrauen? Warum vertrauen Sie Ihnen nicht?
+PROBE: Denken Sie oft darüber nach?
+
+### Q27 | paranoid | criterion_3
+MAIN: Sie gaben an, Sie glauben, dass es am besten ist, andere nicht zu viel über Sie wissen zu lassen, weil diese es gegen Sie verwenden könnten.
+PROBE: Wann ist das vorgekommen?
+PROBE: Erzählen Sie mir davon.
+
+### Q28 | paranoid | criterion_4
+MAIN: Sie gaben an, Sie haben oft das Gefühl, dass andere Menschen Sie bedrohen oder beleidigen durch das, was diese sagen oder tun.
+PROBE: Erzählen Sie mir davon.
+
+### Q29 | paranoid | criterion_5
+MAIN: Sie gaben an, Sie sind sehr nachtragend oder brauchen lange, bis Sie jemandem verzeihen, der Sie beleidigt oder gekränkt hat.
+PROBE: Erzählen Sie mir davon.
+
+### Q30 | paranoid | criterion_5
+MAIN: Sie gaben an, es gibt viele Leute, denen Sie nicht verzeihen können, weil diese vor langer Zeit etwas gesagt oder getan haben.
+PROBE: Erzählen Sie mir davon.
+
+### Q31 | paranoid | criterion_6
+MAIN: Sie gaben an, Sie werden schnell wütend oder reagieren aggressiv, wenn Sie kritisiert oder beleidigt werden.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Sagen andere, dass Sie sich oft zu schnell angegriffen fühlen?
+
+### Q32 | paranoid | criterion_7
+MAIN: Sie gaben an, Sie haben manchmal den Verdacht gehabt, Ihr Partner/Ihre Partnerin sei untreu.
+PROBE: Erzählen Sie mir davon.
+PROBE: Welche Hinweise hatten Sie dafür? Was haben Sie dann unternommen? Hatten Sie recht mit Ihrem Verdacht?
+
+# ============================================================
+# SCHIZOTYPE PERSÖNLICHKEITSSTÖRUNG (SCHIZOTYPAL)
+# Items 33-45, Criteria 1-9, Threshold: 5 of 9
+# ============================================================
+
+### Q33 | schizotypal | criterion_1
+MAIN: Sie gaben an, wenn Sie in der Öffentlichkeit Leute sehen, die sich miteinander unterhalten, denken Sie dann häufig, dass man über Sie redet.
+PROBE: Erzählen Sie mir mehr darüber.
+
+### Q34 | schizotypal | criterion_1
+MAIN: Sie gaben an, Sie haben, wenn Sie unter Menschen sind, häufig das Gefühl, beobachtet oder angestarrt zu werden.
+PROBE: Erzählen Sie mir mehr darüber.
+
+### Q35 | schizotypal | criterion_1
+MAIN: Sie gaben an, Sie haben oft das Gefühl, dass Textzeilen aus einem Lied oder etwas in einem Film oder im Fernsehen eine besondere Bedeutung speziell für Sie haben.
+PROBE: Erzählen Sie mir mehr darüber.
+
+### Q36 | schizotypal | criterion_2
+MAIN: Sie gaben an, Sie sind ein abergläubischer Mensch.
+PROBE: Was beinhaltet Ihr Aberglaube? Wie beeinflusst dieser, was Sie sagen oder tun? Kennen Sie andere Menschen, die so etwas tun?
+
+### Q37 | schizotypal | criterion_2
+MAIN: Sie gaben an, Sie hatten jemals den Eindruck, dass Sie Dinge geschehen lassen können, einfach indem Sie sich es wünschen oder daran denken.
+PROBE: Erzählen Sie mir davon.
+PROBE: Wie hat Sie das beeinflusst?
+
+### Q38 | schizotypal | criterion_2
+MAIN: Sie gaben an, Sie hatten persönliche Erfahrungen mit übernatürlichen Dingen.
+PROBE: Erzählen Sie mir davon.
+PROBE: Wie hat Sie das beeinflusst?
+
+### Q39 | schizotypal | criterion_2
+MAIN: Sie gaben an, Sie glauben, einen „sechsten Sinn" zu haben, so dass Sie Dinge im Voraus wissen und vorhersagen können.
+PROBE: Erzählen Sie mir davon.
+PROBE: Wie hat Sie das beeinflusst?
+
+### Q40 | schizotypal | criterion_3
+MAIN: Sie gaben an, Sie haben oft das Gefühl, dass alles unwirklich erscheint, dass Sie losgelöst von Körper oder Geist sind oder dass Sie Ihre eigenen Gedanken oder Bewegungen von außen beobachten.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Haben Sie zu dieser Zeit Alkohol getrunken oder Drogen genommen?
+
+### Q41 | schizotypal | criterion_3
+MAIN: Sie gaben an, Sie sehen oft Dinge, die andere Menschen nicht sehen.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Haben Sie zu dieser Zeit Alkohol getrunken oder Drogen genommen?
+
+### Q42 | schizotypal | criterion_3
+MAIN: Sie gaben an, Sie hören oft eine Stimme, die sanft Ihren Namen spricht.
+PROBE: Erzählen Sie mir mehr darüber.
+PROBE: Haben Sie zu dieser Zeit Alkohol getrunken oder Drogen genommen?
+
+### Q43 | schizotypal | criterion_3
+MAIN: Sie gaben an, Sie haben manchmal das Gefühl, dass eine Person oder Kraft Sie umgibt, obwohl Sie niemanden sehen können.
+PROBE: Erzählen Sie mir mehr darüber.
+PROBE: Haben Sie zu dieser Zeit Alkohol getrunken oder Drogen genommen?
+
+### Q44 | schizotypal | criterion_8
+MAIN: Sie gaben an, es gibt außerhalb Ihrer Familie nur sehr wenige Menschen, zu denen Sie eine wirklich enge Beziehung haben.
+PROBE: Wie viele enge Freunde haben Sie?
+
+### Q45 | schizotypal | criterion_9
+MAIN: Sie gaben an, Sie sind oft nervös und ängstlich, wenn Sie unter Menschen sind, die Sie nicht gut kennen.
+PROBE: Was macht Sie nervös und ängstlich?
+PROBE: Liegt es daran, dass Sie befürchten, in irgendeiner Weise ausgenutzt oder verletzt zu werden, anstatt daran, abgelehnt oder kritisiert zu werden?
+PROBE: Sind Sie auch dann noch ängstlich, wenn Sie andere bereits einige Zeit kennen?
+
+# ============================================================
+# SCHIZOIDE PERSÖNLICHKEITSSTÖRUNG (SCHIZOID)
+# Items 46-51, Criteria 1-7, Threshold: 4 of 7
+# ============================================================
+
+### Q46 | schizoid | criterion_1
+MAIN: Sie gaben an, es ist Ihnen NICHT wichtig, Freunde oder eine Partnerbeziehung zu haben oder mit Ihrer Familie zusammen zu sein.
+PROBE: Erzählen Sie mir mehr darüber.
+
+### Q47 | schizoid | criterion_2
+MAIN: Sie gaben an, Sie würden fast immer Dinge lieber allein als mit anderen zusammen machen.
+PROBE: Gilt das sowohl für Ihre Arbeit als auch für Ihre Freizeit?
+
+### Q48 | schizoid | criterion_3
+MAIN: Sie gaben an, Sie haben wenig oder kein Interesse an sexuellen Erfahrungen mit einem anderen Menschen.
+PROBE: Erzählen Sie mir mehr darüber.
+
+### Q49 | schizoid | criterion_4
+MAIN: Sie gaben an, es gibt nur ganz wenige Dinge, die Ihnen wirklich Freude bereiten.
+PROBE: Erzählen Sie mir davon.
+PROBE: Wie ist es mit körperlichen Dingen wie einem guten Essen oder Sex?
+
+### Q50 | schizoid | criterion_6
+MAIN: Sie gaben an, es ist Ihnen gleichgültig, was andere über Sie denken.
+PROBE: Wie fühlen Sie sich, wenn andere Sie loben oder kritisieren?
+
+### Q51 | schizoid | criterion_7
+MAIN: Sie gaben an, Sie empfinden selten intensive Gefühle, wie sehr wütend oder sehr freudig zu sein.
+PROBE: Erzählen Sie mir mehr darüber.
+
+# ============================================================
+# HISTRIONISCHE PERSÖNLICHKEITSSTÖRUNG (HISTRIONIC)
+# Items 52-59, Criteria 1-8, Threshold: 5 of 8
+# ============================================================
+
+### Q52 | histrionic | criterion_1
+MAIN: Sie gaben an, Sie stehen gern im Mittelpunkt.
+PROBE: Wie fühlen Sie sich, wenn das nicht der Fall ist? Unwohl?
+
+### Q53 | histrionic | criterion_2
+MAIN: Sie gaben an, Sie neigen dazu, oft zu flirten.
+PROBE: Hat sich schon einmal jemand darüber beschwert?
+
+### Q54 | histrionic | criterion_2
+MAIN: Sie gaben an, Sie ertappen sich oft dabei, dass Sie andere „anmachen".
+PROBE: Erzählen Sie mir davon.
+
+### Q55 | histrionic | criterion_4
+MAIN: Sie gaben an, Sie ziehen die Aufmerksamkeit anderer gern durch die Art, wie Sie sich kleiden oder aussehen, auf sich.
+PROBE: Beschreiben Sie, was Sie machen.
+PROBE: Machen Sie Dinge dieser Art die meiste Zeit über?
+
+### Q56 | histrionic | criterion_6
+MAIN: Sie gaben an, Sie neigen dazu, sehr dramatisch aufzutreten oder zu sprechen.
+PROBE: Erzählen Sie mir davon.
+PROBE: Hat Sie schon einmal jemand als „Drama Queen" oder „Dramatisierer" bezeichnet?
+
+### Q57 | histrionic | criterion_6
+MAIN: Sie gaben an, Sie sind emotionaler als die meisten anderen Menschen, z.B. schluchzen Sie, wenn Sie eine traurige Geschichte hören.
+PROBE: Erzählen Sie mir davon.
+
+### Q58 | histrionic | criterion_7
+MAIN: Sie gaben an, Sie ändern oft Ihre Meinung über Dinge in Abhängigkeit davon, mit welchen Menschen Sie gerade zusammen sind oder was Sie gerade gelesen oder im Fernsehen gesehen haben.
+PROBE: Erzählen Sie mir mehr darüber.
+
+### Q59 | histrionic | criterion_8
+MAIN: Sie gaben an, Sie fühlen sich mit fast allen Menschen gut befreundet, sogar mit Dienstleistern, wie Ihrem Klempner, Ihrem Automechaniker oder Ihrem Arzt.
+PROBE: Erzählen Sie mir davon.
+
+# ============================================================
+# NARZISSTISCHE PERSÖNLICHKEITSSTÖRUNG (NARCISSISTIC)
+# Items 60-76, Criteria 1-9, Threshold: 5 of 9
+# ============================================================
+
+### Q60 | narcissistic | criterion_1
+MAIN: Sie gaben an, Sie sind wichtiger, talentierter oder erfolgreicher als die meisten anderen Menschen.
+PROBE: Erzählen Sie mir davon.
+
+### Q61 | narcissistic | criterion_1
+MAIN: Sie gaben an, andere Menschen haben Ihnen schon einmal gesagt, dass Sie eine zu hohe Meinung von sich selbst hätten.
+PROBE: Nennen Sie mir dazu einige Beispiele.
+
+### Q62 | narcissistic | criterion_2
+MAIN: Sie gaben an, Sie denken oft an die Macht, den Ruhm oder die Anerkennung, die Sie eines Tages haben werden.
+PROBE: Erzählen Sie mir mehr darüber.
+PROBE: Wie viel Zeit verbringen Sie damit, über solche Dinge nachzudenken?
+
+### Q63 | narcissistic | criterion_2
+MAIN: Sie gaben an, Sie denken oft an die ideale Liebe, die Sie eines Tages finden werden.
+PROBE: Erzählen Sie mir mehr darüber.
+PROBE: Wie viel Zeit verbringen Sie damit, über solche Dinge nachzudenken?
+
+### Q64 | narcissistic | criterion_3
+MAIN: Sie gaben an, wenn Sie ein Problem haben, bestehen Sie dann fast immer darauf, den höchsten Vorgesetzten zu sprechen.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Warum wollen Sie den höchsten Vorgesetzten sprechen? Liegt es daran, dass Sie einzigartig oder besonders sind? Inwiefern?
+
+### Q65 | narcissistic | criterion_3
+MAIN: Sie gaben an, Sie versuchen, Zeit mit Menschen zu verbringen, die wichtig oder einflussreich sind.
+PROBE: Warum liegt Ihnen das? Liegt es daran, dass Sie zu besonders oder einzigartig sind, um mit gewöhnlichen Menschen Zeit zu verbringen?
+
+### Q66 | narcissistic | criterion_4
+MAIN: Sie gaben an, es ist Ihnen wichtig, dass andere Menschen Sie beachten oder Sie in irgendeiner Weise bewundern.
+PROBE: Erzählen Sie mehr darüber.
+
+### Q67 | narcissistic | criterion_5
+MAIN: Sie gaben an, Sie halten sich für jemanden, der eine Sonderbehandlung verdient oder für den andere Menschen automatisch das tun sollten, was Sie wollen.
+PROBE: Erzählen Sie mir davon.
+
+### Q68 | narcissistic | criterion_6
+MAIN: Sie gaben an, Sie stellen Ihre eigenen Bedürfnisse oftmals über die Bedürfnisse anderer Menschen.
+PROBE: Nennen Sie mir einige Beispiele dafür, wann das vorkommt.
+
+### Q69 | narcissistic | criterion_6
+MAIN: Sie gaben an, andere haben sich beschwert, dass Sie Menschen ausnutzen.
+PROBE: Erzählen Sie mir davon.
+
+### Q70 | narcissistic | criterion_7
+MAIN: Sie gaben an, Sie denken generell, dass die Bedürfnisse oder Gefühle anderer Menschen nicht Ihr Problem sind.
+PROBE: Erzählen Sie mir davon.
+
+### Q71 | narcissistic | criterion_7
+MAIN: Sie gaben an, Sie halten die Probleme anderer oft für langweilig.
+PROBE: Erzählen Sie mir davon.
+
+### Q72 | narcissistic | criterion_7
+MAIN: Sie gaben an, andere Menschen haben sich bei Ihnen darüber beschwert, dass Sie ihnen nicht zuhören oder Ihnen ihre Gefühle egal sind.
+PROBE: Erzählen Sie mir davon.
+
+### Q73 | narcissistic | criterion_8
+MAIN: Sie gaben an, wenn Sie jemanden Erfolgreiches sehen, haben Sie das Gefühl, diesen Erfolg mehr zu verdienen als der oder die andere.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Wie häufig haben Sie dieses Gefühl?
+
+### Q74 | narcissistic | criterion_8
+MAIN: Sie gaben an, Sie haben den Eindruck, dass andere oft neidisch auf Sie sind.
+PROBE: Was beneiden die anderen an Ihnen?
+
+### Q75 | narcissistic | criterion_9
+MAIN: Sie gaben an, Sie glauben, dass nur sehr wenige Menschen Ihre Zeit und Ihre Aufmerksamkeit verdienen.
+PROBE: Erzählen Sie mir davon.
+
+### Q76 | narcissistic | criterion_9
+MAIN: Sie gaben an, andere Menschen haben sich darüber beschwert, dass Sie sich überheblich oder arrogant verhalten.
+PROBE: Erzählen Sie mir davon.
+
+# ============================================================
+# BORDERLINE-PERSÖNLICHKEITSSTÖRUNG (BORDERLINE)
+# Items 77-91, Criteria 1-9, Threshold: 5 of 9
+# ============================================================
+
+### Q77 | borderline | criterion_1
+MAIN: Sie gaben an, dass Sie leicht außer sich geraten, wenn Sie denken, dass jemand, der Ihnen viel bedeutet, Sie verlässt.
+PROBE: Was haben Sie dann gemacht? Haben Sie ihm/ihr gedroht oder ihn/sie bedrängt?
+PROBE: Wie oft ist das vorgekommen?
+
+### Q78 | borderline | criterion_2
+MAIN: Sie gaben an, Ihre Beziehungen zu Menschen, an denen Ihnen viel liegt, häufig von einem extremen Auf und Ab gekennzeichnet sind.
+PROBE: Erzählen Sie mir davon.
+PROBE: Gab es Zeiten, in denen Sie dachten, dass diese Menschen perfekt waren oder alles, was Sie wollten, und dann zu anderen Zeiten, dass sie ganz schrecklich waren? Wie viele Ihrer Beziehungen waren oder sind so?
+
+### Q79 | borderline | criterion_3
+MAIN: Sie gaben an, dass sich Ihr Gefühl darüber, wer Sie sind, häufig drastisch ändert.
+PROBE: Erzählen Sie mir mehr darüber.
+
+### Q80 | borderline | criterion_3
+MAIN: Sie gaben an, Sie sind unterschiedlich im Kontakt mit verschiedenen Menschen oder in verschiedenen Situationen, so dass Sie manchmal nicht wissen, wer Sie wirklich sind.
+PROBE: Nennen Sie mir einige Beispiele dafür. Fühlen Sie sich häufig so?
+
+### Q81 | borderline | criterion_3
+MAIN: Sie gaben an, Sie haben schon oft plötzlich Ihre Zielsetzungen, Ihre beruflichen Pläne oder religiösen Anschauungen geändert.
+PROBE: Erzählen Sie mir mehr darüber.
+
+### Q82 | borderline | criterion_3
+MAIN: Sie gaben an, Sie haben schon oft plötzlich Ihr freundschaftliches Umfeld oder Ihre sexuelle Identität geändert.
+PROBE: Erzählen Sie mir mehr darüber.
+
+### Q83 | borderline | criterion_4
+MAIN: Sie gaben an, Sie haben oft impulsiv gehandelt.
+PROBE: Bei welchen Dingen?
+PROBE: Sachen zu kaufen, die Sie sich nicht leisten können? Sexuellen Kontakt mit Menschen zu haben, die Sie kaum kennen, oder ungeschützten Verkehr zu haben? Zu viel Alkohol zu trinken oder Drogen zu nehmen? Rücksichtslos Auto zu fahren? Unkontrolliert zu essen?
+PROBE: Erzählen Sie mir davon. Wie oft kommt das vor?
+
+### Q84 | borderline | criterion_5
+MAIN: Sie gaben an, Sie haben jemals versucht, sich selbst zu verletzen oder umzubringen, oder haben Sie daran gedacht.
+PROBE: Wann ist das zum letzten Mal vorgekommen?
+
+### Q85 | borderline | criterion_5
+MAIN: Sie gaben an, Sie haben sich jemals absichtlich geschnitten, Brandwunden zugefügt oder geritzt.
+PROBE: Erzählen Sie mir davon.
+
+### Q86 | borderline | criterion_6
+MAIN: Sie gaben an, Ihre Stimmung ändert sich oft innerhalb eines Tages, je nachdem, was gerade in Ihrem Leben passiert.
+PROBE: Erzählen Sie mir davon. Welche Dinge verändern Ihre Stimmung?
+PROBE: Wie lange dauert Ihre „schlechte" Stimmung normalerweise an?
+
+### Q87 | borderline | criterion_7
+MAIN: Sie gaben an, Sie fühlen sich oft innerlich leer.
+PROBE: Erzählen Sie mir mehr darüber.
+
+### Q88 | borderline | criterion_8
+MAIN: Sie gaben an, Sie haben oft Wutausbrüche oder werden so ärgerlich, dass Sie die Kontrolle verlieren.
+PROBE: Nennen Sie mir einige Beispiele.
+
+### Q89 | borderline | criterion_8
+MAIN: Sie gaben an, Sie schlagen andere Personen, wenn Sie wütend sind, oder werfen mit Dingen nach ihnen.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Kommt das oft vor?
+
+### Q90 | borderline | criterion_8
+MAIN: Sie gaben an, selbst Kleinigkeiten können Sie sehr wütend machen.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Kommt das oft vor?
+
+### Q91 | borderline | criterion_9
+MAIN: Sie gaben an, Sie werden, wenn Sie sich sehr aufregen, anderen gegenüber argwöhnisch, oder fühlen sich losgelöst von Ihrem Körper oder empfinden die Dinge als unwirklich.
+PROBE: In welchen Situationen ist das passiert?
+
+# ============================================================
+# ANTISOZIALE PERSÖNLICHKEITSSTÖRUNG (ANTISOCIAL)
+# Items 92-106: Childhood conduct disorder (Criterion C)
+# Threshold: 2 of 15 criteria for conduct disorder
+# ============================================================
+# Note: Items 92-104 refer to behavior before age 15.
+# Items 105-106 refer to behavior before age 13.
+
+### Q92 | antisocial | criterion_C1
+MAIN: Sie gaben an, Sie haben vor dem Alter von 15 Jahren andere Kinder schikaniert, bedroht oder eingeschüchtert.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Wie oft ist das vorgekommen?
+
+### Q93 | antisocial | criterion_C2
+MAIN: Sie gaben an, Sie haben vor dem Alter von 15 Jahren Schlägereien angefangen.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Wie oft ist das vorgekommen?
+
+### Q94 | antisocial | criterion_C3
+MAIN: Sie gaben an, Sie haben vor dem Alter von 15 Jahren jemanden mit einer Waffe verletzt oder bedroht, wie z.B. mit einem Schlagstock, einem Ziegelstein, einer zerbrochenen Flasche, einem Messer oder einer Schusswaffe.
+PROBE: Erzählen Sie mir davon.
+
+### Q95 | antisocial | criterion_C4
+MAIN: Sie gaben an, Sie haben vor dem Alter von 15 Jahren jemandem grausame Dinge angetan, die ihm/ihr körperliche Schmerzen oder Leid zufügten.
+PROBE: Was haben Sie getan?
+
+### Q96 | antisocial | criterion_C5
+MAIN: Sie gaben an, Sie haben vor dem Alter von 15 Jahren Tiere absichtlich gequält.
+PROBE: Was haben Sie getan?
+
+### Q97 | antisocial | criterion_C6
+MAIN: Sie gaben an, Sie haben vor dem Alter von 15 Jahren jemanden ausgeraubt, überfallen oder haben jemandem etwas gewaltsam weggenommen, indem Sie ihn/sie bedroht haben.
+PROBE: Erzählen Sie mir davon.
+
+### Q98 | antisocial | criterion_C7
+MAIN: Sie gaben an, Sie haben vor dem Alter von 15 Jahren jemanden zu sexuellen Handlungen gezwungen.
+PROBE: Erzählen Sie mir davon.
+
+### Q99 | antisocial | criterion_C8
+MAIN: Sie gaben an, Sie haben vor dem Alter von 15 Jahren absichtlich Feuer gelegt.
+PROBE: Erzählen Sie mir davon.
+PROBE: Haben Sie gehofft, schweren Schaden zu verursachen?
+
+### Q100 | antisocial | criterion_C9
+MAIN: Sie gaben an, Sie haben vor dem Alter von 15 Jahren vorsätzlich Dinge zerstört, die nicht Ihnen gehörten.
+PROBE: Was haben Sie getan?
+
+### Q101 | antisocial | criterion_C10
+MAIN: Sie gaben an, Sie sind vor dem Alter von 15 Jahren in Häuser, andere Gebäude oder Autos eingebrochen.
+PROBE: Erzählen Sie mir davon.
+
+### Q102 | antisocial | criterion_C11
+MAIN: Sie gaben an, Sie haben vor dem Alter von 15 Jahren häufig gelogen oder andere reingelegt, um etwas zu bekommen, was Sie wollten, oder um etwas zu umgehen, was Sie nicht tun wollten.
+PROBE: Nennen Sie mir einige Beispiele.
+PROBE: Wie oft haben Sie das getan?
+
+### Q103 | antisocial | criterion_C12
+MAIN: Sie gaben an, Sie haben vor dem Alter von 15 Jahren Ladendiebstahl begangen, jemanden bestohlen oder eine Unterschrift gefälscht, um an Geld zu kommen.
+PROBE: Nennen Sie mir einige Beispiele.
+
+### Q104 | antisocial | criterion_C13
+MAIN: Sie gaben an, Sie sind vor dem Alter von 15 Jahren von zu Hause weggelaufen und über Nacht weggeblieben.
+PROBE: Ist das mehr als einmal vorgekommen?
+PROBE: Bei wem haben Sie zu der Zeit gewohnt?
+
+### Q105 | antisocial | criterion_C14
+MAIN: Sie gaben an, Sie sind vor dem Alter von 13 Jahren abends oft wesentlich später nach Hause gekommen, als Sie durften.
+PROBE: Wie oft?
+
+### Q106 | antisocial | criterion_C15
+MAIN: Sie gaben an, Sie haben vor dem Alter von 13 Jahren oft die Schule geschwänzt.
+PROBE: Wie oft?
+
+# ============================================================
+# ANTISOZIALE PERSÖNLICHKEITSSTÖRUNG — ADULT CRITERIA (Criterion A)
+# These are additional interview questions NOT tied to screening items.
+# They are asked if conduct disorder criteria (above) are met.
+# Threshold: 3 of 7 for adult antisocial behavior
+# ============================================================
+
+### QA1 | antisocial | criterion_A1
+MAIN: Nun, seitdem Sie 15 Jahre alt sind... Haben Sie Dinge getan, die gegen das Gesetz verstoßen — auch wenn Sie nicht erwischt wurden — wie Diebstahl, Identitätsdiebstahl, falsche Schecks ausgestellt oder Prostitution.
+PROBE: Wurden Sie jemals wegen irgendetwas verhaftet?
+
+### QA2 | antisocial | criterion_A2
+MAIN: Lügen Sie oft, um zu erreichen, was Sie wollen, oder einfach nur aus Spaß?
+PROBE: Haben Sie schon einmal einen falschen Namen benutzt oder so getan, als seien Sie jemand anderes?
+PROBE: Haben Sie andere „hereingelegt", um Ihr Ziel zu erreichen?
+
+### QA3 | antisocial | criterion_A3
+MAIN: Tun Sie oft Dinge aus dem Moment heraus, ohne dabei an die Folgen für sich oder andere zu denken?
+PROBE: Erzählen Sie mir davon. Welche Art von Dingen?
+PROBE: Haben Sie jemals Ihren Arbeitsplatz aufgegeben, ohne bereits einen neuen zu haben? Wie oft?
+PROBE: Sind Sie schon einmal irgendwo ausgezogen, ohne bereits einen neuen Wohnsitz zu haben? Erzählen Sie mir davon.
+
+### QA4 | antisocial | criterion_A4
+MAIN: Waren Sie in Schlägereien verwickelt?
+PROBE: Wie oft?
+PROBE: Haben Sie jemals so wütend, dass Sie andere Personen, einschließlich Partner, geschlagen oder mit Gegenständen nach ihnen geworfen haben? Wie oft?
+PROBE: Haben Sie jemals ein Kind heftig geschlagen? Erzählen Sie mir davon. Wie oft?
+PROBE: Haben Sie jemanden körperlich bedroht oder geschlagen? Erzählen Sie mir davon. Wie oft?
+
+### QA5 | antisocial | criterion_A5
+MAIN: Sind Sie schon einmal Auto gefahren, während Sie betrunken waren oder Drogen genommen hatten?
+PROBE: Wie viele Straftaten haben Sie für Fahren mit überhöhter Geschwindigkeit bekommen oder waren Sie an Autounfällen beteiligt?
+PROBE: Benutzen Sie immer Kondome, wenn Sie mit einer Person, die Sie nicht gut kennen, Geschlechtsverkehr haben?
+
+### QA6 | antisocial | criterion_A6
+MAIN: Wie lange haben Sie in den letzten fünf Jahren nicht gearbeitet?
+PROBE: Hätten Sie die Möglichkeit gehabt, zu arbeiten?
+PROBE: Wenn Sie Arbeit hatten, haben Sie da oft gefehlt? Warum?
+PROBE: Hatten Sie je Schulden bei anderen, die Sie nicht zurückgezahlt haben? Wie oft?
+PROBE: Haben Sie versäumt, Unterhalt für ein Kind zu zahlen bzw. Kindern oder Anderen, die von Ihnen abhängig sind, Geld zu geben?
+
+### QA7 | antisocial | criterion_A7
+MAIN: Was denken Sie über Ihre antisozialen Handlungen?
+PROBE: Denken Sie, dass das, was Sie getan haben, in irgendeiner Weise falsch war?
+PROBE: Denken Sie, dass die Handlungen gerechtfertigt waren?
+PROBE: Denken Sie, dass die andere Person das verdient hat?
