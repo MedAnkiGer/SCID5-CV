@@ -85,10 +85,18 @@ def list_sessions() -> list[dict]:
     return sessions
 
 
+def scoped_criterion_id(disorder_key: str, crit_id: str) -> str:
+    """Create a globally unique criterion ID: 'disorder:criterion_id'."""
+    return f"{disorder_key}:{crit_id}"
+
+
 def get_flagged_criteria(session: dict, questions: dict) -> list[dict]:
     """From screening responses, find all criteria that need exploration.
 
     Returns list of dicts with criterion_id and criterion data, deduplicated.
+    Criterion IDs are scoped as 'disorder:criterion_N' to avoid collisions.
+    Builds exploration data from screening items (exploration_main_de/en,
+    exploration_probes_de/en) and falls back to disorder criteria if populated.
     """
     flagged_criteria = {}
 
@@ -106,17 +114,54 @@ def get_flagged_criteria(session: dict, questions: dict) -> list[dict]:
             continue
 
         for crit_id in item["maps_to_criteria"]:
-            if crit_id in flagged_criteria:
+            scoped_id = scoped_criterion_id(disorder_key, crit_id)
+            if scoped_id in flagged_criteria:
                 continue
+
+            # Try disorder-level criteria first (may be empty)
             crit_data = disorder["criteria"].get(crit_id)
+
             if crit_data:
-                flagged_criteria[crit_id] = {
-                    "criterion_id": crit_id,
+                flagged_criteria[scoped_id] = {
+                    "criterion_id": scoped_id,
                     "disorder": disorder_key,
                     **crit_data,
                 }
+            else:
+                # Build from screening item's exploration fields
+                entry = {
+                    "criterion_id": scoped_id,
+                    "disorder": disorder_key,
+                    "screening_item_id": item_id,
+                }
+                # Map exploration fields → standard followup/description fields
+                for lang in ("de", "en"):
+                    main = item.get(f"exploration_main_{lang}")
+                    if main:
+                        entry[f"followup_question_{lang}"] = main
+                        entry[f"description_{lang}"] = main
+                    probes = item.get(f"exploration_probes_{lang}")
+                    if probes:
+                        entry[f"probes_{lang}"] = probes
+                flagged_criteria[scoped_id] = entry
 
     return list(flagged_criteria.values())
+
+
+def get_criteria_for_disorder(disorder_key: str, questions: dict) -> set[str]:
+    """Get all scoped criterion IDs for a disorder from criteria dict or screening items."""
+    disorder = questions["disorders"].get(disorder_key, {})
+    crit_ids = set()
+    for crit_id in disorder.get("criteria", {}):
+        crit_ids.add(scoped_criterion_id(disorder_key, crit_id))
+
+    # Also gather criterion IDs referenced by screening items for this disorder
+    for item in questions.get("screening_items", {}).values():
+        if item.get("disorder") == disorder_key:
+            for crit_id in item.get("maps_to_criteria", []):
+                crit_ids.add(scoped_criterion_id(disorder_key, crit_id))
+
+    return crit_ids
 
 
 def compute_disorder_verdicts(session: dict, questions: dict) -> dict:
@@ -124,7 +169,7 @@ def compute_disorder_verdicts(session: dict, questions: dict) -> dict:
     verdicts = {}
 
     for disorder_key, disorder_data in questions["disorders"].items():
-        criteria = disorder_data["criteria"]
+        criteria = get_criteria_for_disorder(disorder_key, questions)
         threshold = disorder_data["threshold"]
         criteria_met = 0
         has_unresolved = False

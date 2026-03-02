@@ -13,6 +13,19 @@ from fpdf import FPDF
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
+def _get_criteria_ids(disorder_key: str, questions: dict) -> set[str]:
+    """Get all scoped criterion IDs (disorder:criterion_N) for a disorder."""
+    disorder = questions.get("disorders", {}).get(disorder_key, {})
+    crit_ids = set()
+    for crit_id in disorder.get("criteria", {}):
+        crit_ids.add(f"{disorder_key}:{crit_id}")
+    for item in questions.get("screening_items", {}).values():
+        if item.get("disorder") == disorder_key:
+            for crit_id in item.get("maps_to_criteria", []):
+                crit_ids.add(f"{disorder_key}:{crit_id}")
+    return crit_ids
+
+
 class ClinicalReport(FPDF):
     """Custom PDF class for SCID-5-PD clinical reports."""
 
@@ -119,14 +132,14 @@ def generate_pdf(session: dict, questions: dict, output_path: Path) -> Path:
 
         # Check if any criteria are unresolved
         has_unresolved = False
-        for crit_id in disorder_data.get("criteria", {}):
+        for crit_id in _get_criteria_ids(disorder_key, questions):
             if crit_id in exploration_results and exploration_results[crit_id].get("unresolved"):
                 has_unresolved = True
                 break
 
         status = "Needs Review" if has_unresolved else ("Explored" if disorder_key in disorder_verdicts else "Not Explored")
 
-        row = [_safe_text(name), cluster, str(criteria_met), str(threshold), diag_str, status]
+        row = [_safe_text(name), _safe_text(str(cluster or "--")), str(criteria_met), _safe_text(str(threshold or "--")), diag_str, status]
         for i, val in enumerate(row):
             pdf.cell(col_widths[i], 7, val, border=1, align="C")
         pdf.ln()
@@ -142,8 +155,9 @@ def generate_pdf(session: dict, questions: dict, output_path: Path) -> Path:
     lang_suffix = f"_{lang}"
 
     for disorder_key, disorder_data in questions.get("disorders", {}).items():
+        crit_ids = _get_criteria_ids(disorder_key, questions)
         criteria = disorder_data.get("criteria", {})
-        explored_criteria = {cid: exploration_results[cid] for cid in criteria if cid in exploration_results}
+        explored_criteria = {cid: exploration_results[cid] for cid in crit_ids if cid in exploration_results}
 
         if not explored_criteria:
             continue

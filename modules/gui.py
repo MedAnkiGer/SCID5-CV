@@ -786,6 +786,16 @@ class OverviewGUI(QWidget):
         self.rerecord_btn.setEnabled(False)
         action_layout.addWidget(self.rerecord_btn)
 
+        # [DEV] Skip all remaining overview questions
+        self.skip_all_btn = QPushButton("⚡ Skip All")
+        self.skip_all_btn.setToolTip("Skip all remaining overview questions (dev/test mode)")
+        self.skip_all_btn.setStyleSheet(
+            "font-size: 12px; font-weight: bold; background-color: #FF8F00;"
+            " color: white; border: none; border-radius: 4px; padding: 6px 14px;"
+        )
+        self.skip_all_btn.clicked.connect(self._skip_all)
+        action_layout.addWidget(self.skip_all_btn)
+
         action_layout.addStretch()
 
         # Continue / intro-only button
@@ -918,6 +928,31 @@ class OverviewGUI(QWidget):
 
         self._queue_index += 1
         self._update_display()
+
+    def _skip_all(self):
+        """[DEV] Fill all remaining overview questions with placeholder answers and finish."""
+        self._stop_threads()
+        while self._queue_index < len(self._question_queue):
+            q = self._question_queue[self._queue_index]
+            if q["id"] not in self.responses:
+                qtype = q.get("type", "open")
+                if qtype == "yes_no":
+                    self.responses[q["id"]] = {"answer": False, "transcript": None}
+                elif qtype == "intro":
+                    self.responses[q["id"]] = {"answer": None, "transcript": None}
+                else:
+                    self.responses[q["id"]] = {"answer": "[skipped]", "transcript": "[skipped]"}
+            self._queue_index += 1
+            # Rebuild queue in case yes_no answers open branches
+            self._rebuild_queue()
+            # Re-find our position (queue may have changed)
+            for i, qq in enumerate(self._question_queue):
+                if qq["id"] not in self.responses:
+                    self._queue_index = i
+                    break
+            else:
+                self._queue_index = len(self._question_queue)
+        self.finished.emit(self.responses)
 
     def _stop_threads(self):
         if self.recorder.is_recording:
