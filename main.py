@@ -227,8 +227,12 @@ def run_interview(session: dict, questions: dict) -> None:
             current_id = next_question_id(current_id, "skip", q, order)
             continue
 
-        print(f"\n[{current_id}] {q.get('criterion_label', '')}")
-        print(f"  Speaking: {question_text[:80]}{'...' if len(question_text) > 80 else ''}")
+        # Display question clearly
+        print(f"\n{'─' * 60}")
+        print(f"[{current_id}]  {q.get('criterion_label', '')}")
+        print(f"{'─' * 60}")
+        print(f"{question_text}")
+        print()
 
         # 1. Speak the question
         speak_text(question_text, language=lang)
@@ -236,7 +240,6 @@ def run_interview(session: dict, questions: dict) -> None:
         # 2. Record + transcribe patient response
         result = record_and_transcribe(language=lang)
         transcript = result["transcript"]
-        print(f"  Transcript: {transcript[:120]}")
 
         # 3. Rate — skip if no DSM-5 criterion to rate against (e.g. Overview questions)
         has_criterion = bool((q.get("criterion_description") or "").strip())
@@ -260,11 +263,10 @@ def run_interview(session: dict, questions: dict) -> None:
             # 4. Clarify if unresolved (max 1 attempt)
             if rating.get("unresolved") and rating.get("clarifying_question"):
                 clarifying_q = rating["clarifying_question"]
-                print(f"  Clarifying: {clarifying_q[:80]}")
+                print(f"\n  [Follow-up]: {clarifying_q}")
                 speak_text(clarifying_q, language=lang)
                 clarif_result = record_and_transcribe(language=lang)
                 clarification_transcript = clarif_result["transcript"]
-                print(f"  Clarification transcript: {clarification_transcript[:80]}")
                 rating = evaluate_with_clarification(
                     transcript, clarification_transcript, q, lang
                 )

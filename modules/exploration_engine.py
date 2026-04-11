@@ -28,7 +28,7 @@ CHANNELS = 1
 DTYPE = "int16"
 MAX_DURATION_S = 300  # Maximum recording duration (seconds)
 SILENCE_THRESHOLD_RMS = 300   # RMS amplitude below which is considered silence
-SILENCE_DURATION_S = 60.0     # Seconds of silence before auto-stop
+SILENCE_DURATION_S = 8.0      # Seconds of silence before auto-stop
 BLOCK_SIZE = 1024             # Frames per callback block
 
 # TTS settings
@@ -152,6 +152,7 @@ class AudioRecorder:
         """
         self.start_recording()
         start_time = time.time()
+        print("  [Recording... speak now. Stops after silence.]", flush=True)
 
         try:
             while self._is_recording:
@@ -160,6 +161,9 @@ class AudioRecorder:
                     break
         finally:
             self.stop_recording()
+
+        duration = round(time.time() - start_time, 1)
+        print(f"  [Recording stopped — {duration}s captured]", flush=True)
 
         if not self._frames:
             return np.array([], dtype=np.int16)
@@ -245,7 +249,9 @@ def record_and_transcribe(language: str = "de") -> dict:
         }
 
     wav_bytes = recorder.get_wav_bytes(audio_data)
+    print("  [Transcribing...]", flush=True)
     transcript = transcribe_audio(wav_bytes, language=language)
+    print(f"  [Transcript]: {transcript}", flush=True)
 
     return {
         "transcript": transcript,
