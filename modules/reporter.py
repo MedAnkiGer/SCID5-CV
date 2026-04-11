@@ -193,12 +193,15 @@ def generate_pdf(session: dict, questions: dict, output_path: Path) -> Path:
                 pdf.multi_cell(0, 4, _safe(f'Patient: "{transcript[:600]}"'),
                                new_x="LMARGIN", new_y="NEXT")
 
-            # Clarification transcript
-            clarif = result.get("clarification_transcript") or ""
-            if clarif.strip():
+            # Follow-up exchanges (multi-round clarification)
+            for i, ex in enumerate(result.get("exchanges") or [], 1):
+                pdf.set_font("Helvetica", "BI", 8)
+                pdf.set_x(lm + 5)
+                pdf.multi_cell(0, 4, _safe(f"Follow-up {i}: {ex.get('question', '')}"),
+                               new_x="LMARGIN", new_y="NEXT")
                 pdf.set_font("Helvetica", "I", 8)
                 pdf.set_x(lm + 5)
-                pdf.multi_cell(0, 4, _safe(f'Clarification: "{clarif[:400]}"'),
+                pdf.multi_cell(0, 4, _safe(f'Answer {i}: "{ex.get("answer", "")[:400]}"'),
                                new_x="LMARGIN", new_y="NEXT")
 
             # AI rationale

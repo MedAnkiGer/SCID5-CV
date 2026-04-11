@@ -156,9 +156,13 @@ def evaluate_with_clarification(
     language: str = "de",
     model: str = DEFAULT_MODEL,
 ) -> dict:
-    """Re-evaluate with both original and clarification transcripts combined."""
+    """Re-evaluate with original + one clarification transcript combined.
+
+    For multi-round clarification, build the full context string externally
+    using _build_full_context() in main.py and call evaluate_response() directly.
+    """
     combined = (
-        f"[Original response]\n{original_transcript}\n\n"
-        f"[Clarification response]\n{clarification_transcript}"
+        f"[Initial answer]\n{original_transcript}\n\n"
+        f"[Follow-up answer 1]\n{clarification_transcript}"
     )
     return evaluate_response(combined, criterion, language, model)

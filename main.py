@@ -7,8 +7,9 @@ The INTERVIEW stage walks through SCID-5-CV modules and questions in order,
 using JSON-defined branching logic. For each question:
   1. TTS reads the question aloud
   2. Patient answers verbally (recorded + Whisper-transcribed)
-  3. Claude rates the answer (0/1/2 or +/-)
-  4. If unresolved, one clarifying question is asked
+  3. Claude rates the answer (+/-/?)
+  4. If unresolved, follow-up questions are asked (up to MAX_CLARIFICATIONS)
+     with full conversation context passed to the rater each round
   5. Branching logic advances to the next question or skips ahead
 
 Sessions are resumable: state is saved after every question.
@@ -23,6 +24,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).parent / ".env", override=True)
+
+MAX_CLARIFICATIONS = 3   # max follow-up rounds per criterion
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 QUESTIONS_PATH = DATA_DIR / "questions.json"
@@ -158,6 +161,27 @@ def list_sessions() -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# Interview runner helpers
+# ---------------------------------------------------------------------------
+
+def _build_full_context(initial_transcript: str, exchanges: list[dict]) -> str:
+    """Format the full conversation so far for the rater.
+
+    Args:
+        initial_transcript: The patient's first answer.
+        exchanges: List of {"question": str, "answer": str} follow-up rounds.
+
+    Returns:
+        A single string with all exchanges labelled, ready to pass as transcript.
+    """
+    parts = [f"[Initial answer]\n{initial_transcript}"]
+    for i, ex in enumerate(exchanges, 1):
+        parts.append(f"[Follow-up question {i}]\n{ex['question']}")
+        parts.append(f"[Follow-up answer {i}]\n{ex['answer']}")
+    return "\n\n".join(parts)
+
+
+# ---------------------------------------------------------------------------
 # Interview runner
 # ---------------------------------------------------------------------------
 
@@ -249,48 +273,63 @@ def run_interview(session: dict, questions: dict) -> None:
 
         # 3. Rate — skip if no DSM-5 criterion to rate against (e.g. Overview questions)
         has_criterion = bool((q.get("criterion_description") or "").strip())
-        clarification_transcript = None
 
         if not has_criterion:
             # Demographic / contextual question — just record the answer
             session["interview_responses"][current_id] = {
                 "score": "N/A",
                 "transcript": transcript,
-                "clarification_transcript": None,
+                "exchanges": [],
                 "unresolved": False,
                 "reasoning": "",
             }
         else:
-            print(f"  Rating...")
+            # Build a running list of (question, answer) exchanges so the rater
+            # always has full conversation context when re-rating.
+            exchanges = []   # list of {"question": str, "answer": str}
+
+            # Initial rating against the main transcript
+            print("  Rating...")
             rating = evaluate_response(transcript, q, lang)
             score = rating.get("score", "?")
-            print(f"  Score: {score}")
+            print(f"  Score: {score}  conf: {rating.get('confidence', '?')}")
 
-            # 4. Clarify if unresolved (max 1 attempt)
-            if rating.get("unresolved") and rating.get("clarifying_question"):
+            # 4. Multi-round clarification loop
+            for attempt in range(MAX_CLARIFICATIONS):
+                if not rating.get("unresolved") or not rating.get("clarifying_question"):
+                    break
+
                 clarifying_q = rating["clarifying_question"]
-                print(f"\n  [Follow-up]: {clarifying_q}")
+                print(f"\n  [Follow-up {attempt + 1}/{MAX_CLARIFICATIONS}]: {clarifying_q}")
                 speak_text(clarifying_q, language=lang)
+
+                # Record clarification with redo support
                 while True:
                     clarif_result = record_and_transcribe(language=lang)
-                    clarification_transcript = clarif_result["transcript"]
+                    clarif_transcript = clarif_result["transcript"]
                     choice = input("  [Enter] Accept  |  [r] Redo: ").strip().lower()
                     if choice != "r":
                         break
                     speak_text(clarifying_q, language=lang)
-                rating = evaluate_with_clarification(
-                    transcript, clarification_transcript, q, lang
-                )
+
+                exchanges.append({"question": clarifying_q, "answer": clarif_transcript})
+
+                # Re-rate with full accumulated context
+                full_context = _build_full_context(transcript, exchanges)
+                rating = evaluate_response(full_context, q, lang)
                 score = rating.get("score", "?")
-                print(f"  Score after clarification: {score}")
+                print(f"  Score: {score}  conf: {rating.get('confidence', '?')}")
+
+            if rating.get("unresolved"):
+                print("  [Max follow-ups reached — flagged for clinician review]")
 
             # 5. Save response
             session["interview_responses"][current_id] = {
                 "score": score,
                 "transcript": transcript,
-                "clarification_transcript": clarification_transcript,
+                "exchanges": exchanges,
                 "unresolved": rating.get("unresolved", False),
-                "reasoning": rating.get("reasoning", ""),
+                "reasoning": rating.get("rationale", "") or rating.get("reasoning", ""),
             }
         session["current_question_id"] = current_id
         save_session(session)
