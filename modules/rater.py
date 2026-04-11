@@ -1,7 +1,7 @@
-"""Stage 3: Rater Agent — Claude API scoring of patient transcripts.
+"""Rater Agent — Claude API scoring of patient transcripts against SCID-5-CV criteria.
 
-Sends each transcript + criterion description to Claude for clinical scoring.
-Returns structured JSON with score, rationale, confidence, and unresolved flag.
+Sends each transcript + criterion to Claude for clinical scoring.
+Returns structured JSON with score (+/-/?), rationale, confidence, unresolved flag.
 """
 
 import json
@@ -11,7 +11,7 @@ from pathlib import Path
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent.parent / ".env", override=True)
 
 PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
 SYSTEM_PROMPT_PATH = PROMPTS_DIR / "rater_system_prompt.txt"
@@ -28,20 +28,34 @@ def _load_system_prompt() -> str:
 def _build_user_message(transcript: str, criterion: dict, language: str) -> str:
     """Build the user message for the Claude API call."""
     lang_suffix = "_de" if language == "de" else "_en"
-    criterion_desc = criterion.get(f"description{lang_suffix}", criterion.get("description_en", ""))
-    followup_q = criterion.get(f"followup_question{lang_suffix}", "")
 
-    return f"""## Criterion
+    # Criterion description — prefer localised, fall back to English
+    criterion_desc = (
+        criterion.get(f"criterion_description{lang_suffix}")
+        or criterion.get("criterion_description", "")
+    )
+
+    # The question text that was read to the patient
+    interviewer_text = (
+        criterion.get(f"interviewer_text{lang_suffix}")
+        or criterion.get("interviewer_text", "")
+    )
+
+    criterion_label = criterion.get("criterion_label", criterion.get("id", ""))
+
+    return f"""## Criterion Being Rated
+{criterion_label}
+
+## DSM-5 Criterion (exact wording)
 {criterion_desc}
 
-## Interview Question Asked
-{followup_q}
+## Question Asked to Patient
+{interviewer_text}
 
-## Patient Transcript
+## Patient's Transcript
 {transcript}
 
-## Instructions
-Rate this criterion based on the transcript above. Respond with JSON only."""
+Rate whether this criterion is met (+), not met (-), or unclear (?). Respond with JSON only."""
 
 
 def evaluate_response(
@@ -59,9 +73,9 @@ def evaluate_response(
         model: Claude model to use.
 
     Returns:
-        dict with keys: score ("?"|0|1|2), rationale (str), confidence (float),
+        dict with keys: score ("+"|"-"|"?"), rationale (str), confidence (float),
         unresolved (bool), clarifying_question (str|None).
-        Score "?" means inadequate information — exploration was inconclusive.
+        Score "?" means inadequate information — a clarifying question is needed.
     """
     client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     system_prompt = _load_system_prompt()
@@ -117,17 +131,17 @@ def evaluate_response(
     result.setdefault("unresolved", False)
     result.setdefault("clarifying_question", None)
 
-    # Normalize score: "?" stays as-is, numeric scores clamped to 0-2
-    score = result["score"]
-    if score == "?" or score == "?":
-        result["score"] = "?"
-        result["unresolved"] = True  # "?" always means unresolved
+    # Normalize score to "+", "-", or "?"
+    score = str(result.get("score", "?")).strip()
+    if score in ("+", "YES", "yes", "1", "true", "True"):
+        result["score"] = "+"
+        result["unresolved"] = False
+    elif score in ("-", "NO", "no", "0", "false", "False"):
+        result["score"] = "-"
+        result["unresolved"] = False
     else:
-        try:
-            result["score"] = max(0, min(2, int(score)))
-        except (ValueError, TypeError):
-            result["score"] = "?"
-            result["unresolved"] = True
+        result["score"] = "?"
+        result["unresolved"] = True
 
     result["confidence"] = max(0.0, min(1.0, float(result["confidence"])))
 

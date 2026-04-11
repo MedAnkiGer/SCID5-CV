@@ -1,31 +1,70 @@
-"""Stage 2: Exploration Engine — Audio recording and Whisper transcription.
+"""Interview Engine — TTS question delivery, audio recording, and Whisper transcription.
 
-For each criterion flagged 'Yes' in screening, presents the follow-up question,
-records the patient's verbal response, and transcribes via OpenAI Whisper API.
+For each SCID-5-CV criterion:
+  1. speak_text()        — AI reads question aloud (OpenAI TTS, never saved to disk)
+  2. record_blocking()   — records patient's verbal answer (silence-detection)
+  3. transcribe_audio()  — sends WAV bytes to Whisper API
+
 Audio is never saved to disk (privacy).
 """
 
 import io
 import os
-import struct
 import time
 import wave
+from pathlib import Path
+
 
 import numpy as np
 import sounddevice as sd
 from openai import OpenAI
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent.parent / ".env", override=True)
 
 # Audio settings
-SAMPLE_RATE = 16000  # 16kHz mono — optimal for Whisper
+SAMPLE_RATE = 16000   # 16kHz mono — optimal for Whisper
 CHANNELS = 1
 DTYPE = "int16"
 MAX_DURATION_S = 300  # Maximum recording duration (seconds)
-SILENCE_THRESHOLD_RMS = 300  # RMS amplitude below which is considered silence
-SILENCE_DURATION_S = 60.0  # Seconds of silence before auto-stop (allows long reflective pauses)
-BLOCK_SIZE = 1024  # Frames per callback block
+SILENCE_THRESHOLD_RMS = 300   # RMS amplitude below which is considered silence
+SILENCE_DURATION_S = 60.0     # Seconds of silence before auto-stop
+BLOCK_SIZE = 1024             # Frames per callback block
+
+# TTS settings
+TTS_SAMPLE_RATE = 24000   # OpenAI PCM output is 24kHz
+TTS_MODEL = "tts-1"
+TTS_VOICE_EN = "nova"
+TTS_VOICE_DE = "nova"     # swap to another voice when DE is ready
+
+
+def speak_text(text: str, language: str = "en") -> None:
+    """Read text aloud using OpenAI TTS. Blocks until playback finishes.
+
+    Uses raw PCM output for direct playback — no file is written to disk.
+
+    Args:
+        text: Text to speak.
+        language: 'en' or 'de' (selects voice).
+    """
+    if not text or not text.strip():
+        return
+
+    voice = TTS_VOICE_DE if language == "de" else TTS_VOICE_EN
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    # response_format="pcm" → raw signed 16-bit PCM at 24000 Hz, mono
+    response = client.audio.speech.create(
+        model=TTS_MODEL,
+        voice=voice,
+        input=text,
+        response_format="pcm",
+    )
+
+    pcm_bytes = response.content
+    audio = np.frombuffer(pcm_bytes, dtype=np.int16).astype(np.float32) / 32768.0
+    sd.play(audio, samplerate=TTS_SAMPLE_RATE)
+    sd.wait()
 
 
 class AudioRecorder:

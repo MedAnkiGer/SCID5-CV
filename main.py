@@ -1,9 +1,17 @@
-"""SCID-5-PD AI Pipeline — Main Orchestrator.
+"""SCID-5-CV AI Interview Pipeline — Main Orchestrator.
 
-State machine that ties all stages together:
-    INIT -> SELF_REPORT -> OVERVIEW -> EXPLORATION -> EVALUATION -> REPORT -> COMPLETE
+State machine:
+    INIT → INTERVIEW → EVALUATION → REPORT → COMPLETE
 
-Sessions are resumable: state is saved after every step.
+The INTERVIEW stage walks through SCID-5-CV modules and questions in order,
+using JSON-defined branching logic. For each question:
+  1. TTS reads the question aloud
+  2. Patient answers verbally (recorded + Whisper-transcribed)
+  3. Claude rates the answer (0/1/2 or +/-)
+  4. If unresolved, one clarifying question is asked
+  5. Branching logic advances to the next question or skips ahead
+
+Sessions are resumable: state is saved after every question.
 """
 
 import json
@@ -14,35 +22,101 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent / ".env", override=True)
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 QUESTIONS_PATH = DATA_DIR / "questions.json"
-OVERVIEW_PATH = DATA_DIR / "overview_questions.json"
 SESSIONS_DIR = DATA_DIR / "sessions"
 
+
+# ---------------------------------------------------------------------------
+# Questions loading and indexing
+# ---------------------------------------------------------------------------
 
 def load_questions() -> dict:
     with open(QUESTIONS_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
-def load_overview_questions() -> dict:
-    with open(OVERVIEW_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+def build_question_index(questions: dict) -> tuple[dict, list[str]]:
+    """Build a flat {question_id: question_data} index and ordered ID list.
+
+    Returns:
+        index: dict mapping question_id → question dict (with 'module_id' injected)
+        order: list of question IDs in interview order (across all modules)
+    """
+    index: dict[str, dict] = {}
+    order: list[str] = []
+    for module in questions["modules"]:
+        for q in module["questions"]:
+            q = dict(q)  # shallow copy so we can annotate
+            q["module_id"] = module["id"]
+            q["module_name_en"] = module.get("name_en", "")
+            q["module_name_de"] = module.get("name_de", "")
+            index[q["id"]] = q
+            order.append(q["id"])
+    return index, order
 
 
-def create_session(language: str = "de") -> dict:
+def next_question_id(
+    current_id: str,
+    score: str | int,
+    q_data: dict,
+    order: list[str],
+) -> str | None:
+    """Determine the next question ID given the current score and branching rules.
+
+    Args:
+        current_id: ID of the question just answered.
+        score: The score assigned (e.g. '+', '-', 0, 1, 2, 'YES', 'NO').
+        q_data: The question dict (may contain 'skip_if').
+        order: Ordered list of all question IDs.
+
+    Returns:
+        Next question ID, or None if the interview is complete.
+    """
+    skip_if = q_data.get("skip_if")
+
+    # Build a set of aliases for the score so we match whatever key Opus wrote
+    score_str = str(score)
+    score_aliases = {score_str}
+    if score_str == "+":
+        score_aliases |= {"YES", "yes", "1", "true"}
+    elif score_str == "-":
+        score_aliases |= {"NO", "no", "0", "false"}
+
+    # skip_if can be a dict {score_key: target_id} or a free-text note (string)
+    if isinstance(skip_if, dict):
+        target = None
+        for alias in score_aliases:
+            if alias in skip_if:
+                target = skip_if[alias]
+                break
+        if target and target in set(order):
+            return target
+
+    # Default: advance to the next question in order
+    try:
+        idx = order.index(current_id)
+    except ValueError:
+        return None
+    return order[idx + 1] if idx + 1 < len(order) else None
+
+
+# ---------------------------------------------------------------------------
+# Session management
+# ---------------------------------------------------------------------------
+
+def create_session(language: str = "en") -> dict:
     session_id = str(uuid.uuid4())[:8]
     session = {
         "session_id": session_id,
         "created_at": datetime.now().isoformat(),
         "language": language,
         "stage": "INIT",
-        "screening_responses": {},
-        "overview_responses": {},
-        "exploration_results": {},
-        "disorder_verdicts": {},
+        "current_question_id": None,   # pointer into the interview
+        "interview_responses": {},      # {question_id: response_dict}
+        "module_summaries": {},         # filled at EVALUATION
     }
     save_session(session)
     return session
@@ -55,19 +129,16 @@ def session_dir(session: dict) -> Path:
 def save_session(session: dict) -> None:
     sdir = session_dir(session)
     sdir.mkdir(parents=True, exist_ok=True)
-    path = sdir / "state.json"
-    with open(path, "w", encoding="utf-8") as f:
+    with open(sdir / "state.json", "w", encoding="utf-8") as f:
         json.dump(session, f, indent=2, ensure_ascii=False)
 
 
 def load_session(session_id: str) -> dict:
-    path = SESSIONS_DIR / session_id / "state.json"
-    with open(path, "r", encoding="utf-8") as f:
+    with open(SESSIONS_DIR / session_id / "state.json", "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def list_sessions() -> list[dict]:
-    """List all existing sessions with basic info."""
     sessions = []
     if not SESSIONS_DIR.exists():
         return sessions
@@ -80,268 +151,182 @@ def list_sessions() -> list[dict]:
                 "session_id": s["session_id"],
                 "created_at": s["created_at"],
                 "stage": s["stage"],
+                "current_question_id": s.get("current_question_id"),
             })
     sessions.sort(key=lambda s: s["created_at"])
     return sessions
 
 
-def scoped_criterion_id(disorder_key: str, crit_id: str) -> str:
-    """Create a globally unique criterion ID: 'disorder:criterion_id'."""
-    return f"{disorder_key}:{crit_id}"
+# ---------------------------------------------------------------------------
+# Interview runner
+# ---------------------------------------------------------------------------
 
+def run_interview(session: dict, questions: dict) -> None:
+    """Run the SCID-5-CV interview: TTS → record → transcribe → rate → branch.
 
-def get_flagged_criteria(session: dict, questions: dict) -> list[dict]:
-    """From screening responses, find all criteria that need exploration.
-
-    Returns list of dicts with criterion_id and criterion data, deduplicated.
-    Criterion IDs are scoped as 'disorder:criterion_N' to avoid collisions.
-    Builds exploration data from screening items (exploration_main_de/en,
-    exploration_probes_de/en) and falls back to disorder criteria if populated.
+    Modifies session in place; saves after every question.
     """
-    flagged_criteria = {}
-
-    for item_id, answered_yes in session["screening_responses"].items():
-        if not answered_yes:
-            continue
-
-        item = questions["screening_items"].get(item_id)
-        if not item:
-            continue
-
-        disorder_key = item["disorder"]
-        disorder = questions["disorders"].get(disorder_key)
-        if not disorder:
-            continue
-
-        for crit_id in item["maps_to_criteria"]:
-            scoped_id = scoped_criterion_id(disorder_key, crit_id)
-            if scoped_id in flagged_criteria:
-                continue
-
-            # Try disorder-level criteria first (may be empty)
-            crit_data = disorder["criteria"].get(crit_id)
-
-            if crit_data:
-                flagged_criteria[scoped_id] = {
-                    "criterion_id": scoped_id,
-                    "disorder": disorder_key,
-                    **crit_data,
-                }
-            else:
-                # Build from screening item's exploration fields
-                entry = {
-                    "criterion_id": scoped_id,
-                    "disorder": disorder_key,
-                    "screening_item_id": item_id,
-                }
-                # Map exploration fields → standard followup/description fields
-                for lang in ("de", "en"):
-                    main = item.get(f"exploration_main_{lang}")
-                    if main:
-                        entry[f"followup_question_{lang}"] = main
-                        entry[f"description_{lang}"] = main
-                    probes = item.get(f"exploration_probes_{lang}")
-                    if probes:
-                        entry[f"probes_{lang}"] = probes
-                flagged_criteria[scoped_id] = entry
-
-    return list(flagged_criteria.values())
-
-
-def get_criteria_for_disorder(disorder_key: str, questions: dict) -> set[str]:
-    """Get all scoped criterion IDs for a disorder from criteria dict or screening items."""
-    disorder = questions["disorders"].get(disorder_key, {})
-    crit_ids = set()
-    for crit_id in disorder.get("criteria", {}):
-        crit_ids.add(scoped_criterion_id(disorder_key, crit_id))
-
-    # Also gather criterion IDs referenced by screening items for this disorder
-    for item in questions.get("screening_items", {}).values():
-        if item.get("disorder") == disorder_key:
-            for crit_id in item.get("maps_to_criteria", []):
-                crit_ids.add(scoped_criterion_id(disorder_key, crit_id))
-
-    return crit_ids
-
-
-def compute_disorder_verdicts(session: dict, questions: dict) -> dict:
-    """Compute diagnosis verdicts based on exploration results."""
-    verdicts = {}
-
-    for disorder_key, disorder_data in questions["disorders"].items():
-        criteria = get_criteria_for_disorder(disorder_key, questions)
-        threshold = disorder_data["threshold"]
-        criteria_met = 0
-        has_unresolved = False
-
-        for crit_id in criteria:
-            result = session["exploration_results"].get(crit_id)
-            if result and result.get("score") == 2:
-                criteria_met += 1
-            if result and (result.get("unresolved") or result.get("score") == "?"):
-                has_unresolved = True
-
-        # Only set diagnosis if disorder was actually explored
-        explored = any(crit_id in session["exploration_results"] for crit_id in criteria)
-
-        if explored:
-            verdicts[disorder_key] = {
-                "criteria_met": criteria_met,
-                "threshold": threshold,
-                "diagnosis": criteria_met >= threshold,
-                "has_unresolved": has_unresolved,
-            }
-
-    return verdicts
-
-
-def run_gui_pipeline(session: dict, questions: dict) -> None:
-    """Run all GUI phases in a single persistent window.
-
-    Handles INIT → SELF_REPORT → OVERVIEW → EXPLORATION → (CLARIFICATION →) EVALUATION
-    without closing the window between phases.
-    """
-    from PySide6.QtWidgets import QApplication
-    from modules.gui import PipelineWindow, SelfReportGUI, ExplorationGUI
+    from modules.exploration_engine import speak_text, record_and_transcribe
     from modules.rater import evaluate_response, evaluate_with_clarification
 
-    app = QApplication.instance() or QApplication(sys.argv)
-    window = PipelineWindow()
-    window.setWindowTitle("SCID-5-PD Assessment")
-    window.setMinimumSize(700, 500)
-    window.show()
+    lang = session.get("language", "en")
+    index, order = build_question_index(questions)
 
-    overview_data = load_overview_questions()
+    # Determine starting question (resume support)
+    start_id = session.get("current_question_id") or (order[0] if order else None)
+    if start_id is None:
+        print("No questions found in questions.json.")
+        return
 
-    def start_overview():
-        """Run the overview interview (demographics, psychopathology, personality)."""
-        from modules.gui import OverviewGUI
+    # Skip already-answered questions
+    if start_id in session["interview_responses"]:
+        answered = set(session["interview_responses"].keys())
+        start_id = next((qid for qid in order if qid not in answered), None)
 
-        gui = OverviewGUI(
-            overview_data,
-            language=session.get("language", "de"),
-            existing_responses=session.get("overview_responses", {}),
-        )
+    if start_id is None:
+        print("All questions already answered.")
+        session["stage"] = "EVALUATION"
+        save_session(session)
+        return
 
-        def on_overview_finished(responses: dict):
-            session["overview_responses"] = responses
-            session["stage"] = "OVERVIEW"
+    session["stage"] = "INTERVIEW"
+    current_id = start_id
+
+    while current_id is not None:
+        q = index.get(current_id)
+        if q is None:
+            print(f"[WARN] Question ID '{current_id}' not found in index. Stopping.")
+            break
+
+        # Skip if already answered (resume path)
+        if current_id in session["interview_responses"]:
+            result = session["interview_responses"][current_id]
+            score = result.get("score", "-")
+            current_id = next_question_id(current_id, score, q, order)
+            continue
+
+        # --- Announce module transition ---
+        prev_id = order[order.index(current_id) - 1] if order.index(current_id) > 0 else None
+        if prev_id and index.get(prev_id, {}).get("module_id") != q["module_id"]:
+            module_name = q.get(f"module_name_{lang}") or q.get("module_name_en", "")
+            if module_name:
+                print(f"\n=== Module {q['module_id']}: {module_name} ===")
+
+        # --- Build text to speak ---
+        question_text = q.get(f"interviewer_text_{lang}") or q.get("interviewer_text", "")
+        if not question_text:
+            # No text to read (e.g. a summary/scoring-only criterion) — skip playback
+            print(f"[{current_id}] No interviewer text. Skipping to next.")
+            session["interview_responses"][current_id] = {
+                "score": "skip",
+                "transcript": "",
+                "clarification_transcript": None,
+            }
+            session["current_question_id"] = current_id
             save_session(session)
-            print(f"\nOverview complete. {len(responses)} responses collected.")
-            session["stage"] = "EXPLORATION"
-            save_session(session)
-            start_exploration()
+            current_id = next_question_id(current_id, "skip", q, order)
+            continue
 
-        gui.finished.connect(on_overview_finished)
-        window.show_widget(gui)
+        print(f"\n[{current_id}] {q.get('criterion_label', '')}")
+        print(f"  Speaking: {question_text[:80]}{'...' if len(question_text) > 80 else ''}")
 
-    def start_exploration():
-        flagged = get_flagged_criteria(session, questions)
-        remaining = [c for c in flagged if c["criterion_id"] not in session["exploration_results"]]
+        # 1. Speak the question
+        speak_text(question_text, language=lang)
 
-        if not remaining:
-            print("No criteria to explore. Moving to evaluation.")
-            session["stage"] = "EVALUATION"
-            save_session(session)
-            window.close()
-            return
+        # 2. Record + transcribe patient response
+        result = record_and_transcribe(language=lang)
+        transcript = result["transcript"]
+        print(f"  Transcript: {transcript[:120]}")
 
-        gui = ExplorationGUI(remaining, language=session.get("language", "de"))
-        state = {"phase": "exploration"}
+        # 3. Rate — skip if no DSM-5 criterion to rate against (e.g. Overview questions)
+        has_criterion = bool((q.get("criterion_description") or "").strip())
+        clarification_transcript = None
 
-        def on_finished(transcripts: dict):
-            if state["phase"] == "exploration":
-                for crit_id, transcript in transcripts.items():
-                    crit_data = next((c for c in flagged if c["criterion_id"] == crit_id), None)
-                    if not crit_data:
-                        continue
-                    print(f"Rating criterion {crit_id}...")
-                    result = evaluate_response(transcript, crit_data, session.get("language", "de"))
-                    result["transcript"] = transcript
-                    result["clarification_transcript"] = None
-                    session["exploration_results"][crit_id] = result
-                    save_session(session)
+        if not has_criterion:
+            # Demographic / contextual question — just record the answer
+            session["interview_responses"][current_id] = {
+                "score": "N/A",
+                "transcript": transcript,
+                "clarification_transcript": None,
+                "unresolved": False,
+                "reasoning": "",
+            }
+        else:
+            print(f"  Rating...")
+            rating = evaluate_response(transcript, q, lang)
+            score = rating.get("score", "?")
+            print(f"  Score: {score}")
 
-                needs_clarification = []
-                for crit_id, result in session["exploration_results"].items():
-                    if result.get("unresolved") and not result.get("clarification_transcript"):
-                        crit_data = next((c for c in flagged if c["criterion_id"] == crit_id), None)
-                        if crit_data:
-                            needs_clarification.append({
-                                **crit_data,
-                                "clarifying_question": result.get("clarifying_question"),
-                            })
+            # 4. Clarify if unresolved (max 1 attempt)
+            if rating.get("unresolved") and rating.get("clarifying_question"):
+                clarifying_q = rating["clarifying_question"]
+                print(f"  Clarifying: {clarifying_q[:80]}")
+                speak_text(clarifying_q, language=lang)
+                clarif_result = record_and_transcribe(language=lang)
+                clarification_transcript = clarif_result["transcript"]
+                print(f"  Clarification transcript: {clarification_transcript[:80]}")
+                rating = evaluate_with_clarification(
+                    transcript, clarification_transcript, q, lang
+                )
+                score = rating.get("score", "?")
+                print(f"  Score after clarification: {score}")
 
-                if needs_clarification:
-                    print(f"\n{len(needs_clarification)} criterion/criteria need clarification.")
-                    state["phase"] = "clarification"
-                    gui.load_criteria(needs_clarification)
-                else:
-                    session["stage"] = "EVALUATION"
-                    save_session(session)
-                    window.close()
+            # 5. Save response
+            session["interview_responses"][current_id] = {
+                "score": score,
+                "transcript": transcript,
+                "clarification_transcript": clarification_transcript,
+                "unresolved": rating.get("unresolved", False),
+                "reasoning": rating.get("reasoning", ""),
+            }
+        session["current_question_id"] = current_id
+        save_session(session)
 
-            elif state["phase"] == "clarification":
-                for crit_id, clarification_transcript in transcripts.items():
-                    original_result = session["exploration_results"].get(crit_id, {})
-                    original_transcript = original_result.get("transcript", "")
-                    crit_data = next((c for c in flagged if c["criterion_id"] == crit_id), None)
-                    if not crit_data:
-                        continue
-                    print(f"Re-rating criterion {crit_id} with clarification...")
-                    new_result = evaluate_with_clarification(
-                        original_transcript, clarification_transcript, crit_data, session.get("language", "de")
-                    )
-                    new_result["transcript"] = original_transcript
-                    new_result["clarification_transcript"] = clarification_transcript
-                    session["exploration_results"][crit_id] = new_result
-                    save_session(session)
+        # 6. Branch to next question (use stored score so both paths are covered)
+        score = session["interview_responses"][current_id]["score"]
+        current_id = next_question_id(current_id, score, q, order)
 
-                session["stage"] = "EVALUATION"
-                save_session(session)
-                window.close()
+    session["stage"] = "EVALUATION"
+    save_session(session)
+    print("\nInterview complete.")
 
-        gui.finished.connect(on_finished)
-        window.show_widget(gui)
 
-    stage = session["stage"]
-    if stage == "INIT":
-        self_report = SelfReportGUI(questions, session)
-
-        def on_self_report_finished(responses):
-            session["screening_responses"] = responses
-            session["stage"] = "SELF_REPORT"
-            save_session(session)
-            flagged_count = len(get_flagged_criteria(session, questions))
-            print(f"\n{flagged_count} criteria flagged for exploration.")
-            start_overview()
-
-        self_report.finished.connect(on_self_report_finished)
-        window.show_widget(self_report)
-    elif stage in ("SELF_REPORT",):
-        # Resume into overview
-        start_overview()
-    elif stage in ("OVERVIEW", "EXPLORATION"):
-        # Resume into exploration
-        start_exploration()
-
-    app.exec()
-
+# ---------------------------------------------------------------------------
+# Evaluation
+# ---------------------------------------------------------------------------
 
 def run_evaluation(session: dict, questions: dict) -> None:
-    """Stage: Compute disorder verdicts from scored criteria."""
-    verdicts = compute_disorder_verdicts(session, questions)
-    session["disorder_verdicts"] = verdicts
+    """Summarise scores per module and flag which modules meet criteria."""
+    responses = session["interview_responses"]
+    summaries = {}
+
+    for module in questions["modules"]:
+        mid = module["id"]
+        q_ids = [q["id"] for q in module["questions"]]
+        answered = {qid: responses[qid] for qid in q_ids if qid in responses}
+        threshold_count = sum(1 for r in answered.values() if r.get("score") == "+")
+        summaries[mid] = {
+            "module_name": module.get("name_en", mid),
+            "questions_answered": len(answered),
+            "threshold_count": threshold_count,
+        }
+
+    session["module_summaries"] = summaries
     session["stage"] = "REPORT"
     save_session(session)
-    print("\nDisorder Verdicts:")
-    for d, v in verdicts.items():
-        status = "MEETS CRITERIA" if v["diagnosis"] else "Does not meet"
-        print(f"  {d}: {v['criteria_met']}/{v['threshold']} — {status}")
 
+    print("\nModule Summaries:")
+    for mid, s in summaries.items():
+        print(f"  {mid} — {s['module_name']}: {s['threshold_count']} threshold items "
+              f"({s['questions_answered']} answered)")
+
+
+# ---------------------------------------------------------------------------
+# Report
+# ---------------------------------------------------------------------------
 
 def run_report(session: dict, questions: dict) -> None:
-    """Stage 4: Generate clinical PDF report."""
+    """Generate the clinical PDF report."""
     from modules.reporter import generate_pdf
 
     output_path = session_dir(session) / "report.pdf"
@@ -351,36 +336,37 @@ def run_report(session: dict, questions: dict) -> None:
     print(f"\nReport saved to: {output_path}")
 
 
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
 def main():
     questions = load_questions()
-
-    # Check for existing sessions
-    sessions = list_sessions()
     session = None
 
+    sessions = list_sessions()
     if sessions:
         incomplete = [s for s in sessions if s["stage"] != "COMPLETE"]
         if incomplete:
-            print("Incomplete sessions found:")
+            print("Incomplete sessions:")
             for i, s in enumerate(incomplete):
-                print(f"  [{i}] {s['session_id']} — Stage: {s['stage']} — {s['created_at']}")
-            print(f"  [n] Start new session")
-
+                print(f"  [{i}] {s['session_id']} — Stage: {s['stage']} "
+                      f"— Q: {s.get('current_question_id', '—')} — {s['created_at']}")
+            print("  [n] New session")
             choice = input("\nResume or new? ").strip().lower()
             if choice != "n" and choice.isdigit() and int(choice) < len(incomplete):
                 session = load_session(incomplete[int(choice)]["session_id"])
                 print(f"Resuming session {session['session_id']} at stage {session['stage']}")
 
     if session is None:
-        print("Starting new session...")
-        session = create_session(language="de")
-        print(f"Session ID: {session['session_id']}")
+        lang = input("Language [en/de, default en]: ").strip().lower() or "en"
+        session = create_session(language=lang)
+        print(f"New session: {session['session_id']}")
 
-    # State machine
     stage = session["stage"]
 
-    if stage in ("INIT", "SELF_REPORT", "OVERVIEW", "EXPLORATION"):
-        run_gui_pipeline(session, questions)
+    if stage in ("INIT", "INTERVIEW"):
+        run_interview(session, questions)
         stage = session["stage"]
 
     if stage == "EVALUATION":
@@ -392,8 +378,7 @@ def main():
         stage = session["stage"]
 
     if stage == "COMPLETE":
-        print("\nSession complete!")
-        print(f"Report: {session_dir(session) / 'report.pdf'}")
+        print(f"\nSession complete. Report: {session_dir(session) / 'report.pdf'}")
 
 
 if __name__ == "__main__":
