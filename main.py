@@ -237,9 +237,15 @@ def run_interview(session: dict, questions: dict) -> None:
         # 1. Speak the question
         speak_text(question_text, language=lang)
 
-        # 2. Record + transcribe patient response
-        result = record_and_transcribe(language=lang)
-        transcript = result["transcript"]
+        # 2. Record + transcribe — loop until accepted
+        while True:
+            result = record_and_transcribe(language=lang)
+            transcript = result["transcript"]
+            choice = input("  [Enter] Accept  |  [r] Redo: ").strip().lower()
+            if choice != "r":
+                break
+            print("  Replaying question...")
+            speak_text(question_text, language=lang)
 
         # 3. Rate — skip if no DSM-5 criterion to rate against (e.g. Overview questions)
         has_criterion = bool((q.get("criterion_description") or "").strip())
@@ -265,8 +271,13 @@ def run_interview(session: dict, questions: dict) -> None:
                 clarifying_q = rating["clarifying_question"]
                 print(f"\n  [Follow-up]: {clarifying_q}")
                 speak_text(clarifying_q, language=lang)
-                clarif_result = record_and_transcribe(language=lang)
-                clarification_transcript = clarif_result["transcript"]
+                while True:
+                    clarif_result = record_and_transcribe(language=lang)
+                    clarification_transcript = clarif_result["transcript"]
+                    choice = input("  [Enter] Accept  |  [r] Redo: ").strip().lower()
+                    if choice != "r":
+                        break
+                    speak_text(clarifying_q, language=lang)
                 rating = evaluate_with_clarification(
                     transcript, clarification_transcript, q, lang
                 )
