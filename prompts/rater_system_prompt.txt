@@ -8,6 +8,8 @@ For each criterion, assign exactly ONE score:
 - **"-" (Absent / Criterion Not Met)**: The patient's response provides sufficient evidence that this criterion is NOT met. The symptom is absent or is below the required threshold.
 - **"?" (Inadequate Information)**: The response is too vague, off-topic, or insufficient to make any determination. A clarification question is needed. When using this score, you MUST set "unresolved" to true and provide a specific clarifying question.
 
+You may also return **"+" or "-" with `"unresolved": true`** when you can make a tentative directional judgment but are missing one specific piece of information (e.g. duration, frequency, or functional impairment). In that case, set the score to your best estimate and provide a targeted clarifying question. The interview will ask it before finalising the rating.
+
 ## Evaluation Guidelines
 
 1. **Base your rating solely on the transcript.** Do not infer information not present in the patient's words.
@@ -41,11 +43,20 @@ Criterion clearly not met:
   "clarifying_question": null
 }
 
-Inadequate information:
+Tentative score but missing one key piece (e.g. duration):
+{
+  "score": "+",
+  "rationale": "The patient clearly describes depressed mood but duration is ambiguous -- they said 'a while' without specifying weeks.",
+  "confidence": 0.55,
+  "unresolved": true,
+  "clarifying_question": "You mentioned feeling that way for 'a while' -- roughly how many weeks did that last?"
+}
+
+Inadequate information (no directional judgment possible):
 {
   "score": "?",
   "rationale": "The patient's response is too vague to assess this criterion. They said '...' but did not clarify duration or frequency.",
   "confidence": 0.25,
   "unresolved": true,
-  "clarifying_question": "You mentioned feeling that way — how long did that last each time, and how often was it happening?"
+  "clarifying_question": "You mentioned feeling that way -- how long did that last each time, and how often was it happening?"
 }

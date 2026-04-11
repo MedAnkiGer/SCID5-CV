@@ -132,16 +132,17 @@ def evaluate_response(
     result.setdefault("clarifying_question", None)
 
     # Normalize score to "+", "-", or "?"
+    # Do NOT override Claude's unresolved flag for + and - scores:
+    # Claude may give a tentative +/- with low confidence and still flag
+    # that a clarifying question is needed (e.g. duration threshold unclear).
     score = str(result.get("score", "?")).strip()
     if score in ("+", "YES", "yes", "1", "true", "True"):
         result["score"] = "+"
-        result["unresolved"] = False
     elif score in ("-", "NO", "no", "0", "false", "False"):
         result["score"] = "-"
-        result["unresolved"] = False
     else:
         result["score"] = "?"
-        result["unresolved"] = True
+        result["unresolved"] = True  # ? always means unresolved
 
     result["confidence"] = max(0.0, min(1.0, float(result["confidence"])))
 
