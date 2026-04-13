@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+{% block title %}Interview — SCID-5-CV{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+
+    {# Progress bar #}
+    <div class="mb-3">
+      {% set pct = (question._progress_done / question._progress_total * 100) | int if question._progress_total else 0 %}
+      <div class="d-flex justify-content-between small text-muted mb-1">
+        <span>{{ question.module_name_en }}</span>
+        <span>{{ question._progress_done }} / {{ question._progress_total }}</span>
+      </div>
+      <div class="progress" style="height:6px">
+        <div class="progress-bar" style="width:{{ pct }}%"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center"
+           style="background:var(--teal-light);color:var(--teal-dark)">
+        <span class="fw-semibold">{{ question.id }} &mdash; {{ question.criterion_label or "" }}</span>
+        <div class="d-flex gap-2">
+          <form method="post" action="/session/{{ session.session_id }}/interview/skip-module"
+                onsubmit="return confirm('Skip remaining {{ question.module_name_en }} questions?')">
+            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Skip to next module">
+              Skip Module &raquo;
+            </button>
+          </form>
+          <button id="tts-btn" class="btn btn-sm btn-outline-teal" title="Read aloud">
+            &#9654; Read Aloud
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body">
+        {# Interviewer text #}
+        <p class="lead mb-2">{{ question.interviewer_text }}</p>
+
+        {% if question.notes %}
+        <p class="text-muted small fst-italic mb-2">{{ question.notes }}</p>
+        {% endif %}
+
+        {% if has_criterion %}
+        <div class="alert alert-info small py-2 mb-3">
+          <strong>Criterion:</strong> {{ question.criterion_description }}
+        </div>
+        {% endif %}
+
+        {% if not has_criterion %}
+        {# ---- Non-clinical question: just record + skip ---- #}
+        <div id="overview-section">
+          <div class="d-flex gap-2 align-items-center mb-3">
+            <button id="record-btn" class="btn btn-outline-danger btn-sm">&#9210; Record</button>
+            <button id="stop-btn" class="btn btn-outline-secondary btn-sm" style="display:none">&#9209; Stop</button>
+            <span id="rec-indicator" class="text-danger fw-bold small" style="display:none">&#9679; Recording&hellip;</span>
+            <span id="transcribing-indicator" class="small text-muted" style="display:none">
+              <span class="spinner-border spinner-border-sm"></span> Transcribing&hellip;
+            </span>
+          </div>
+          <textarea id="transcript" class="form-control form-control-sm mb-3" rows="2"
+                    placeholder="Patient response (optional)"></textarea>
+          <form method="post" action="/session/{{ session.session_id }}/interview/skip">
+            <input type="hidden" name="question_id" value="{{ question.id }}">
+            <input type="hidden" name="transcript" id="skip-transcript" value="">
+            <button type="submit" class="btn btn-teal" onclick="document.getElementById('skip-transcript').value=document.getElementById('transcript').value">
+              Continue &rarr;
+            </button>
+          </form>
+        </div>
+
+        {% else %}
+        {# ---- Clinical question: record, rate, clarify ---- #}
+        <div id="clinical-section">
+          {# Recording controls #}
+          <div class="d-flex gap-2 align-items-center mb-3">
+            <button id="record-btn" class="btn btn-outline-danger">&#9210; Record Answer</button>
+            <button id="stop-btn" class="btn btn-outline-secondary" style="display:none">&#9209; Stop</button>
+            <span id="rec-indicator" class="text-danger fw-bold" style="display:none">&#9679; Recording&hellip;</span>
+            <span id="transcribing-indicator" class="small text-muted" style="display:none">
+              <span class="spinner-border spinner-border-sm"></span> Transcribing&hellip;
+            </span>
+          </div>
+
+          {# Transcript #}
+          <div id="transcript-section" style="display:none">
+            <label class="form-label small fw-semibold">Transcript</label>
+            <textarea id="transcript" class="form-control mb-2" rows="3"></textarea>
+            <button id="rate-btn" class="btn btn-teal btn-sm">Submit for Rating</button>
+            <span id="rating-indicator" class="small text-muted ms-2" style="display:none">
+              <span class="spinner-border spinner-border-sm"></span> Rating&hellip;
+            </span>
+          </div>
+
+          {# Rating result #}
+          <div id="result-section" class="mt-3" style="display:none">
+            <div class="alert py-2 mb-2" id="result-alert">
+              <div class="d-flex justify-content-between align-items-center">
+                <span><strong>Score:</strong> <span id="result-score"></span></span>
+                <span class="small text-muted">Confidence: <span id="result-confidence"></span></span>
+              </div>
+              <p class="small mb-0 mt-1" id="result-rationale"></p>
+            </div>
+          </div>
+
+          {# Clarification section #}
+          <div id="clarification-section" class="mt-3" style="display:none">
+            <div class="alert alert-warning py-2 mb-2">
+              <strong>Follow-up needed:</strong>
+              <p class="mb-0" id="clarification-question"></p>
+            </div>
+            <div class="d-flex gap-2 align-items-center mb-2">
+              <button id="clarify-record-btn" class="btn btn-outline-danger btn-sm">&#9210; Record Clarification</button>
+              <button id="clarify-stop-btn" class="btn btn-outline-secondary btn-sm" style="display:none">&#9209; Stop</button>
+              <span id="clarify-rec-indicator" class="text-danger fw-bold small" style="display:none">&#9679; Recording&hellip;</span>
+              <span id="clarify-transcribing" class="small text-muted" style="display:none">
+                <span class="spinner-border spinner-border-sm"></span> Transcribing&hellip;
+              </span>
+            </div>
+            <textarea id="clarify-transcript" class="form-control form-control-sm mb-2" rows="2"
+                      style="display:none"></textarea>
+            <button id="clarify-submit-btn" class="btn btn-teal btn-sm" style="display:none">Submit Clarification</button>
+          </div>
+
+          {# Accept / Next #}
+          <div id="accept-section" class="mt-3" style="display:none">
+            <form method="post" action="/session/{{ session.session_id }}/interview/accept">
+              <button type="submit" class="btn btn-teal">Next Question &rarr;</button>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/recorder.js?v=2"></script>
+<script>
+(function() {
+  const SID = "{{ session.session_id }}";
+  const QID = "{{ question.id }}";
+  const HAS_CRITERION = {{ "true" if has_criterion else "false" }};
+  const MAX_CLAR = {{ max_clarifications }};
+
+  // ---- TTS ----
+  const ttsBtn = document.getElementById("tts-btn");
+  let ttsAudio = null;
+  ttsBtn.addEventListener("click", async () => {
+    if (ttsAudio) { ttsAudio.pause(); ttsAudio = null; }
+    ttsBtn.disabled = true;
+    ttsBtn.textContent = "Loading...";
+    try {
+      const res = await fetch(`/session/${SID}/interview/tts`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({text: {{ question.interviewer_text | tojson }}})
+      });
+      if (!res.ok) throw new Error("TTS failed");
+      const blob = await res.blob();
+      ttsAudio = new Audio(URL.createObjectURL(blob));
+      ttsAudio.play();
+    } catch(e) { console.error(e); }
+    ttsBtn.disabled = false;
+    ttsBtn.innerHTML = "&#9654; Read Aloud";
+  });
+
+  // ---- Recorder helper ----
+  function setupRecorder(recordBtn, stopBtn, recInd, transcInd, onTranscript) {
+    let recorder = null;
+    recordBtn.addEventListener("click", async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+        recorder = new Recorder(stream);
+        recorder.start();
+        recordBtn.style.display = "none";
+        stopBtn.style.display = "";
+        recInd.style.display = "";
+      } catch(e) {
+        console.error("Recording failed:", e);
+        alert("Could not access microphone: " + e.message);
+      }
+    });
+    stopBtn.addEventListener("click", async () => {
+      if (!recorder) return;
+      const blob = await recorder.stop();
+      stopBtn.style.display = "none";
+      recInd.style.display = "none";
+      transcInd.style.display = "";
+      // Send to server for transcription
+      const ext = blob.type.includes("ogg") ? "ogg" : blob.type.includes("mp4") ? "mp4" : "webm";
+      const fd = new FormData();
+      fd.append("audio", blob, `audio.${ext}`);
+      try {
+        const res = await fetch(`/session/${SID}/interview/transcribe`, {method:"POST", body: fd});
+        const data = await res.json();
+        onTranscript(data.transcript || "");
+      } catch(e) {
+        console.error("Transcription failed:", e);
+        onTranscript("");
+      }
+      transcInd.style.display = "none";
+      recordBtn.style.display = "";
+    });
+  }
+
+  // ---- Non-clinical path ----
+  if (!HAS_CRITERION) {
+    const ta = document.getElementById("transcript");
+    setupRecorder(
+      document.getElementById("record-btn"),
+      document.getElementById("stop-btn"),
+      document.getElementById("rec-indicator"),
+      document.getElementById("transcribing-indicator"),
+      (text) => { ta.value = (ta.value ? ta.value + "\n" : "") + text; }
+    );
+    return;
+  }
+
+  // ---- Clinical path state ----
+  let exchanges = [];
+  let clarRound = 0;
+  const transcriptSec = document.getElementById("transcript-section");
+  const transcriptTA  = document.getElementById("transcript");
+  const rateBtn       = document.getElementById("rate-btn");
+  const ratingInd     = document.getElementById("rating-indicator");
+  const resultSec     = document.getElementById("result-section");
+  const resultAlert   = document.getElementById("result-alert");
+  const resultScore   = document.getElementById("result-score");
+  const resultConf    = document.getElementById("result-confidence");
+  const resultRat     = document.getElementById("result-rationale");
+  const clarSec       = document.getElementById("clarification-section");
+  const clarQ         = document.getElementById("clarification-question");
+  const clarTA        = document.getElementById("clarify-transcript");
+  const clarSubmit    = document.getElementById("clarify-submit-btn");
+  const acceptSec     = document.getElementById("accept-section");
+
+  // Initial recording
+  setupRecorder(
+    document.getElementById("record-btn"),
+    document.getElementById("stop-btn"),
+    document.getElementById("rec-indicator"),
+    document.getElementById("transcribing-indicator"),
+    (text) => {
+      transcriptTA.value = text;
+      transcriptSec.style.display = "";
+    }
+  );
+
+  // Rating
+  async function doRate(transcript, exch, round) {
+    rateBtn.disabled = true;
+    ratingInd.style.display = "";
+    const fd = new FormData();
+    fd.append("question_id", QID);
+    fd.append("transcript", transcript);
+    fd.append("clarification_round", round);
+    fd.append("exchanges", JSON.stringify(exch));
+    const res = await fetch(`/session/${SID}/interview/rate`, {method:"POST", body: fd});
+    const data = await res.json();
+    ratingInd.style.display = "none";
+    rateBtn.disabled = false;
+    return data;
+  }
+
+  function showResult(data) {
+    const score = data.score || "?";
+    resultScore.textContent = score;
+    resultConf.textContent = (data.confidence != null) ? data.confidence : "—";
+    resultRat.textContent = data.rationale || data.reasoning || "";
+    resultAlert.className = "alert py-2 mb-2 " + (
+      score === "+" ? "alert-danger" : score === "-" ? "alert-success" : "alert-secondary"
+    );
+    resultSec.style.display = "";
+  }
+
+  function handleRatingResponse(data) {
+    if (data.status === "needs_clarification") {
+      clarRound = data.clarification_round;
+      clarQ.textContent = data.clarifying_question;
+      clarSec.style.display = "";
+      clarTA.style.display = "none";
+      clarTA.value = "";
+      clarSubmit.style.display = "none";
+    } else {
+      // Only show score/confidence when fully resolved
+      showResult(data);
+      acceptSec.style.display = "";
+    }
+  }
+
+  rateBtn.addEventListener("click", async () => {
+    const data = await doRate(transcriptTA.value, exchanges, clarRound);
+    handleRatingResponse(data);
+  });
+
+  // Clarification recording
+  setupRecorder(
+    document.getElementById("clarify-record-btn"),
+    document.getElementById("clarify-stop-btn"),
+    document.getElementById("clarify-rec-indicator"),
+    document.getElementById("clarify-transcribing"),
+    (text) => {
+      clarTA.value = text;
+      clarTA.style.display = "";
+      clarSubmit.style.display = "";
+    }
+  );
+
+  clarSubmit.addEventListener("click", async () => {
+    const lastClarQ = clarQ.textContent;
+    exchanges.push({question: lastClarQ, answer: clarTA.value});
+    clarSec.style.display = "none";
+    const data = await doRate(transcriptTA.value, exchanges, clarRound);
+    handleRatingResponse(data);
+  });
+
+})();
+</script>
+{% endblock %}

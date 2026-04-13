@@ -203,6 +203,34 @@ class AudioRecorder:
         return total_frames / self.sample_rate
 
 
+def transcribe_audio_bytes(audio_bytes: bytes, ext: str = "webm", language: str = "de") -> str:
+    """Send audio bytes (any format Whisper supports) for transcription.
+
+    Args:
+        audio_bytes: Raw audio file content.
+        ext: File extension hint for Whisper (webm, ogg, wav, mp3, etc.).
+        language: Language code ('de' or 'en').
+
+    Returns:
+        Transcribed text string.
+    """
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    audio_file = io.BytesIO(audio_bytes)
+    audio_file.name = f"recording.{ext}"
+    prompt = (
+        "This is a clinical interview response. The patient may answer with numbers, "
+        "short phrases, or brief sentences."
+    )
+    response = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=audio_file,
+        language=language,
+        response_format="text",
+        prompt=prompt,
+    )
+    return response.strip()
+
+
 def transcribe_audio(wav_bytes: bytes, language: str = "de") -> str:
     """Send WAV audio bytes to OpenAI Whisper API for transcription.
 

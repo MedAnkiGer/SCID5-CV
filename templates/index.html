@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}SCID-5-CV{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+
+    <div class="card mb-4">
+      <div class="card-body text-center py-5">
+        <h3 class="mb-2">SCID-5-CV Assessment</h3>
+        <p class="text-muted mb-4">Structured Clinical Interview for DSM-5 &mdash; Clinician Version</p>
+        <form method="post" action="/session/new" class="d-inline-flex gap-2">
+          <select name="language" class="form-select form-select-sm" style="width:auto">
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+          </select>
+          <button type="submit" class="btn btn-teal px-4">New Session</button>
+        </form>
+      </div>
+    </div>
+
+    {% if sessions %}
+    <h6 class="text-muted mb-3">Previous Sessions</h6>
+    {% for s in sessions %}
+    <div class="card mb-2">
+      <div class="card-body py-3 d-flex justify-content-between align-items-center">
+        <a href="/session/{{ s.session_id }}" class="text-decoration-none text-dark flex-grow-1">
+          <strong>{{ s.session_id }}</strong>
+          <span class="text-muted small ms-2">{{ s.created_at[:16] }}</span>
+        </a>
+        <div class="d-flex align-items-center gap-2">
+          <span class="stage-badge">{{ s.stage }}</span>
+          <form method="post" action="/session/{{ s.session_id }}/archive"
+                onsubmit="return confirm('Archive session {{ s.session_id }}?')">
+            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Archive session">Archive</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

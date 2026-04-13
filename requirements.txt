@@ -4,4 +4,7 @@ openai
 sounddevice
 scipy
 fpdf2
-PySide6
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
