@@ -23,9 +23,11 @@
         <div class="d-flex gap-2">
           <form method="post" action="/session/{{ session.session_id }}/interview/skip-module"
                 onsubmit="return confirm('Skip remaining {{ question.module_name_en }} questions?')">
-            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Skip to next module">
-              Skip Module &raquo;
-            </button>
+            <button type="submit" class="btn btn-sm btn-outline-secondary">Skip Module &raquo;</button>
+          </form>
+          <form method="post" action="/session/{{ session.session_id }}/interview/finish"
+                onsubmit="return confirm('Skip all remaining questions and go to the report?')">
+            <button type="submit" class="btn btn-sm btn-outline-warning">Finish &amp; Report</button>
           </form>
           <button id="tts-btn" class="btn btn-sm btn-outline-teal" title="Read aloud">
             &#9654; Read Aloud
@@ -172,6 +174,7 @@
   function setupRecorder(recordBtn, stopBtn, recInd, transcInd, onTranscript) {
     let recorder = null;
     recordBtn.addEventListener("click", async () => {
+      if (ttsAudio) { ttsAudio.pause(); ttsAudio = null; }
       try {
         const stream = await navigator.mediaDevices.getUserMedia({audio: true});
         recorder = new Recorder(stream);

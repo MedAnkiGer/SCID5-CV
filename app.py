@@ -221,6 +221,14 @@ async def archive_session(sid: str):
     return RedirectResponse("/", status_code=303)
 
 
+@app.post("/session/{sid}/interview/finish")
+async def interview_finish(sid: str):
+    """Skip all remaining questions and jump straight to the report."""
+    session = load_session(sid)
+    _run_evaluation(session)
+    return RedirectResponse(f"/session/{sid}/report", status_code=303)
+
+
 @app.post("/session/{sid}/interview/skip-module")
 async def skip_module(sid: str):
     """Jump to the first unanswered question in the next module."""
@@ -444,6 +452,13 @@ async def report_get(request: Request, sid: str):
     session = load_session(sid)
     if not session.get("module_summaries"):
         _run_evaluation(session)
+    # Auto-save PDF on first visit to the report page
+    out = session_dir(session) / "report.pdf"
+    if not out.exists():
+        from modules.reporter import generate_pdf
+        generate_pdf(session, questions, out)
+        session["stage"] = "COMPLETE"
+        save_session(session)
     return templates.TemplateResponse("report.html", {
         "request": request,
         "session": session,
