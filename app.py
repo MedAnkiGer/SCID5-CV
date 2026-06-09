@@ -334,6 +334,7 @@ async def transcribe(sid: str, audio: UploadFile):
     (audio_dir / filename).write_bytes(raw)
     from modules.exploration_engine import transcribe_audio_bytes
     transcript = transcribe_audio_bytes(raw, ext=ext, language=lang)
+    (audio_dir / filename).with_suffix(".txt").write_text(transcript, encoding="utf-8")
     return JSONResponse({"transcript": transcript})
 
 
