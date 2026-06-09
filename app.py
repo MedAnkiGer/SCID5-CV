@@ -318,6 +318,20 @@ async def transcribe(sid: str, audio: UploadFile):
         ext = "webm"
     else:
         ext = "wav"
+    # Save audio to disk under session/audio/{qid}_{criterion_label}_{timestamp}.{ext}
+    q = get_current_question(session)
+    qid = q["id"] if q else "unknown"
+    label = (q.get("criterion_label") or "") if q else ""
+    slug = "".join(c if c.isalnum() else "_" for c in label).strip("_") if label else ""
+    ts = datetime.utcnow().strftime("%Y%m%dT%H%M%S")
+    audio_dir = session_dir(session) / "audio"
+    audio_dir.mkdir(parents=True, exist_ok=True)
+    if slug:
+        filename = f"{qid}_{slug}_{ts}.{ext}"
+    else:
+        n = len(list(audio_dir.glob("overview_*"))) + 1
+        filename = f"overview_{n}_{qid}_{ts}.{ext}"
+    (audio_dir / filename).write_bytes(raw)
     from modules.exploration_engine import transcribe_audio_bytes
     transcript = transcribe_audio_bytes(raw, ext=ext, language=lang)
     return JSONResponse({"transcript": transcript})
