@@ -295,14 +295,33 @@ async def interview_get(request: Request, sid: str):
         q = dict(q)
         q["interviewer_text"] = q["interviewer_text_if_previous_minus"]
 
-    return templates.TemplateResponse("interview.html", {
-        "request": request,
-        "session": session,
-        "question": q,
-        "lang": lang,
-        "has_criterion": has_criterion,
-        "max_clarifications": MAX_CLARIFICATIONS,
-    })
+    # --- new UI (additive) -------------------------------------------------
+    use_new_ui = request.query_params.get("ui", "v2") != "old"
+    shoulder_safe = request.query_params.get("safe") == "1"
+
+    module_items, module_answered = [], 0
+    if use_new_ui:
+        for module in questions["modules"]:
+            if module["id"] == q["module_id"]:
+                module_items = module["questions"]
+                module_answered = sum(
+                    1 for it in module_items
+                    if it["id"] in session["interview_responses"]
+                )
+                break
+
+    return templates.TemplateResponse(
+        "interview_v2.html" if use_new_ui else "interview.html", {
+            "request": request,
+            "session": session,
+            "question": q,
+            "lang": lang,
+            "has_criterion": has_criterion,
+            "max_clarifications": MAX_CLARIFICATIONS,
+            "module_items": module_items,
+            "module_answered": module_answered,
+            "shoulder_safe": shoulder_safe,
+        })
 
 
 @app.post("/session/{sid}/interview/transcribe")
@@ -441,6 +460,105 @@ async def interview_accept(request: Request, sid: str):
 
 
 # ---------------------------------------------------------------------------
+# Routes — Overview + Patient display (Modernist UI, additive)
+# ---------------------------------------------------------------------------
+
+@app.get("/session/{sid}/overview", response_class=HTMLResponse)
+async def overview_get(request: Request, sid: str):
+    session = load_session(sid)
+    responses = session["interview_responses"]
+    current = get_current_question(session)
+    current_mid = current["module_id"] if current else None
+
+    plus = sum(1 for r in responses.values() if r.get("score") == "+")
+    minus = sum(1 for r in responses.values() if r.get("score") == "-")
+    unknown = sum(1 for r in responses.values() if r.get("score") == "?")
+    unresolved = sum(1 for r in responses.values() if r.get("unresolved"))
+    rounds = sum(len(r.get("exchanges") or []) for r in responses.values())
+    rated = plus + minus + unknown
+
+    module_rows = []
+    for module in questions["modules"]:
+        items = module["questions"]
+        ticks, answered = [], 0
+        reached = False
+        for it in items:
+            resp = responses.get(it["id"])
+            if resp:
+                answered += 1
+                reached = True
+                score = resp.get("score")
+                ticks.append({"+": "plus", "-": "minus", "?": "unknown"}.get(score, "minus"))
+            elif current and it["id"] == current["id"]:
+                ticks.append("current")
+                reached = True
+            elif reached and module["id"] == current_mid:
+                ticks.append("skipped")
+            else:
+                ticks.append("todo")
+        if module["id"] == current_mid:
+            note = "In progress"
+        elif answered == len(items):
+            note = "Complete"
+        elif answered:
+            note = "Partly answered"
+        else:
+            note = "Not started"
+        module_rows.append({
+            "id": module["id"],
+            "name": module.get("name_en", module["id"]),
+            "total": len(items),
+            "answered": answered,
+            "ticks": ticks,
+            "note": note,
+            "is_current": module["id"] == current_mid,
+        })
+
+    total = len(q_order)
+    done = len(responses)
+    return templates.TemplateResponse("overview.html", {
+        "request": request,
+        "session": session,
+        "current": current,
+        "done": done,
+        "total": total,
+        "skipped": 0,
+        "pct_done": int(done / total * 100) if total else 0,
+        "pct_skipped": 0,
+        "plus": plus, "minus": minus, "unknown": unknown,
+        "rated": rated, "unresolved": unresolved, "rounds": rounds,
+        "module_rows": module_rows,
+        "max_clarifications": MAX_CLARIFICATIONS,
+    })
+
+
+@app.get("/session/{sid}/patient", response_class=HTMLResponse)
+async def patient_display(request: Request, sid: str):
+    session = load_session(sid)
+    return templates.TemplateResponse("patient.html", {
+        "request": request, "session": session,
+    })
+
+
+@app.get("/session/{sid}/patient/current")
+async def patient_current(sid: str):
+    """Only what the patient may see: the question, in plain language."""
+    session = load_session(sid)
+    q = get_current_question(session)
+    if q is None:
+        return JSONResponse({"question_id": None, "text": "Thank you — we are done.",
+                             "notes_patient": "", "part": ""})
+    mods = [m["id"] for m in questions["modules"]]
+    idx = mods.index(q["module_id"]) + 1 if q["module_id"] in mods else 1
+    return JSONResponse({
+        "question_id": q["id"],
+        "text": q.get("interviewer_text", ""),
+        "notes_patient": "",          # never send `notes` — those are interviewer prompts
+        "part": f"Part {idx} of {len(mods)}",
+    })
+
+
+# ---------------------------------------------------------------------------
 # Evaluation + Report
 # ---------------------------------------------------------------------------
 
@@ -474,12 +592,30 @@ async def report_get(request: Request, sid: str):
         generate_pdf(session, questions, out)
         session["stage"] = "COMPLETE"
         save_session(session)
-    return templates.TemplateResponse("report.html", {
-        "request": request,
-        "session": session,
-        "modules": questions["modules"],
-        "q_index": q_index,
-    })
+    responses = session["interview_responses"]
+    rated_items = {k: r for k, r in responses.items() if r.get("score") != "N/A"}
+    plus = sum(1 for r in rated_items.values() if r.get("score") == "+")
+    unresolved = sum(1 for r in rated_items.values() if r.get("unresolved"))
+
+    module_flags = {}
+    for module in questions["modules"]:
+        module_flags[module["id"]] = sum(
+            1 for q in module["questions"]
+            if (responses.get(q["id"]) or {}).get("unresolved")
+        )
+
+    use_new_ui = request.query_params.get("ui", "v2") != "old"
+    return templates.TemplateResponse(
+        "report_v2.html" if use_new_ui else "report.html", {
+            "request": request,
+            "session": session,
+            "modules": questions["modules"],
+            "q_index": q_index,
+            "rated": len(rated_items),
+            "plus": plus,
+            "unresolved": unresolved,
+            "module_flags": module_flags,
+        })
 
 
 @app.get("/session/{sid}/report/pdf")

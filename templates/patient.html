@@ -1,0 +1,66 @@
+{# Patient-facing display for a two-screen setup.
+   Shows the question and nothing else — no item id, no criterion, no score.
+   Polls /session/{sid}/patient/current every 2s and follows the clinician. #}
+<!doctype html>
+<html lang="{{ session.language }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interview</title>
+  <link rel="stylesheet" href="/static/modernist.css?v=1">
+</head>
+<body>
+<div class="pt-page">
+  <div class="pt-head">
+    <span style="font:800 14px var(--font-heading);letter-spacing:.1em">CLINICAL INTERVIEW</span>
+    <div style="display:flex;align-items:center;gap:18px">
+      <span style="font:400 13px var(--font-body);color:var(--color-muted)" id="pt-part">Part 1 of 4</span>
+      <div class="pt-parts" id="pt-parts">
+        <span class="now"></span><span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pt-body">
+    <div class="kicker" style="margin-bottom:28px" id="pt-frame">THINKING ABOUT THE PAST MONTH</div>
+    <p class="pt-q" id="pt-question">…</p>
+    <p class="pt-sub" id="pt-sub"></p>
+
+    <div class="pt-foot">
+      <div style="display:flex;align-items:center;gap:20px">
+        <span class="rec-live" style="font-size:15px" id="pt-state"><span class="rec-dot"></span>LISTENING</span>
+        <span style="flex:1"></span>
+        <span style="font:400 14px var(--font-body);color:var(--color-muted)">Take as long as you need</span>
+      </div>
+      <p style="font:400 13px/1.5 var(--font-body);color:rgba(32,30,29,.5);margin:20px 0 0;max-width:760px">
+        Your answer is transcribed so your clinician can keep notes. The recording itself is never stored.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const SID = "{{ session.session_id }}";
+  const qEl = document.getElementById("pt-question");
+  const sEl = document.getElementById("pt-sub");
+  const pEl = document.getElementById("pt-part");
+  let last = null;
+  async function poll() {
+    try {
+      const res = await fetch(`/session/${SID}/patient/current`);
+      const d = await res.json();
+      if (d.question_id !== last) {
+        last = d.question_id;
+        qEl.textContent = d.text || "";
+        sEl.textContent = d.notes_patient || "";
+        pEl.textContent = d.part || "";
+      }
+    } catch (e) { /* keep the last question on screen if the poll fails */ }
+  }
+  poll();
+  setInterval(poll, 2000);
+})();
+</script>
+</body>
+</html>

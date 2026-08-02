@@ -1,0 +1,24 @@
+{# Modernist shell. Deliberately NOT extending base.html — no Bootstrap here,
+   so nothing in this skin can leak into the existing pages. #}
+<!doctype html>
+<html lang="{{ session.language if session is defined and session else 'en' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}SCID-5-CV{% endblock %}</title>
+  <link rel="stylesheet" href="/static/modernist.css?v=1">
+</head>
+<body class="{% block bodyclass %}{% endblock %}">
+{% block chrome %}
+<header class="appbar">
+  <div style="display:flex;align-items:baseline;gap:20px">
+    <span class="appbar-brand">SCID-5-CV</span>
+    <span class="appbar-sub">{% block subtitle %}STRUCTURED CLINICAL INTERVIEW FOR DSM-5 · CLINICIAN VERSION{% endblock %}</span>
+  </div>
+  <div class="appbar-right">{% block appbar_right %}{% endblock %}</div>
+</header>
+{% endblock %}
+{% block content %}{% endblock %}
+{% block scripts %}{% endblock %}
+</body>
+</html>
