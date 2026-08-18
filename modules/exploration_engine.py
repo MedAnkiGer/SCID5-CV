@@ -1,11 +1,14 @@
 """Interview Engine — TTS question delivery, audio recording, and Whisper transcription.
 
 For each SCID-5-CV criterion:
-  1. speak_text()        — AI reads question aloud (OpenAI TTS, never saved to disk)
+  1. speak_text()        — AI reads question aloud (OpenAI TTS, not persisted)
   2. record_blocking()   — records patient's verbal answer (silence-detection)
   3. transcribe_audio()  — sends WAV bytes to Whisper API
 
-Audio is never saved to disk (privacy).
+This module only passes audio through in memory; the web app (app.py) is what persists
+patient recordings and their transcripts to data/sessions/{session_id}/audio/ as study data.
+Privacy there rests on pseudonymous session ids and local-only, gitignored storage — see
+CLAUDE.md. Note that audio leaves the machine for the OpenAI Whisper API.
 """
 
 import io

@@ -22,7 +22,13 @@ AI-assisted SCID-5 Clinician Version diagnostic interview pipeline. Browser-base
 ## Key Conventions
 - All text fields are bilingual: `_de` and `_en` suffixes
 - Session state is saved after every step for crash resilience
-- Audio is never saved to disk (privacy) — recorded in browser, transcribed server-side
+- Audio IS saved to disk — recorded in browser, transcribed server-side, then written to
+  `data/sessions/{session_id}/audio/{qid}_{criterion}_{timestamp}.{ext}` with the transcript
+  as a sibling `.txt`. Do not remove this; the recordings are study data.
+- Privacy is preserved by pseudonymization, not by discarding: `session_id` is a random 8-char
+  UUID, filenames carry only question id / criterion label / UTC timestamp (no patient
+  identifiers), and `data/sessions/` is gitignored so recordings never enter the repo.
+  Any re-identification key is kept outside this codebase.
 - Scoring: + (present), - (absent), ? (inadequate info) per DSM-5
 - Up to 3 clarification rounds per question
 - Questions without `criterion_description` are overview/intro — skip-only, no rating

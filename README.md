@@ -102,7 +102,12 @@ If a screening question (Stage 1) is "No" (0), skip exploration for that item.
 
 - **DSM-5 Fidelity**: Ratings align with diagnostic criteria
 - **Confidence Tracking**: LLM confidence < 0.7 triggers clarification loop
-- **Privacy**: No raw audio logged; anonymized transcripts only
+- **Privacy**: Recordings and transcripts are retained as study data under
+  `data/sessions/{session_id}/audio/`, stored locally and pseudonymously — the session id is a
+  random 8-char UUID and filenames contain no patient identifiers. `data/sessions/` is gitignored,
+  so no recording is ever committed. Audio is sent to the OpenAI Whisper API for transcription and
+  transcripts to the Anthropic API for rating; both are third-party processors and must be covered
+  by your study's consent and data-processing agreements.
 - **Bilingual Support**: German and English via Whisper API
 
 ## Status

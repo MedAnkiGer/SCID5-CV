@@ -22,7 +22,11 @@ An AI-led diagnostic tool for the SCID-5 Personality Disorder (PD) module.
 * **Environment:** Use `scid-env` Conda environment.
 * **API Strategy:** Minimize local CPU load. Use OpenAI Whisper API for all STT tasks.
 * **Bilingualism:** Handle German (`de`) and English (`en`). Explicitly set `language` in Whisper calls.
-* **Privacy:** Never log raw audio; only store anonymized transcripts and JSON scores.
+* **Privacy:** Raw audio, transcripts, and JSON scores are all retained as study data under
+  `data/sessions/{session_id}/`. Protection comes from pseudonymization and local-only storage,
+  not from deletion: the session id is a random 8-char UUID, filenames carry no patient
+  identifiers, and `data/sessions/` is gitignored. Audio goes to OpenAI Whisper and transcripts
+  to the Anthropic API for rating — cover both in consent and data-processing agreements.
 
 ## 5. Coding Style & Setup
 * **Style:** Follow PEP 8 guidelines and use a modular design.
