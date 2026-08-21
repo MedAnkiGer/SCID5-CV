@@ -64,18 +64,42 @@ def build_question_index(qs: dict) -> tuple[dict, list[str]]:
     return index, order
 
 
-def next_question_id(current_id, score, q_data, order):
-    skip_if = q_data.get("skip_if")
+# Sentinel skip targets, written by tools/fix_skip_targets.py where the booklet
+# names no next question. END stops the interview; CONTINUE goes to the next
+# question in order — the same thing an unrecognised target does, but said on
+# purpose. The original booklet wording is kept in the question's `skip_if_note`.
+SKIP_END = "END"
+SKIP_CONTINUE = "CONTINUE"
+
+
+def _score_aliases(score):
+    """How a score may be written as a `skip_if` key, most specific first."""
     score_str = str(score)
-    aliases = {score_str}
+    aliases = [score_str]
     if score_str == "+":
-        aliases |= {"YES", "yes", "1", "true"}
+        aliases += ["YES", "yes", "1", "true"]
     elif score_str == "-":
-        aliases |= {"NO", "no", "0", "false"}
-    if isinstance(skip_if, dict):
-        for alias in aliases:
-            if alias in skip_if and skip_if[alias] in set(order):
-                return skip_if[alias]
+        aliases += ["NO", "no", "0", "false"]
+    return aliases
+
+
+def skip_target(q_data, score):
+    """The skip target configured for this score, or None if there is no branch."""
+    skip_if = q_data.get("skip_if")
+    if not isinstance(skip_if, dict):
+        return None
+    for alias in _score_aliases(score):
+        if alias in skip_if:
+            return skip_if[alias]
+    return None
+
+
+def next_question_id(current_id, score, q_data, order):
+    target = skip_target(q_data, score)
+    if target == SKIP_END:
+        return None
+    if target and target != SKIP_CONTINUE and target in set(order):
+        return target
     try:
         idx = order.index(current_id)
     except ValueError:
@@ -152,6 +176,8 @@ def _next_unanswered(session):
             # Follow branching from the stored score
             score = responses[qid].get("score", "-")
             q_data = q_index.get(qid, {})
+            if skip_target(q_data, score) == SKIP_END:
+                return None          # a Module J branch that ends the interview
             nxt = next_question_id(qid, score, q_data, q_order)
             if nxt and nxt != q_order[q_order.index(qid) + 1] if q_order.index(qid) + 1 < len(q_order) else None:
                 # There's a skip — jump ahead
@@ -279,6 +305,10 @@ def store_response(session, qid, transcript, exchanges, rating):
     # show that the score was counted rather than rated.
     if rating.get("derived"):
         response["derived"] = rating["derived"]
+    # Mood-quality questions record whether the episode was elevated/expansive or
+    # only irritable; the Criterion B threshold downstream depends on it.
+    if rating.get("mood_quality"):
+        response["mood_quality"] = rating["mood_quality"]
     session["interview_responses"][qid] = response
     session["current_question_id"] = qid
     save_session(session)

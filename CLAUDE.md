@@ -17,6 +17,8 @@ AI-assisted SCID-5 Clinician Version diagnostic interview pipeline. Browser-base
 - `tools/simulate_interview.py` — Headless driver: runs a whole interview against a persona
 - `data/questions.json` — 378 questions across 11 modules
 - `data/derived_rules.json` — Counting rules for the 17 aggregate items (quotes the criterion text)
+- `OPEN_QUESTIONS.md` — Known data gaps and undecided design questions
+- `tools/fix_skip_targets.py` — Audit trail for the `skip_if` cleanup (re-runnable, `--check`)
 - `data/personas/*.json` — Simulated patients + their ground-truth `expected_scores`
 - `data/sessions/{session_id}/state.json` — Per-session state (resumable)
 - `prompts/rater_system_prompt.txt` — Clinical system prompt for Claude
@@ -52,6 +54,20 @@ AI-assisted SCID-5 Clinician Version diagnostic interview pipeline. Browser-base
 - An aggregate scores "-" only when even the unrated and "?" members could not carry it over
   the threshold; otherwise it is "?" and unresolved. Never assert a threshold over criteria
   that were not assessed
+- **Mood quality must be recorded.** DSM-5 wants four Criterion B symptoms instead of three
+  when a manic/hypomanic episode's mood was only irritable and never elevated. The rater
+  returns an extra `mood_quality` field (`elevated` / `irritable_only` / `unclear`) on A29,
+  A41 and A54; it is stored on the response and A38/A49/A63 take their threshold from it.
+  `unclear` keeps the lower threshold and flags any count that would change under the higher
+  one. The set of questions carrying this field comes from `mood_quality_from` in
+  `data/derived_rules.json` — `modules/rater.py` imports it, so adding a rule is enough
+- `skip_if` targets are question ids or one of two sentinels: `END` (stop the interview) and
+  `CONTINUE` (next question in order, stated deliberately). Original booklet wording for a
+  rewritten target is preserved in the question's `skip_if_note`. `tools/fix_skip_targets.py`
+  is the audit trail; run it with `--check` after editing questions.json
+- **Known gaps live in `OPEN_QUESTIONS.md`** — missing questions (PTSD Criterion D G23–G25,
+  B21–B22, G11–G12, E36), unhandled clinical-judgement items, unresolved skip destinations.
+  Read it before assuming a module is complete, and add to it rather than fixing silently
 - Answer handling lives in `app.py` as plain functions — `resolve_interviewer_text`,
   `build_eval_text`, `store_response`, `store_skip` — shared by the web routes and the
   simulator. Put new interview logic there rather than inside a route, so both paths use it

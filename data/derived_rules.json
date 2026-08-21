@@ -13,24 +13,45 @@
     "a threshold over criteria it did not actually assess.",
     "",
     "`n_if_irritable_only` records the DSM-5 clause that raises the threshold by one when",
-    "the mood was irritable but not elevated. Nothing in the session state records which",
-    "it was, so a count that clears `n` but not `n_if_irritable_only` is scored '+' and",
-    "flagged unresolved for clinician review rather than guessed at."
+    "the mood was irritable but not elevated. `mood_quality_from` names the question that",
+    "establishes which it was: the rater records `mood_quality` ('elevated', 'irritable_only'",
+    "or 'unclear') on that question's response, and the threshold follows from it. If the",
+    "mood was never established, the lower threshold applies and a count that would change",
+    "under the higher one is flagged unresolved for clinician review rather than guessed at."
   ],
-
   "A10": {
     "label": "At least five criteria met (Current MDE, Criterion A)",
     "source": "AT LEAST FIVE OF THE ABOVE CRITERION A SXS (A1–A9) ARE RATED \"+\".",
     "type": "at_least",
     "n": 5,
-    "of": ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"]
+    "of": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "A8",
+      "A9"
+    ]
   },
   "A24": {
     "label": "Criterion A met (Past MDE)",
     "source": "AT LEAST FIVE OF THE ABOVE CRITERION A SXS (A15–A23) ARE RATED \"+\".",
     "type": "at_least",
     "n": 5,
-    "of": ["A15", "A16", "A17", "A18", "A19", "A20", "A21", "A22", "A23"]
+    "of": [
+      "A15",
+      "A16",
+      "A17",
+      "A18",
+      "A19",
+      "A20",
+      "A21",
+      "A22",
+      "A23"
+    ]
   },
   "A38": {
     "label": "At least three Criterion B symptoms (Current Manic Episode)",
@@ -38,7 +59,16 @@
     "type": "at_least",
     "n": 3,
     "n_if_irritable_only": 4,
-    "of": ["A31", "A32", "A33", "A34", "A35", "A36", "A37"]
+    "mood_quality_from": "A29",
+    "of": [
+      "A31",
+      "A32",
+      "A33",
+      "A34",
+      "A35",
+      "A36",
+      "A37"
+    ]
   },
   "A49": {
     "label": "Criterion B threshold (Current Hypomanic Episode)",
@@ -46,7 +76,16 @@
     "type": "at_least",
     "n": 3,
     "n_if_irritable_only": 4,
-    "of": ["A42", "A43", "A44", "A45", "A46", "A47", "A48"]
+    "mood_quality_from": "A41",
+    "of": [
+      "A42",
+      "A43",
+      "A44",
+      "A45",
+      "A46",
+      "A47",
+      "A48"
+    ]
   },
   "A63": {
     "label": "Criterion B threshold met (Past Manic Episode)",
@@ -54,59 +93,104 @@
     "type": "at_least",
     "n": 3,
     "n_if_irritable_only": 4,
-    "of": ["A56", "A57", "A58", "A59", "A60", "A61", "A62"]
+    "mood_quality_from": "A54",
+    "of": [
+      "A56",
+      "A57",
+      "A58",
+      "A59",
+      "A60",
+      "A61",
+      "A62"
+    ]
   },
   "A85": {
     "label": "At least two Criterion B symptoms (Persistent Depressive Disorder)",
     "source": "AT LEAST TWO OF THE ABOVE CRITERION B SXS (A79–A84) ARE RATED \"+\".",
     "type": "at_least",
     "n": 2,
-    "of": ["A79", "A80", "A81", "A82", "A83", "A84"]
+    "of": [
+      "A79",
+      "A80",
+      "A81",
+      "A82",
+      "A83",
+      "A84"
+    ]
   },
-
   "F19": {
     "label": "Panic Disorder Criterion B met",
     "source": "CRITERION B1 (F17) OR B2 (F18) RATED \"+\".",
     "type": "at_least",
     "n": 1,
-    "of": ["F17", "F18"]
+    "of": [
+      "F17",
+      "F18"
+    ]
   },
   "F51": {
     "label": "At least three Criterion C symptoms (GAD)",
     "source": "AT LEAST THREE OF THE ABOVE CRITERION C SXS (F45–F50) ARE RATED \"+\".",
     "type": "at_least",
     "n": 3,
-    "of": ["F45", "F46", "F47", "F48", "F49", "F50"]
+    "of": [
+      "F45",
+      "F46",
+      "F47",
+      "F48",
+      "F49",
+      "F50"
+    ]
   },
-
   "G5": {
     "label": "Check for obsessions and/or compulsions",
     "source": "PRESENCE OF OBSESSIONS (G2 RATED \"+\") OR COMPULSIONS (G4 RATED \"+\")",
     "type": "at_least",
     "n": 1,
-    "of": ["G2", "G4"]
+    "of": [
+      "G2",
+      "G4"
+    ]
   },
   "G19": {
     "label": "PTSD Criterion B met (intrusion)",
     "source": "AT LEAST ONE OF THE ABOVE CRITERION B SXS (G14–G18) IS RATED \"+\".",
     "type": "at_least",
     "n": 1,
-    "of": ["G14", "G15", "G16", "G17", "G18"]
+    "of": [
+      "G14",
+      "G15",
+      "G16",
+      "G17",
+      "G18"
+    ]
   },
   "G22": {
     "label": "PTSD Criterion C met (avoidance)",
     "source": "AT LEAST ONE OF THE ABOVE CRITERION C SXS (G20-G21) IS RATED \"+\".",
     "type": "at_least",
     "n": 1,
-    "of": ["G20", "G21"]
+    "of": [
+      "G20",
+      "G21"
+    ]
   },
   "G30": {
     "label": "PTSD Criterion D met (negative alterations in cognition and mood)",
     "source": "AT LEAST TWO OF THE ABOVE CRITERION D SXS (G23–G29) ARE RATED \"+\".",
     "type": "at_least",
     "n": 2,
-    "of": ["G26", "G27", "G28", "G29"],
-    "missing_from_questions": ["G23", "G24", "G25"],
+    "of": [
+      "G26",
+      "G27",
+      "G28",
+      "G29"
+    ],
+    "missing_from_questions": [
+      "G23",
+      "G24",
+      "G25"
+    ],
     "note": "Criterion D has seven symptoms; only four were carried into questions.json. The count runs over the four that exist, so a patient positive on only the three missing items cannot be detected here."
   },
   "G37": {
@@ -114,36 +198,71 @@
     "source": "AT LEAST TWO OF THE ABOVE CRITERION E SXS (G31–G36) ARE RATED \"+\".",
     "type": "at_least",
     "n": 2,
-    "of": ["G31", "G32", "G33", "G34", "G35", "G36"]
+    "of": [
+      "G31",
+      "G32",
+      "G33",
+      "G34",
+      "G35",
+      "G36"
+    ]
   },
   "G41": {
     "label": "PTSD diagnostic summary",
     "source": "CRITERIA B (G19), C (G22), D (G30), and E (G37) ARE RATED \"YES\" FOR PAST MONTH AND CRITERION G (G39) (CLINICAL SIGNIFICANCE) IS RATED \"+\" FOR PAST MONTH.",
     "type": "at_least",
     "n": 5,
-    "of": ["G19", "G22", "G30", "G37", "G39"],
+    "of": [
+      "G19",
+      "G22",
+      "G30",
+      "G37",
+      "G39"
+    ],
     "note": "All five must be '+'. The 'for past month' qualifier is not represented in session state; the timeframe is the interviewer's responsibility."
   },
-
   "H11": {
     "label": "Inattention Criterion A1 threshold",
     "source": "AT LEAST FIVE OF THE ABOVE CRITERION A1 (INATTENTION) SXS (H2–H10) ARE RATED \"+\".",
     "type": "at_least",
     "n": 5,
-    "of": ["H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10"]
+    "of": [
+      "H2",
+      "H3",
+      "H4",
+      "H5",
+      "H6",
+      "H7",
+      "H8",
+      "H9",
+      "H10"
+    ]
   },
   "H21": {
     "label": "ADHD Criterion A2 threshold (hyperactivity-impulsivity)",
     "source": "AT LEAST FIVE OF THE ABOVE CRITERION A2 (HYPERACTIVITY-IMPULSIVITY) SXS (H12–H20) ARE RATED \"+\".",
     "type": "at_least",
     "n": 5,
-    "of": ["H12", "H13", "H14", "H15", "H16", "H17", "H18", "H19", "H20"]
+    "of": [
+      "H12",
+      "H13",
+      "H14",
+      "H15",
+      "H16",
+      "H17",
+      "H18",
+      "H19",
+      "H20"
+    ]
   },
   "H22": {
     "label": "Combined Criterion A1 or A2 check",
     "source": "AT LEAST FIVE SXS IN CRITERION A1 (H11) OR CRITERION A2 (H21) ARE RATED \"+\".",
     "type": "at_least",
     "n": 1,
-    "of": ["H11", "H21"]
+    "of": [
+      "H11",
+      "H21"
+    ]
   }
 }

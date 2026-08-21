@@ -88,14 +88,18 @@ def next_question_id(
     elif score_str == "-":
         score_aliases |= {"NO", "no", "0", "false"}
 
-    # skip_if can be a dict {score_key: target_id} or a free-text note (string)
+    # skip_if can be a dict {score_key: target_id} or a free-text note (string).
+    # "END" ends the interview, "CONTINUE" falls through to the next question in
+    # order — see the sentinels in app.py and tools/fix_skip_targets.py.
     if isinstance(skip_if, dict):
         target = None
         for alias in score_aliases:
             if alias in skip_if:
                 target = skip_if[alias]
                 break
-        if target and target in set(order):
+        if target == "END":
+            return None
+        if target and target != "CONTINUE" and target in set(order):
             return target
 
     # Default: advance to the next question in order

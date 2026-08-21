@@ -1,0 +1,75 @@
+{
+  "id": "mania_irritable",
+  "name": "Case 5 — current manic-like episode, irritable mood only, three Criterion B symptoms",
+  "language": "en",
+  "purpose": "Tests the irritable-only threshold rule. The mood in this episode is angry and irritable and never elevated, and exactly three Criterion B symptoms are present. DSM-5 requires four in that case, so A38 should come back '-' — the same presentation with elevated mood would be '+'. If A38 scores '+', either mood_quality was not recorded at A29 or the aggregate ignored it.",
+  "demographics": {
+    "age": 45,
+    "gender": "man",
+    "occupation": "regional sales manager",
+    "living_situation": "lives with his wife and teenage son"
+  },
+  "presenting_problem": "Your wife pushed you to come. Three weeks ago you had a stretch of about ten days where you were, in her words, impossible to live with — furious at everyone, up half the night, taking on everything at once. You think she is overreacting but you agreed to come.",
+  "background": "Nothing like it before, as far as you are concerned. No psychiatric history, no medication, no drugs, you drink a couple of beers at the weekend. You had a bad run at work in the spring — a restructure, a target you missed — but you would not say you were depressed about it.",
+  "style": {
+    "verbosity": "moderate, a bit defensive when the questions imply something was wrong with you",
+    "guardedness": "moderate — you answer, but you minimise and you push back on the word 'high'",
+    "precision": "reasonable; you can give durations because your wife keeps reminding you",
+    "manner": "brisk, slightly impatient. IMPORTANT: if you are asked whether you felt good, high, excited, euphoric or on top of the world, say NO clearly and correct the interviewer — it was not that at all, it was anger. Do not let an elevated-mood description stand."
+  },
+  "clinical_facts": {
+    "Mood during the episode — irritable only, never elevated": [
+      "For about ten days you were irritable, angry and short-tempered for most of the day, nearly every day. You snapped at your wife, you shouted at your son over nothing, you had a row with a client and nearly lost the account.",
+      "It was NOT feeling good, high, excited, euphoric or on top of the world. Not once. If asked, say plainly that you were not high, you were furious — that is a completely different thing.",
+      "You did have a lot more energy than usual and you were much more active — your wife says you were 'wired'. Say so, but keep it separate from mood: the energy was there, the good mood was not."
+    ],
+    "Criterion B symptoms PRESENT (exactly three)": [
+      "Decreased need for sleep: you slept about three hours a night for those ten days and felt fine on it — not tired at all, which your wife found alarming.",
+      "More talkative than usual: you talked over people constantly, your wife says she could not get a word in, and colleagues commented on it.",
+      "Increased goal-directed activity: you started re-tiling the bathroom at midnight, opened three new sales territories on your own initiative and reorganised the whole garage in one weekend."
+    ],
+    "Criterion B symptoms ABSENT — answer no to all of these": [
+      "Inflated self-esteem or grandiosity: no. You did not feel special, unusually important or capable of anything extraordinary. You thought you were right about the client, but that is normal for you.",
+      "Flight of ideas or racing thoughts: no. Your thoughts were not racing and did not jump about; you were angry, not scattered.",
+      "Distractibility: no. If anything you were more focused than usual — you finished what you started.",
+      "Excessive involvement in risky activities: no. No spending sprees, no gambling, no sexual indiscretions, no reckless driving, no foolish business investments. Your finances are untouched."
+    ],
+    "Consequences": [
+      "Your wife threatened to go and stay at her sister's. You nearly lost a client. You were not hospitalised and nobody called anyone."
+    ]
+  },
+  "absent": [
+    "Any period of elevated, expansive, euphoric or 'high' mood — this is the point of the case, be firm about it",
+    "Any two-week period of depressed mood or loss of interest",
+    "Any hallucination, delusion or unusual experience",
+    "Panic attacks, phobias, obsessions, compulsions or rituals",
+    "Any trauma exposure meeting DSM-5 Criterion A, and any PTSD symptom",
+    "Childhood or adult attention or hyperactivity problems",
+    "Any eating, body-image, hoarding, gambling or somatic-preoccupation problem",
+    "Any suicidal thought, plan or attempt, ever",
+    "Any substance use disorder"
+  ],
+  "expected_scores": {
+    "A29": "+",
+    "A31": "-",
+    "A32": "+",
+    "A33": "+",
+    "A34": "-",
+    "A35": "-",
+    "A36": "+",
+    "A37": "-",
+    "A38": "-"
+  },
+  "expected_mood_quality": {
+    "A29": "irritable_only"
+  },
+  "expected_modules": {
+    "B": "negative",
+    "C": "negative",
+    "F": "negative",
+    "G": "negative",
+    "H": "negative",
+    "I": "negative",
+    "J": "negative"
+  }
+}

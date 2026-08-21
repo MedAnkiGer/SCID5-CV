@@ -108,8 +108,21 @@ it encodes so the arithmetic can be checked against the booklet without reading 
 
 A computed item scores `-` only when even the unrated and `?` members could not carry it over the
 threshold; otherwise it comes back `?` and flagged, naming the criteria that were never settled.
-Where DSM-5 raises a threshold for irritable-only mood, a count that clears the lower threshold
-but not the higher one is scored `+` and flagged for clinician review rather than guessed at.
+
+**Mood quality.** DSM-5 requires four Criterion B symptoms rather than three when a manic or
+hypomanic episode's mood was only irritable and never elevated, so the interview records which it
+was. The rater returns a `mood_quality` field (`elevated` / `irritable_only` / `unclear`) on the
+three screening questions that establish it (A29, A41, A54), it is stored on the response, and the
+Criterion B aggregates (A38, A49, A63) take their threshold from it. If it was never established,
+the lower threshold applies and any count that would change under the higher one is flagged for
+clinician review rather than guessed at.
+
+## Open Questions
+
+`OPEN_QUESTIONS.md` records the known gaps — questions missing from the extraction (notably three
+of the seven PTSD Criterion D symptoms), the clinical-judgement items the pipeline cannot yet
+rate, and skip destinations the source booklet did not record. Read it before treating a module
+as complete.
 
 ## In-Silico Testing (Simulated Patient)
 

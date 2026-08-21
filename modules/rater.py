@@ -11,6 +11,8 @@ from pathlib import Path
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
+from modules.aggregator import MOOD_QUALITY_QUESTIONS, MOOD_QUALITY_VALUES
+
 load_dotenv(Path(__file__).parent.parent / ".env", override=True)
 
 PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
@@ -23,6 +25,27 @@ DEFAULT_MODEL = "claude-sonnet-4-6"
 def _load_system_prompt() -> str:
     with open(SYSTEM_PROMPT_PATH, "r", encoding="utf-8") as f:
         return f.read()
+
+
+MOOD_QUALITY_INSTRUCTION = """
+
+## Additional field required for this question
+This question establishes the QUALITY of the mood during the episode, which sets the symptom \
+threshold for the rest of this section: DSM-5 requires three Criterion B symptoms if the mood \
+was elevated or expansive, but four if it was ONLY irritable. The rating cannot be completed \
+later without this, so record it now. Add one further field to your JSON:
+
+  "mood_quality": "elevated" | "irritable_only" | "unclear"
+
+- "elevated" — the patient describes elevated, expansive, euphoric, "high" or "on top of the \
+world" mood at any point in the episode, whether or not irritability was present as well.
+- "irritable_only" — the patient describes ONLY irritability, anger or short temper, with no \
+elevated or expansive mood at any point.
+- "unclear" — the transcript does not establish which. Do not guess, and do not infer elevated \
+mood from energy or activity alone.
+
+Base this only on what the patient actually said. This field is independent of the score: a \
+criterion rated "-" can still have a recorded mood quality, and one rated "+" can be "unclear"."""
 
 
 def _build_user_message(transcript: str, criterion: dict, language: str) -> str:
@@ -43,6 +66,11 @@ def _build_user_message(transcript: str, criterion: dict, language: str) -> str:
 
     criterion_label = criterion.get("criterion_label", criterion.get("id", ""))
 
+    extra = (
+        MOOD_QUALITY_INSTRUCTION
+        if criterion.get("id") in MOOD_QUALITY_QUESTIONS else ""
+    )
+
     return f"""## Criterion Being Rated
 {criterion_label}
 
@@ -54,8 +82,41 @@ def _build_user_message(transcript: str, criterion: dict, language: str) -> str:
 
 ## Patient's Transcript
 {transcript}
+{extra}
 
 Rate whether this criterion is met (+), not met (-), or unclear (?). Respond with JSON only."""
+
+
+def _parse_rating(raw_text: str) -> dict | None:
+    """Pull the rating object out of a model response, or None if it is not there.
+
+    Handles markdown code fences and trailing prose. Returns None rather than
+    raising: the caller retries once and then degrades to an unresolved rating,
+    because a parse failure used to abort the interview mid-module.
+    """
+    text = raw_text.strip()
+
+    if text.startswith("```"):
+        lines, inside, json_lines = text.split("\n"), False, []
+        for line in lines:
+            if line.strip().startswith("```") and not inside:
+                inside = True
+            elif line.strip().startswith("```") and inside:
+                break
+            elif inside:
+                json_lines.append(line)
+        text = "\n".join(json_lines)
+
+    for candidate in (text, text[text.find("{"):text.rfind("}") + 1]):
+        if not candidate:
+            continue
+        try:
+            parsed = json.loads(candidate)
+        except (json.JSONDecodeError, ValueError):
+            continue
+        if isinstance(parsed, dict):
+            return parsed
+    return None
 
 
 def evaluate_response(
@@ -81,48 +142,39 @@ def evaluate_response(
     system_prompt = _load_system_prompt()
     user_message = _build_user_message(transcript, criterion, language)
 
-    response = client.messages.create(
-        model=model,
-        max_tokens=1024,
-        temperature=0,
-        system=system_prompt,
-        messages=[{"role": "user", "content": user_message}],
-    )
+    def ask(message: str) -> str:
+        response = client.messages.create(
+            model=model,
+            max_tokens=1024,
+            temperature=0,
+            system=system_prompt,
+            messages=[{"role": "user", "content": message}],
+        )
+        return response.content[0].text.strip()
 
-    raw_text = response.content[0].text.strip()
+    raw_text = ask(user_message)
+    result = _parse_rating(raw_text)
 
-    # Parse JSON from response — handle potential markdown code fences
-    if raw_text.startswith("```"):
-        lines = raw_text.split("\n")
-        # Remove first and last lines (code fences)
-        json_lines = []
-        inside = False
-        for line in lines:
-            if line.strip().startswith("```") and not inside:
-                inside = True
-                continue
-            elif line.strip().startswith("```") and inside:
-                break
-            elif inside:
-                json_lines.append(line)
-        raw_text = "\n".join(json_lines)
+    if result is None:
+        # A rationale quoting the patient can come back with an unescaped quote.
+        # One retry saying so is cheaper than losing the question — and losing it
+        # used to abort the whole interview.
+        raw_text = ask(
+            user_message
+            + "\n\nIMPORTANT: your previous response was not valid JSON. Return a "
+              "single JSON object and nothing else. Escape any double quote that "
+              "appears inside a string value, or paraphrase instead of quoting."
+        )
+        result = _parse_rating(raw_text)
 
-    try:
-        result = json.loads(raw_text)
-    except json.JSONDecodeError:
-        # Fallback: try to extract JSON from the response
-        start = raw_text.find("{")
-        end = raw_text.rfind("}") + 1
-        if start >= 0 and end > start:
-            result = json.loads(raw_text[start:end])
-        else:
-            result = {
-                "score": 1,
-                "rationale": f"Failed to parse API response: {raw_text[:200]}",
-                "confidence": 0.0,
-                "unresolved": True,
-                "clarifying_question": "Could you elaborate on your experience?",
-            }
+    if result is None:
+        result = {
+            "score": "?",
+            "rationale": f"Rater returned unparseable output: {raw_text[:300]}",
+            "confidence": 0.0,
+            "unresolved": True,
+            "clarifying_question": "Could you tell me a bit more about that?",
+        }
 
     # Validate and normalize the result
     result.setdefault("score", "?")
@@ -145,6 +197,22 @@ def evaluate_response(
         result["unresolved"] = True  # ? always means unresolved
 
     result["confidence"] = max(0.0, min(1.0, float(result["confidence"])))
+
+    # Mood-quality questions carry an extra field: whether the episode's mood was
+    # elevated/expansive or only irritable. The Criterion B symptom threshold
+    # downstream depends on it (see modules/aggregator.py), so it is recorded on
+    # the response rather than re-derived later. Anything unrecognised, or a
+    # missing field on a question that should have one, becomes "unclear" —
+    # which keeps the lower threshold but flags the aggregate for review.
+    if criterion.get("id") in MOOD_QUALITY_QUESTIONS:
+        quality = str(result.get("mood_quality", "")).strip().lower().replace(" ", "_")
+        if quality in ("irritable", "irritable_only", "only_irritable"):
+            quality = "irritable_only"
+        elif quality in ("elevated", "expansive", "elevated_or_expansive", "euphoric"):
+            quality = "elevated"
+        result["mood_quality"] = quality if quality in MOOD_QUALITY_VALUES else "unclear"
+    else:
+        result.pop("mood_quality", None)
 
     return result
 

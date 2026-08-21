@@ -25,6 +25,8 @@ You may also return **"+" or "-" with `"unresolved": true`** when you can make a
 
 You MUST respond with valid JSON only. No additional text before or after the JSON.
 
+A few questions ask for one extra field on top of the ones below (for example, whether an episode's mood was elevated or only irritable, which changes the symptom threshold further down the module). When the message asks for such a field, include it — the interview cannot recover it later.
+
 Criterion clearly met:
 {
   "score": "+",

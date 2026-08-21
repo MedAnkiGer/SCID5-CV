@@ -124,6 +124,10 @@ def simulate_question(session, question, patient, rater_model, max_clarification
         rationale=rating.get("rationale", ""),
         seconds=round(time.time() - started, 2),
     )
+    # Recorded on the three questions that establish whether an episode's mood
+    # was elevated or only irritable; it moves the Criterion B threshold.
+    if rating.get("mood_quality"):
+        record["mood_quality"] = rating["mood_quality"]
     return record
 
 
@@ -174,8 +178,19 @@ def build_scorecard(session, persona):
             "answered": answered, "of": len(ids), "verdict": verdict,
         })
 
+    # Mood quality drives the Criterion B threshold, so a persona can pin it
+    # down the same way it pins down a score.
+    mood_check = []
+    for qid, want in (persona.get("expected_mood_quality") or {}).items():
+        got = responses.get(qid, {}).get("mood_quality")
+        mood_check.append({
+            "question_id": qid, "expected": want, "got": got,
+            "verdict": "ok" if got == want else ("not reached" if got is None else "MISMATCH"),
+        })
+
     checked = len(hits) + len(misses)
     return {
+        "mood_quality": mood_check,
         "counts": {
             "+": sum(1 for r in rated.values() if r["score"] == "+"),
             "-": sum(1 for r in rated.values() if r["score"] == "-"),
@@ -224,6 +239,13 @@ def print_scorecard(card, persona, patient, rater_calls, elapsed):
     else:
         print("\n  No expected_scores in this persona — nothing to check against.")
 
+    if card.get("mood_quality"):
+        print("\n  Mood quality recorded:")
+        for row in card["mood_quality"]:
+            flag = "!!" if row["verdict"] == "MISMATCH" else "  "
+            print(f"   {flag} {row['question_id']:<6} expected {row['expected']:<15} "
+                  f"got {str(row['got']):<15} — {row['verdict']}")
+
     if card["modules"]:
         print("\n  Module-level expectations:")
         for row in card["modules"]:
@@ -268,6 +290,8 @@ def main():
                          "rest are recorded as not simulated")
     ap.add_argument("--start-module", metavar="ID",
                     help="Jump straight to the first question of this module")
+    ap.add_argument("--start-question", metavar="ID",
+                    help="Jump straight to this question (e.g. A29)")
     ap.add_argument("--max-questions", type=int, default=0,
                     help="Stop after N simulated questions (0 = the whole interview)")
     ap.add_argument("--max-clarifications", type=int,
@@ -316,7 +340,12 @@ def main():
     }
     pipeline.save_session(session)
 
-    if args.start_module:
+    if args.start_question:
+        if args.start_question not in pipeline.q_index:
+            ap.error(f"unknown question {args.start_question!r}")
+        session["current_question_id"] = args.start_question
+        pipeline.save_session(session)
+    elif args.start_module:
         first = next((q["id"] for q in pipeline.q_index.values()
                       if q.get("module_id") == args.start_module), None)
         if first is None:

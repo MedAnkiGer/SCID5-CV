@@ -31,9 +31,52 @@ def load_rules() -> dict:
 
 RULES = load_rules()
 
+# Questions that establish whether an episode's mood was elevated/expansive or
+# only irritable. DSM-5 requires one more Criterion B symptom in the
+# irritable-only case, so the rater records `mood_quality` on these and the
+# aggregates below read it. `modules/rater.py` imports this set to know when to
+# ask for the extra field.
+MOOD_QUALITY_QUESTIONS = {
+    rule["mood_quality_from"] for rule in RULES.values()
+    if rule.get("mood_quality_from")
+}
+
+MOOD_QUALITY_VALUES = ("elevated", "irritable_only", "unclear")
+
 
 def is_derived(qid: str) -> bool:
     return qid in RULES
+
+
+def _threshold(rule: dict, responses: dict) -> tuple[int, str]:
+    """Symptom threshold for a rule, and how the mood quality was established.
+
+    DSM-5 asks for one more Criterion B symptom when the mood was irritable but
+    not elevated. Returns (threshold, note) where the note is empty unless the
+    mood quality changes or qualifies the count.
+    """
+    base = rule["n"]
+    higher = rule.get("n_if_irritable_only")
+    source_qid = rule.get("mood_quality_from")
+    if not higher or not source_qid:
+        return base, ""
+
+    quality = (responses.get(source_qid) or {}).get("mood_quality")
+    if quality == "irritable_only":
+        return higher, (
+            f" The mood at {source_qid} was recorded as irritable only, not "
+            f"elevated, so DSM-5 requires {higher} symptoms rather than {base}."
+        )
+    if quality == "elevated":
+        return base, (
+            f" The mood at {source_qid} was recorded as elevated or expansive, "
+            f"so the {base}-symptom threshold applies."
+        )
+    return base, (
+        f" The quality of the mood was not established at {source_qid}, so the "
+        f"{base}-symptom threshold is applied; {higher} would be required if the "
+        f"mood was only irritable."
+    )
 
 
 def derive_rating(qid: str, responses: dict) -> dict | None:
@@ -53,7 +96,7 @@ def derive_rating(qid: str, responses: dict) -> dict | None:
     if rule is None:
         return None
 
-    needed = rule["n"]
+    needed, mood_note = _threshold(rule, responses)
     members = rule["of"]
 
     met, absent, unsettled = [], [], []
@@ -91,17 +134,22 @@ def derive_rating(qid: str, responses: dict) -> dict | None:
             f"{'unrated or rated' if score == '?' else 'rated'} '?'."
         )
 
-    # DSM-5 raises the threshold by one when the mood was irritable but not
-    # elevated. Nothing in session state says which it was, so a count that
-    # clears the lower threshold only is scored '+' and flagged for review.
-    irritable_n = rule.get("n_if_irritable_only")
-    if score == "+" and irritable_n and len(met) < irritable_n:
-        unresolved = True
-        rationale += (
-            f" Note: {irritable_n} symptoms are required if the mood was only "
-            f"irritable rather than elevated, and only {len(met)} are met. "
-            f"Confirm the quality of the mood before accepting this rating."
-        )
+    rationale += mood_note
+
+    # If the mood quality was never established, a count that sits between the
+    # two thresholds is only correct on the assumption that the mood was
+    # elevated. Flag it rather than let the assumption pass silently.
+    higher = rule.get("n_if_irritable_only")
+    source_qid = rule.get("mood_quality_from")
+    if higher and source_qid and score == "+" and len(met) < higher:
+        quality = (responses.get(source_qid) or {}).get("mood_quality")
+        if quality != "elevated":
+            unresolved = True
+            rationale += (
+                f" Only {len(met)} symptoms are met, so this rating holds only "
+                f"if the mood was elevated or expansive. Confirm the quality of "
+                f"the mood at {source_qid} before accepting it."
+            )
 
     if rule.get("note"):
         rationale += f" {rule['note']}"
@@ -118,6 +166,11 @@ def derive_rating(qid: str, responses: dict) -> dict | None:
             "rule": qid,
             "source": rule["source"],
             "threshold": needed,
+            "mood_quality_from": rule.get("mood_quality_from"),
+            "mood_quality": (
+                (responses.get(rule["mood_quality_from"]) or {}).get("mood_quality")
+                if rule.get("mood_quality_from") else None
+            ),
             "met": met,
             "absent": absent,
             "unsettled": unsettled,

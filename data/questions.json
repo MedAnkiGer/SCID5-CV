@@ -190,11 +190,14 @@
           "criterion_description": null,
           "rating_options": null,
           "skip_if": {
-            "NO": "SUICIDE ATTEMPT"
+            "NO": "OV_SA1"
           },
           "notes": "IF NO: SKIP TO SUICIDE ATTEMPT, BELOW. IF YES: Did you have any of these thoughts in the past week (including today)?",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "SUICIDE ATTEMPT"
+          }
         },
         {
           "id": "OV_SI2",
@@ -203,11 +206,14 @@
           "criterion_description": null,
           "rating_options": null,
           "skip_if": {
-            "NO": "SUICIDE ATTEMPT"
+            "NO": "OV_SA1"
           },
           "notes": "IF NO: SKIP TO SUICIDE ATTEMPT, BELOW.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "SUICIDE ATTEMPT"
+          }
         },
         {
           "id": "OV_SI3",
@@ -249,11 +255,14 @@
           "criterion_description": null,
           "rating_options": null,
           "skip_if": {
-            "NO": "OTHER CURRENT PROBLEMS"
+            "NO": "OV_OCP1"
           },
           "notes": "IF NO, GO TO OTHER CURRENT PROBLEMS, BELOW.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "OTHER CURRENT PROBLEMS"
+          }
         },
         {
           "id": "OV_SA3",
@@ -523,12 +532,16 @@
             "YES": "YES"
           },
           "skip_if": {
-            "NO": "PRIMARY",
-            "YES": "A12_diagnoses"
+            "NO": "CONTINUE",
+            "YES": "CONTINUE"
           },
           "notes": "Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication. If NO: Diagnose Depressive Disorder Due to AMC or Substance-Induced Depressive Disorder. If YES (PRIMARY): Continue with A15 (Past Major Depressive Episode), page 13. If YES and not primary: CURRENT MAJOR DEPRESSIVE EPISODE, continue with A13, next page.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "PRIMARY",
+            "YES": "A12_diagnoses"
+          }
         },
         {
           "id": "A13",
@@ -688,11 +701,14 @@
             "YES": "YES"
           },
           "skip_if": {
-            "NO": "Continue with A25 (Criterion B)"
+            "NO": "A25"
           },
           "notes": "Has there been any other time when you were (depressed/OWN WORDS) and had even more of the symptoms than I just asked about? IF YES: Go back to A15, page 13, and assess symptoms for that episode. IF NO: Continue with A29 (Current Manic Episode), page 17.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "Continue with A25 (Criterion B)"
+          }
         },
         {
           "id": "A25",
@@ -884,11 +900,14 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "Continue with A54 (Past Manic Episode), page 22."
+            "0": "A54"
           },
           "notes": "If YES, continue with A39, CRITERION C.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "Continue with A54 (Past Manic Episode), page 22."
+          }
         },
         {
           "id": "A39",
@@ -900,11 +919,14 @@
             "-": "Absent"
           },
           "skip_if": {
-            "-": "Continue with A50 (Current Hypomanic Episode, Criterion C), page 21."
+            "-": "A50"
           },
           "notes": "ASK THE FOLLOWING QUESTIONS ONLY AS NEEDED.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "Continue with A50 (Current Hypomanic Episode, Criterion C), page 21."
+          }
         },
         {
           "id": "A40",
@@ -916,11 +938,14 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "Diagnose: Bipolar Disorder Due to AMC or Substance-Induced Bipolar Disorder. Continue with A54 (Past Manic Episode), page 22."
+            "0": "A54"
           },
           "notes": "Note: A full Manic Episode that emerges during antidepressant treatment (e.g., medication, electroconvulsive therapy) but persists at a fully syndromal level beyond the physiological effect of that treatment is sufficient evidence for a Manic Episode and, therefore, a Bipolar I [Disorder] diagnosis. NOTE: Code \"NO\" only if episode is due to a GMC or substance/medication. Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication. Etiological GMCs include Alzheimer's disease, vascular dementia, HIV-induced dementia, Huntington's disease, Lewy body disease, Wernicke-Korsakoff syndrome, Cushing's disease, multiple sclerosis, amyotrophic lateral sclerosis, Parkinson's disease, Pick's disease, Creutzfeldt-Jakob disease, stroke, traumatic brain injuries, and hyperthyroidism. Etiological substances/medications include alcohol (I/W); phencyclidine (I); hallucinogens (I); sedatives, hypnotics, and anxiolytics (I/W); amphetamines (I/W); cocaine (I/W); corticosteroids; androgens; isoniazid; levodopa; interferon-alpha; varenicline; procarbazine; clarithromycin; and ciprofloxacin. If YES (PRIMARY), continue to CURRENT MANIC EPISODE Continue with B1 (Psychotic Symptoms), page 31.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "Diagnose: Bipolar Disorder Due to AMC or Substance-Induced Bipolar Disorder. Continue with A54 (Past Manic Episode), page 22."
+          }
         },
         {
           "id": "A41",
@@ -932,7 +957,7 @@
             "+": "YES"
           },
           "skip_if": {
-            "—": "A54"
+            "-": "A54"
           },
           "notes": "Continue with A54 (Past Manic Episode), page 22.",
           "interviewer_text_de": "",
@@ -1110,11 +1135,14 @@
             "1": "YES"
           },
           "skip_if": {
-            "1": "PRIMARY"
+            "1": "CONTINUE"
           },
           "notes": "Note: A full Hypomanic Episode that emerges during antidepressant treatment (e.g., medication, electroconvulsive therapy) but persists at a fully syndromal level beyond the physiological effect of that treatment is sufficient evidence for a Hypomanic Episode diagnosis. However, caution is indicated so that one or two symptoms (particularly increased irritability, edginess, or agitation following antidepressant use) are neither taken as sufficient for diagnosis of a Hypomanic Episode, nor necessarily indicative of a bipolar diathesis. NOTE: Code \"NO\" only if episode is due to a GMC or substance/medication. Refer to list of etiological GMCs and substances/medications in A40, page 19. Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "1": "PRIMARY"
+          }
         },
         {
           "id": "A54",
@@ -1142,11 +1170,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "A66 (Past Hypomanic Episode), page 26"
+            "-": "A66"
           },
           "notes": "Continue with A66 (Past Hypomanic Episode), page 26 if elevated mood lasted less than 1 week.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "A66 (Past Hypomanic Episode), page 26"
+          }
         },
         {
           "id": "A56",
@@ -1256,11 +1287,14 @@
             "YES": "YES"
           },
           "skip_if": {
-            "NO": "IF NOT ALREADY ASKED: Has there been any other time when you were (high/irritable/OWN WORDS) and had even more of the symptoms that I just asked you about? IF YES: Go back to A54, page 22, and ask about that episode. IF NO: Continue with A78 (Persistent Depressive Disorder), page 29."
+            "NO": "A78"
           },
           "notes": "Continue with A64 (Criterion C), next page.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "IF NOT ALREADY ASKED: Has there been any other time when you were (high/irritable/OWN WORDS) and had even more of the symptoms that I just asked you about? IF YES: Go back to A54, page 22, and ask about that episode. IF NO: Continue with A78 (Persistent Depressive Disorder), page 29."
+          }
         },
         {
           "id": "A64",
@@ -1291,7 +1325,7 @@
           "criterion_description_de": ""
         },
         {
-          "id": null,
+          "id": "A65b",
           "criterion_label": "Additional past manic episodes screening",
           "interviewer_text": "Has there been any other time when you were (high/irritable/OWN WORDS) and had (ACKNOWLEDGED MANIC SXS) and you got into trouble with people or were hospitalized?",
           "criterion_description": "IF NOT ALREADY ASKED: Has there been any other time when you were (high/irritable/OWN WORDS) and had (ACKNOWLEDGED MANIC SXS) and you got into trouble with people or were hospitalized?",
@@ -1473,11 +1507,14 @@
             "YES": "YES"
           },
           "skip_if": {
-            "YES": "PRIMARY"
+            "YES": "CONTINUE"
           },
           "notes": "Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication. Note: A full Hypomanic Episode that emerges during antidepressant treatment (e.g., medication, electroconvulsive therapy) but persists at a fully syndromal level beyond the physiological effect of that treatment is sufficient evidence for a Hypomanic Episode diagnosis. However, caution is indicated so that one or two symptoms (particularly increased irritability, edginess, or agitation following antidepressant use) are neither taken as sufficient for diagnosis of a Hypomanic Episode, nor necessarily indicative of a bipolar diathesis. NOTE: Code \"NO\" only if episode is due to a GMC or substance/medication. Refer to list of etiological GMCs and substances/medications in A40, page 19. Diagnose: Bipolar Disorder Due to AMC or Substance-Induced Bipolar Disorder. If NO: PAST HYPOMANIC EPISODE, Continue with B1 (Psychotic Symptoms), page 31. IF NOT ALREADY ASKED: Has there been any other time when you were (high/irritable/OWN WORDS) and had and you were not (ill with GMC/using SUBSTANCE)? IF YES: Go back to A66, page 26, and ask about that episode. IF NO: Continue with A78 (Persistent Depressive Disorder), page 29.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "YES": "PRIMARY"
+          }
         },
         {
           "id": "A78",
@@ -1489,11 +1526,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "−": "B1 (Psychotic Symptoms), page 31"
+            "-": "B1"
           },
           "notes": "IF THERE HAS EVER BEEN A MANIC OR HYPOMANIC EPISODE, SKIP THE ASSESSMENT OF PERSISTENT DEPRESSIVE DISORDER AND CONTINUE WITH B1 (PSYCHOTIC SYMPTOMS), PAGE 31.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "B1 (Psychotic Symptoms), page 31"
+          }
         },
         {
           "id": "A79",
@@ -1589,11 +1629,14 @@
             "YES": "YES"
           },
           "skip_if": {
-            "NO": "B1 (Psychotic Symptoms), page 31"
+            "NO": "B1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "B1 (Psychotic Symptoms), page 31"
+          }
         },
         {
           "id": "A86",
@@ -1605,11 +1648,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "−": "B1 (Psychotic Symptoms), page 31"
+            "-": "B1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "B1 (Psychotic Symptoms), page 31"
+          }
         },
         {
           "id": "A87",
@@ -1621,11 +1667,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "−": "B1 (Psychotic Symptoms), page 31"
+            "-": "B1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "B1 (Psychotic Symptoms), page 31"
+          }
         },
         {
           "id": "A88",
@@ -1637,11 +1686,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "B1 (Psychotic Symptoms), page 31."
+            "-": "B1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "B1 (Psychotic Symptoms), page 31."
+          }
         },
         {
           "id": "A89",
@@ -1653,11 +1705,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "Diagnose: Depressive Disorder Due to AMC or Substance-Induced Depressive Disorder"
+            "-": "CONTINUE"
           },
           "notes": "Refer to list of etiological GMCs and substances/medications in A12, page 12. Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication. If +, continue with A90, below. If -, diagnose Depressive Disorder Due to AMC or Substance-Induced Depressive Disorder, then continue with B1 (Psychotic Symptoms), page 31.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "Diagnose: Depressive Disorder Due to AMC or Substance-Induced Depressive Disorder"
+          }
         },
         {
           "id": "A90",
@@ -1669,11 +1724,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "B1 (Psychotic Symptoms), page 31."
+            "-": "B1"
           },
           "notes": "If +, Diagnose: Persistent Depressive Disorder (current). Continue with B1 (Psychotic Symptoms), page 31. ASK THE FOLLOWING QUESTIONS ONLY AS NEEDED.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "B1 (Psychotic Symptoms), page 31."
+          }
         }
       ]
     },
@@ -2091,11 +2149,14 @@
             "NO": "NO"
           },
           "skip_if": {
-            "NO": "C_substance_induced"
+            "NO": "CONTINUE"
           },
           "notes": "If NO (due to GMC or substance): Diagnose Psychotic Disorder due to AMC or Substance-Induced Psychotic Disorder. Go back to C1 page 37, if there are other symptoms not due to GMC or substance/medication. Otherwise go to D1 (Differential Diagnosis of Mood Disorders), page 45. If YES: SCHIZOPHRENIA — Go to C25 (Chronology of Psychotic Disorders), page 44.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "C_substance_induced"
+          }
         },
         {
           "id": "C7",
@@ -2123,11 +2184,14 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "C8_NO_PATH"
+            "0": "CONTINUE"
           },
           "notes": "Refer to list of etiological GMCs and substances/medications in C6, page 38. Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication. If YES (not due to a GMC or substance/medication) go to Schizophreniform Disorder or Schizoaffective Disorder. If NO, Diagnose: Psychotic Disorder Due to AMC or Substance-Induced Psychotic Disorder. Go back to C2, page 37, if there are other psychotic symptoms not due to a GMC or substance/medication. Otherwise, go to D1 (Differential Diagnosis of Mood Disorders), page 45.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "C8_NO_PATH"
+          }
         },
         {
           "id": "C9",
@@ -2187,11 +2251,14 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "C12_AMC"
+            "0": "CONTINUE"
           },
           "notes": "Refer to list of etiological GMCs and substances/medications in C6, page 38. Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication. If YES (not due to GMC or substance/medication): SCHIZOAFFECTIVE DISORDER, Go to C27 (Chronology of Psychotic Disorders), page 44. If NO: Diagnose Psychotic Disorder Due to AMC or Substance-Induced Psychotic Disorder. Go back to C2, page 37 if there are other psychotic symptoms not due to a GMC or substance/medication. Otherwise, go to D1 (Differential Diagnosis of Mood Disorders), page 45.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "C12_AMC"
+          }
         },
         {
           "id": "C13",
@@ -2267,11 +2334,14 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "C17_diag"
+            "0": "CONTINUE"
           },
           "notes": "Refer to list of etiological GMCs and substances/medications in C6, page 38. Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication. If NO: Diagnose Psychotic Disorder Due to AMC or Substance-Induced Psychotic Disorder. Go back to C2, page 37, if there are other psychotic symptoms not due to a GMC or substance/medication. Otherwise, go to D1 (Differential Diagnosis of Mood Disorders), page 45.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "C17_diag"
+          }
         },
         {
           "id": "C18",
@@ -2378,11 +2448,14 @@
           },
           "skip_if": {
             "YES": "C30",
-            "NO": "C24_diagnosis"
+            "NO": "CONTINUE"
           },
           "notes": "Refer to list of etiological GMCs and substances/medications in C6, page 38. Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication. If YES (not due to a GMC or substance/medication): OTHER SPECIFIED PSYCHOTIC DISORDER, Go to C30 (Chronology of Psychotic Disorders), page 44. If NO: Diagnose Psychotic Disorder Due to AMC or Substance-Induced Psychotic Disorder. Go back to C2, page 37, if there are other psychotic symptoms not due to a GMC or substance/medication. Otherwise, go to D1 (Differential Diagnosis of Mood Disorders), page 45.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "C24_diagnosis"
+          }
         },
         {
           "id": "C25",
@@ -2482,7 +2555,7 @@
           "criterion_description": "If there have never been any clinically significant mood symptoms or if all mood symptoms are accounted for by a diagnosis of Schizoaffective Disorder, go to E1 (Substance Use Disorders), page 53. Otherwise continue with D2.",
           "rating_options": null,
           "skip_if": {
-            "no_mood_symptoms_or_schizoaffective": "E1"
+            "-": "E1"
           },
           "notes": null,
           "interviewer_text_de": "",
@@ -2739,11 +2812,14 @@
             "YES": "Current"
           },
           "skip_if": {
-            "NO": "D17_diagnosis_partial_or_full_remission"
+            "NO": "CONTINUE"
           },
           "notes": "If YES, diagnose Bipolar I Disorder with severity specifiers (Mild, Moderate, Severe, With Psychotic Features). If NO (Past Hx), determine partial or full remission. Continue with E1 (Substance Use Disorders), page 53.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "D17_diagnosis_partial_or_full_remission"
+          }
         },
         {
           "id": "D18",
@@ -2755,11 +2831,14 @@
             "YES": "Current"
           },
           "skip_if": {
-            "NO": "D18_diagnosis_partial_or_full_remission"
+            "NO": "CONTINUE"
           },
           "notes": "If YES, diagnose Bipolar I Disorder with severity specifiers (Mild, Moderate, Severe, With Psychotic Features). If NO (Past Hx), determine partial or full remission. Continue with E1 (Substance Use Disorders), page 53.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "D18_diagnosis_partial_or_full_remission"
+          }
         },
         {
           "id": "D19",
@@ -2771,12 +2850,16 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "Past Hx leads to Diagnose: Bipolar I Disorder, Most Recent Episode Hypomanic, In Partial Remission or In Full Remission",
-            "1": "Diagnose: Bipolar I Disorder, Current Episode Hypomanic, Continue with E1 (Substance Use Disorders), page 53"
+            "0": "CONTINUE",
+            "1": "E1"
           },
           "notes": "IF UNCLEAR: During the past month, since (ONE MONTH AGO), have you had (HYPOMANIC SXS RATED \"+\")? NO leads to Past Hx or Current pathway. Diagnosis options include Bipolar I Disorder Current Episode Hypomanic; Bipolar I Disorder Most Recent Episode Hypomanic In Partial Remission; Bipolar I Disorder Most Recent Episode Hypomanic In Full Remission.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "Past Hx leads to Diagnose: Bipolar I Disorder, Most Recent Episode Hypomanic, In Partial Remission or In Full Remission",
+            "1": "Diagnose: Bipolar I Disorder, Current Episode Hypomanic, Continue with E1 (Substance Use Disorders), page 53"
+          }
         },
         {
           "id": "D20",
@@ -2788,12 +2871,16 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "Past Hx leads to Diagnose: Bipolar I Disorder, Most Recent Episode Unspecified",
-            "1": "Diagnose: Bipolar I Disorder, Current Episode Unspecified, Continue with E1 (Substance Use Disorders), page 53"
+            "0": "CONTINUE",
+            "1": "E1"
           },
           "notes": "IF UNCLEAR: During the past month, since (ONE MONTH AGO), have you had (DEPRESSIVE OR MANIC SXS)? NO leads to Past Hx or Current pathway.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "Past Hx leads to Diagnose: Bipolar I Disorder, Most Recent Episode Unspecified",
+            "1": "Diagnose: Bipolar I Disorder, Current Episode Unspecified, Continue with E1 (Substance Use Disorders), page 53"
+          }
         },
         {
           "id": "D21",
@@ -2805,12 +2892,16 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "Past Hx leads to Diagnose: Bipolar II Disorder, Most Recent Episode Hypomanic, In Partial Remission or In Full Remission",
-            "1": "Diagnose: Bipolar II Disorder, Current Episode Hypomanic, Continue with E1 (Substance Use Disorders), page 53"
+            "0": "CONTINUE",
+            "1": "E1"
           },
           "notes": "IF UNCLEAR: During the past month, since (ONE MONTH AGO), have you had (HYPOMANIC SXS RATED \"+\")? NO leads to Past Hx or Current pathway. Diagnosis options include Bipolar II Disorder Current Episode Hypomanic; Bipolar II Disorder Most Recent Episode Hypomanic In Partial Remission; Bipolar II Disorder Most Recent Episode Hypomanic In Full Remission.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "Past Hx leads to Diagnose: Bipolar II Disorder, Most Recent Episode Hypomanic, In Partial Remission or In Full Remission",
+            "1": "Diagnose: Bipolar II Disorder, Current Episode Hypomanic, Continue with E1 (Substance Use Disorders), page 53"
+          }
         },
         {
           "id": "D22",
@@ -3473,11 +3564,14 @@
             "YES": "YES"
           },
           "skip_if": {
-            "NO": "Continue with E36, next page."
+            "NO": "CONTINUE"
           },
           "notes": "If there is threshold use of other drug classes in past year (six or more times in 12 months or prescription abuse), return to E23 on page 58 and reassess the criteria for each drug class used at threshold in sequence until either criteria are met for a Substance Use Disorder in the past 12 months or else none of the drug classes meet criteria. If no drug class ultimately meets criteria, continue with F1 (Panic Disorder), page 63.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "Continue with E36, next page."
+          }
         }
       ]
     },
@@ -3754,11 +3848,14 @@
             "YES": "YES"
           },
           "skip_if": {
-            "NO": "F19_go_to_F23"
+            "NO": "F23"
           },
           "notes": "If NO, Go to F23 (Agoraphobia), page 66.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "F19_go_to_F23"
+          }
         },
         {
           "id": "F20",
@@ -3770,11 +3867,14 @@
             "YES": "YES"
           },
           "skip_if": {
-            "NO": "F20_PRIMARY"
+            "NO": "CONTINUE"
           },
           "notes": "Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication. Etiological GMCs include endocrine disease (e.g., hyperthyroidism, pheochromocytoma, hypoglycemia, hyperadrenocortisolism), cardiovascular disorders (e.g., congestive heart failure, pulmonary embolism, arrhythmia such as atrial fibrillation), respiratory illness (e.g., chronic obstructive pulmonary disease, asthma, pneumonia), metabolic disturbances (e.g., vitamin B12 deficiency, porphyria), and neurological illness (e.g., neoplasms, vestibular dysfunction, encephalitis, seizure disorders). Etiological substances/medications include alcohol (I/W); caffeine (I); cannabis (I); opioids (W); phencyclidine (I); other hallucinogens (I); inhalants (I); stimulants (including cocaine) (I/W); sedatives, hypnotics, and anxiolytics (W); anesthetics and analgesics; sympathomimetics or other bronchodilators; anticholinergics; insulin; thyroid preparations; oral contraceptives; antihistamines; antiparkinsonian medications; corticosteroids; antihypertensive and cardiovascular medications; anticonvulsants; lithium carbonate; antipsychotic medications; antidepressant medications; and exposure to heavy metals and toxins such as organophosphate insecticide, nerve gases, carbon monoxide, carbon dioxide, and volatile substances such as gasoline and paint. If YES, diagnose Anxiety Disorder Due to AMC or Substance-Induced Anxiety Disorder; Go to F23 (Agoraphobia), page 66. If NO, continue with F21 (Criterion D), below.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "F20_PRIMARY"
+          }
         },
         {
           "id": "F21",
@@ -3864,11 +3964,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "F32 (Social Anxiety Disorder), page 68."
+            "-": "F32"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "F32 (Social Anxiety Disorder), page 68."
+          }
         },
         {
           "id": "F27",
@@ -3880,11 +3983,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "F32 (Social Anxiety Disorder), page 68."
+            "-": "F32"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "F32 (Social Anxiety Disorder), page 68."
+          }
         },
         {
           "id": "F28",
@@ -3896,11 +4002,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "F32 (Social Anxiety Disorder), page 68."
+            "-": "F32"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "F32 (Social Anxiety Disorder), page 68."
+          }
         },
         {
           "id": "F29",
@@ -3912,11 +4021,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "F32 (Social Anxiety Disorder), page 68."
+            "-": "F32"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "F32 (Social Anxiety Disorder), page 68."
+          }
         },
         {
           "id": "F30",
@@ -3928,11 +4040,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "F32 (Social Anxiety Disorder), page 68."
+            "-": "F32"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "F32 (Social Anxiety Disorder), page 68."
+          }
         },
         {
           "id": "F31",
@@ -3944,11 +4059,14 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "Go to F32 (Social Anxiety Disorder), below"
+            "0": "F32"
           },
           "notes": "Diagnose: Agoraphobia (current). Continue with F32 (Social Anxiety Disorder), below.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "Go to F32 (Social Anxiety Disorder), below"
+          }
         },
         {
           "id": "F32",
@@ -3960,11 +4078,14 @@
             "0": "-"
           },
           "skip_if": {
-            "0": "Go to F42 (GAD), page 71."
+            "0": "F42"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "Go to F42 (GAD), page 71."
+          }
         },
         {
           "id": "F33",
@@ -3976,11 +4097,14 @@
             "0": "-"
           },
           "skip_if": {
-            "0": "Go to F42 (GAD), page 71."
+            "0": "F42"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "Go to F42 (GAD), page 71."
+          }
         },
         {
           "id": "F34",
@@ -3992,11 +4116,14 @@
             "0": "-"
           },
           "skip_if": {
-            "0": "Go to F42 (GAD), page 71."
+            "0": "F42"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "Go to F42 (GAD), page 71."
+          }
         },
         {
           "id": "F35",
@@ -4008,11 +4135,14 @@
             "+": "Present"
           },
           "skip_if": {
-            "-": "F42 (GAD), page 71"
+            "-": "F42"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "F42 (GAD), page 71"
+          }
         },
         {
           "id": "F36",
@@ -4024,11 +4154,14 @@
             "+": "Present"
           },
           "skip_if": {
-            "-": "F42 (GAD), page 71"
+            "-": "F42"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "F42 (GAD), page 71"
+          }
         },
         {
           "id": "F37",
@@ -4040,11 +4173,14 @@
             "+": "Present"
           },
           "skip_if": {
-            "-": "F42 (GAD), page 71"
+            "-": "F42"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "F42 (GAD), page 71"
+          }
         },
         {
           "id": "F38",
@@ -4056,11 +4192,14 @@
             "+": "Present"
           },
           "skip_if": {
-            "-": "F42 (GAD), page 71"
+            "-": "F42"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "F42 (GAD), page 71"
+          }
         },
         {
           "id": "F39",
@@ -4072,11 +4211,14 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "PRIMARY"
+            "0": "CONTINUE"
           },
           "notes": "Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication. If NO, Diagnose: Anxiety Disorder Due to AMC or Substance-Induced Anxiety Disorder, Go to F42 (GAD), next page. If YES, Continue with F40 (Criterion I), below.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "PRIMARY"
+          }
         },
         {
           "id": "F40",
@@ -4120,11 +4262,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "G1 (OCD), page 73"
+            "-": "G1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "G1 (OCD), page 73"
+          }
         },
         {
           "id": "F43",
@@ -4136,11 +4281,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "G1 (OCD), page 73"
+            "-": "G1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "G1 (OCD), page 73"
+          }
         },
         {
           "id": "F44",
@@ -4152,11 +4300,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "G1 (OCD), page 73"
+            "-": "G1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "G1 (OCD), page 73"
+          }
         },
         {
           "id": "F45",
@@ -4252,11 +4403,14 @@
             "+": "present"
           },
           "skip_if": {
-            "-": "G1 (OCD), page 73"
+            "-": "G1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "G1 (OCD), page 73"
+          }
         },
         {
           "id": "F52",
@@ -4268,11 +4422,14 @@
             "+": "present"
           },
           "skip_if": {
-            "-": "G1 (OCD), page 73"
+            "-": "G1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "G1 (OCD), page 73"
+          }
         },
         {
           "id": "F53",
@@ -4284,11 +4441,14 @@
             "YES": "YES"
           },
           "skip_if": {
-            "YES": "Diagnose: Anxiety Disorder Due to AMC or Substance-Induced Anxiety Disorder; Go to G1 (OCD), next page"
+            "YES": "G1"
           },
           "notes": "Refer to list of etiological GMCs and substances/medications in F20, page 65. Refer to the User's Guide, Section 9, for guidance on determining whether there is an etiological GMC or substance/medication. If NO, continue with F54 below.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "YES": "Diagnose: Anxiety Disorder Due to AMC or Substance-Induced Anxiety Disorder; Go to G1 (OCD), next page"
+          }
         },
         {
           "id": "F54",
@@ -4300,11 +4460,14 @@
             "YES": "YES"
           },
           "skip_if": {
-            "NO": "G1 (OCD), next page"
+            "NO": "G1"
           },
           "notes": "If YES: Diagnose: Generalized Anxiety Disorder (current). Continue with G1 (Obsessive-Compulsive Disorder), next page.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "G1 (OCD), next page"
+          }
         }
       ]
     },
@@ -4385,11 +4548,14 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "G9 (PTSD), page 76"
+            "0": "G9"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "G9 (PTSD), page 76"
+          }
         },
         {
           "id": "G6",
@@ -4401,11 +4567,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "G9 (PTSD), page 76"
+            "-": "G9"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "G9 (PTSD), page 76"
+          }
         },
         {
           "id": "G7",
@@ -4417,11 +4586,14 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "PRIMARY"
+            "0": "CONTINUE"
           },
           "notes": "Diagnose: OC and Related Disorder Due to AMC or Substance-Induced OC and Related Disorder. Go to G9 (PTSD), page 76.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "PRIMARY"
+          }
         },
         {
           "id": "G8",
@@ -5172,11 +5344,14 @@
             "YES": "YES"
           },
           "skip_if": {
-            "NO": "Go to II (Screening), page 91."
+            "NO": "I1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "Go to II (Screening), page 91."
+          }
         },
         {
           "id": "H23",
@@ -5188,11 +5363,14 @@
             "+": "+"
           },
           "skip_if": {
-            "-": "Go to II (Screening), page 91."
+            "-": "I1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "Go to II (Screening), page 91."
+          }
         },
         {
           "id": "H24",
@@ -5204,11 +5382,14 @@
             "+": "+"
           },
           "skip_if": {
-            "-": "Go to II (Screening), page 91."
+            "-": "I1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "Go to II (Screening), page 91."
+          }
         },
         {
           "id": "H25",
@@ -5220,11 +5401,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "-": "I1 (Screening), next page"
+            "-": "I1"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "I1 (Screening), next page"
+          }
         },
         {
           "id": "H26",
@@ -5236,11 +5420,14 @@
             "YES": "YES"
           },
           "skip_if": {
-            "NO": "I1 (Screening), next page"
+            "NO": "I1"
           },
           "notes": "Diagnose: Attention-Deficit/Hyperactivity Disorder (current)\nCombined Presentation: If Criterion A1/item H11, page 87 (inattention) and Criterion A2/item H21, page 89 (hyperactivity-impulsivity) are met for the past 6 months.\nPredominantly Inattentive Presentation: If Criterion A1/item H11, page 87 (inattention) is met but Criterion A2/item H21, page 89 (hyperactivity-impulsivity) is not met for the past 6 months.\nPredominantly Hyperactive/Impulsive Presentation: If Criterion A2/item H21, page 89 (hyperactivity-impulsivity) is met but Criterion A1/item H11, page 87 (inattention) is not met for the past 6 months.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "NO": "I1 (Screening), next page"
+          }
         }
       ]
     },
@@ -5508,11 +5695,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "−": "END OF SCID-5-CV"
+            "-": "END"
           },
           "notes": "INFORMATION OBTAINED FROM OVERVIEW OF PRESENT ILLNESS WILL USUALLY BE SUFFICIENT TO RATE THIS CRITERION. CONSIDER ADJUSTMENT DISORDER ONLY IF 1) THERE IS AN IDENTIFIED STRESSOR AND 2) THERE ARE SYMPTOMS OCCURRING IN THE PAST 6 MONTHS THAT DO NOT MEET THE CRITERIA FOR ANOTHER DSM-5 DISORDER.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "END OF SCID-5-CV"
+          }
         },
         {
           "id": "J2",
@@ -5524,11 +5714,14 @@
             "+": "YES"
           },
           "skip_if": {
-            "−": "END OF SCID-5-CV"
+            "-": "END"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "END OF SCID-5-CV"
+          }
         },
         {
           "id": "J3",
@@ -5540,11 +5733,14 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "END OF SCID-5-CV"
+            "0": "END"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "END OF SCID-5-CV"
+          }
         },
         {
           "id": "J4",
@@ -5556,11 +5752,14 @@
             "0": "NO"
           },
           "skip_if": {
-            "0": "END OF SCID-5-CV"
+            "0": "END"
           },
           "notes": null,
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "0": "END OF SCID-5-CV"
+          }
         },
         {
           "id": "J5",
@@ -5572,11 +5771,14 @@
             "+": "+"
           },
           "skip_if": {
-            "-": "END OF SCID-5-CV"
+            "-": "END"
           },
           "notes": "Diagnose: Adjustment Disorder (current) with subtypes: With Depressed Mood, With Anxiety, With Mixed Anxiety and Depressed Mood, With Disturbance of Conduct, With Mixed Disturbance of Emotions and Conduct, Unspecified.",
           "interviewer_text_de": "",
-          "criterion_description_de": ""
+          "criterion_description_de": "",
+          "skip_if_note": {
+            "-": "END OF SCID-5-CV"
+          }
         }
       ]
     }
