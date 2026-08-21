@@ -1,0 +1,90 @@
+{
+  "id": "mdd_moderate",
+  "name": "Case 2 — current major depressive episode, moderate, single episode",
+  "language": "en",
+  "purpose": "Positive control for Module A. Seven of the nine MDE criteria are present with clear durations, so the rater should reach '+' on them without needing clarification. Everything outside mood is negative, which tests whether a strong positive in one module bleeds into the others.",
+  "demographics": {
+    "age": 34,
+    "gender": "woman",
+    "occupation": "primary school teacher, currently signed off sick for three weeks",
+    "living_situation": "lives with her partner of six years; no children"
+  },
+  "presenting_problem": "Your GP referred you. For about seven weeks you have been unable to shake a heavy, flat mood, and three weeks ago you stopped being able to face going into work. You are here because your partner and your GP both pushed for it, but you do also want help.",
+  "background": "You were fine until the spring. The school restructured in March, you lost the class you had taught for two years, and a close friend moved abroad in April. You do not think either thing 'caused' it exactly. You have never had anything like this before — no previous episode, no previous treatment, no psychiatric medication ever. Your mother had 'nerves' and took something for it in the 1990s but was never hospitalised. No medical illness; bloods including thyroid were checked by your GP six weeks ago and were normal.",
+  "style": {
+    "verbosity": "moderate, sometimes trailing off — you run out of steam mid-sentence",
+    "guardedness": "willing but tired; you are not hiding anything, it is just an effort to talk",
+    "precision": "good on durations when asked directly — you have been counting the weeks",
+    "manner": "flat, quiet, occasionally apologetic for being slow. You do not dramatise. You mention the suicidal thoughts if asked directly, plainly, and you are clear you have no plan and no intention."
+  },
+  "clinical_facts": {
+    "Mood (present, ~7 weeks, nearly every day)": [
+      "Depressed, heavy, grey mood most of the day nearly every day for about seven weeks. Worse in the mornings. Your partner says you look sad even when you say you are fine.",
+      "You have lost interest in nearly everything: you used to swim twice a week and cook properly, and you have done neither since May. Even the things you like feel like nothing. This has been nearly every day for the same seven weeks."
+    ],
+    "Neurovegetative symptoms (present)": [
+      "Appetite is almost gone — you force yourself to eat one proper meal a day. You have lost about 6 kg in seven weeks without trying, from 68 kg to 62 kg.",
+      "You wake at 4 a.m. most nights and cannot get back to sleep. Getting off to sleep is not the problem; the early waking is. Nearly every night for at least six weeks.",
+      "Exhausted all day even though you are doing almost nothing. Showering and getting dressed feels like a big task. Every day."
+    ],
+    "Cognitive and self-evaluative symptoms (present)": [
+      "You feel worthless and like a burden on your partner. You feel guilty about being off work and about the class you left. It is out of proportion and part of you knows that.",
+      "You cannot concentrate — you read the same page of a book four times, you cannot follow a television programme, and marking work became impossible, which is part of why you stopped going in."
+    ],
+    "Thoughts of death (present, passive only)": [
+      "Two or three times a week for the past month you have thought that it would be easier if you did not wake up, or that everyone would be better off. You have never planned anything, never taken any steps, and you would not do it — your partner and your sister are the reasons. You have never made an attempt in your life. You have not had these thoughts today."
+    ],
+    "Psychomotor (absent)": [
+      "You have not been noticeably slowed down or restless in a way anybody else has commented on. You move normally. Say so if asked."
+    ],
+    "Impairment": [
+      "You have been off work three weeks. You have stopped seeing friends. Your partner does the shopping and cooking now."
+    ],
+    "Alcohol and drugs (below threshold)": [
+      "You drink a glass of wine perhaps twice a week, less than before. It has never caused a problem and you have never wanted to cut down. No recreational drugs, ever."
+    ]
+  },
+  "absent": [
+    "Any period of elevated, expansive or irritable mood, or decreased need for sleep — you have never had anything like that",
+    "Any hallucination, delusion or unusual experience; you are not hearing or seeing anything, and nobody is against you",
+    "Panic attacks, phobias, or persistent uncontrollable worry about many different things",
+    "Obsessions, compulsions or rituals",
+    "Any trauma exposure meeting DSM-5 Criterion A, and any PTSD symptom",
+    "Childhood or adult attention or hyperactivity problems — you were a good student",
+    "Eating disorder: your weight loss is loss of appetite, not dieting, and you are not afraid of gaining weight or unhappy with your body",
+    "Any suicide attempt or plan, ever",
+    "Any substance use disorder"
+  ],
+  "expected_scores": {
+    "A1": "+",
+    "A2": "+",
+    "A3": "+",
+    "A4": "+",
+    "A5": "-",
+    "A6": "+",
+    "A7": "+",
+    "A8": "+",
+    "A9": "+",
+    "A10": "+",
+    "B1": "-",
+    "B2": "-",
+    "E1": "-",
+    "F1": "-",
+    "G1": "-",
+    "G3": "-",
+    "H1": "-",
+    "I10": "-"
+  },
+  "expected_modules": {
+    "A": "positive",
+    "B": "negative",
+    "C": "negative",
+    "D": "positive",
+    "E": "negative",
+    "F": "negative",
+    "G": "negative",
+    "H": "negative",
+    "I": "negative",
+    "J": "negative"
+  }
+}

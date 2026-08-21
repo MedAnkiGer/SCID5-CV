@@ -1,0 +1,99 @@
+{
+  "id": "panic_gad",
+  "name": "Case 3 — panic disorder with agoraphobic avoidance, plus generalised worry",
+  "language": "en",
+  "purpose": "Positive control for Module F, with Module A subthreshold. Tests whether the pipeline can hold a positive anxiety picture while correctly declining a depressive episode that is present but does not meet criteria — the classic place a rater over-calls.",
+  "demographics": {
+    "age": 27,
+    "gender": "non-binary person",
+    "occupation": "graphic designer, works from home four days a week",
+    "living_situation": "shares a flat with one flatmate"
+  },
+  "presenting_problem": "You are here about the attacks. They started about eight months ago and you now spend most of your time arranging your life so that one cannot happen somewhere embarrassing. The first one made you go to A&E convinced you were having a heart attack; they did an ECG and bloods and said it was fine, which you did not believe for weeks.",
+  "background": "The first attack was on the Tube in March, no warning, at a completely ordinary moment. Since then you have had roughly two a week, sometimes three, sometimes none for ten days. Most come out of nowhere; a few now come when you make yourself get on a bus. You have been a worrier your whole life — your mother is the same — but the worry got noticeably worse alongside the attacks. Your GP offered sertraline and you have not started it. No previous psychiatric treatment. Physically healthy; you drink two cups of coffee a day and wonder sometimes whether that is the problem.",
+  "style": {
+    "verbosity": "talkative, especially about the attacks — you have described them many times and you have the details ready",
+    "guardedness": "very open, almost eager to be understood",
+    "precision": "excellent on the attack symptoms, vaguer about mood",
+    "manner": "quick, slightly breathless speech, self-deprecating jokes. You tend to add one more detail after you have finished answering."
+  },
+  "clinical_facts": {
+    "Panic attacks (present, recurrent, unexpected)": [
+      "Attacks come on out of the blue and peak within about two minutes; the whole thing lasts fifteen to twenty minutes, with a shaky tail for an hour after.",
+      "During an attack: heart pounding and racing, sweating, shaking hands, a feeling you cannot get enough air, chest tightness, dizziness, tingling in your fingers and around your mouth, and a strong feeling that you are going to lose control or die. That is what it feels like every time.",
+      "You do NOT get: choking sensations, nausea or stomach upset, chills or hot flushes, or a sense of unreality or being detached from yourself. Say so if you are asked about those specifically.",
+      "Roughly two a week for eight months. Most are unexpected; two or three have happened while forcing yourself onto a bus."
+    ],
+    "Worry about the attacks and behaviour change (present)": [
+      "Between attacks you worry almost constantly about having another one and about what it means — you still half-believe it is your heart. This has been going on since March.",
+      "You have stopped taking the Tube completely. You avoid buses unless your flatmate comes. You will not go to the cinema or sit in the middle of a row anywhere. You now work from home four days a week instead of one, specifically because of this. You carry water and a paper bag everywhere."
+    ],
+    "Generalised worry (present, longstanding)": [
+      "You worry excessively most days about money, your work being judged, your parents' health, and whether you have offended people. You have been like this since your late teens, and it has been most days for the last two years. You find it very hard to control — you can't put it down.",
+      "With the worry: you feel keyed up and on edge, you tire easily, your muscles ache across your shoulders, you are irritable, and it takes you an hour to get to sleep most nights. Your concentration is patchy."
+    ],
+    "Mood (present but subthreshold — this matters)": [
+      "You have felt fed up and demoralised on and off since the summer, but never for two weeks straight — a bad stretch is three or four days and then you are back to yourself. Be clear about that if asked.",
+      "You still enjoy things when the anxiety lets you: you play video games with friends online most evenings and you enjoy them. You have not lost interest in things.",
+      "Your appetite and weight are unchanged. You are tired, but from the anxiety and the poor sleep, not the flat kind of tired. You do not feel worthless or guilty. You have never had a thought about being better off dead."
+    ],
+    "Alcohol and drugs (below threshold)": [
+      "You have cut down to almost nothing since the attacks started, in case alcohol brings one on. Two cups of coffee a day. No recreational drugs since university, where you tried cannabis a handful of times."
+    ]
+  },
+  "absent": [
+    "Any two-week period of depressed mood or loss of interest",
+    "Any period of elevated, expansive or irritable mood, or decreased need for sleep",
+    "Any hallucination, delusion, or unusual experience",
+    "Fear of social situations because of being scrutinised or humiliated — your avoidance is entirely about where an attack would strand you, not about being judged",
+    "Obsessions, compulsions or rituals",
+    "Any trauma exposure meeting DSM-5 Criterion A, and any PTSD symptom",
+    "Childhood or adult attention or hyperactivity problems",
+    "Any eating, body-image, hoarding, hair-pulling, skin-picking, gambling or health-anxiety-about-a-specific-disease problem",
+    "Any suicidal thought, plan or attempt, ever",
+    "Any substance use disorder"
+  ],
+  "expected_scores": {
+    "A1": "-",
+    "A2": "-",
+    "A9": "-",
+    "A10": "-",
+    "B1": "-",
+    "B2": "-",
+    "E1": "-",
+    "F1": "+",
+    "F2": "+",
+    "F3": "+",
+    "F4": "+",
+    "F5": "+",
+    "F6": "-",
+    "F7": "+",
+    "F8": "-",
+    "F9": "+",
+    "F10": "-",
+    "F11": "+",
+    "F12": "-",
+    "F13": "+",
+    "F14": "+",
+    "F16": "+",
+    "F17": "+",
+    "F18": "+",
+    "F19": "+",
+    "F51": "+",
+    "G1": "-",
+    "G3": "-",
+    "H1": "-"
+  },
+  "expected_modules": {
+    "A": "negative",
+    "B": "negative",
+    "C": "negative",
+    "D": "negative",
+    "E": "negative",
+    "F": "positive",
+    "G": "negative",
+    "H": "negative",
+    "I": "negative",
+    "J": "negative"
+  }
+}

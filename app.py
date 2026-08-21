@@ -20,6 +20,8 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Redirect
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from modules.aggregator import derive_rating
+
 _HERE = Path(__file__).resolve().parent
 load_dotenv(_HERE / ".env", override=True)
 
@@ -135,8 +137,8 @@ questions = load_questions()
 q_index, q_order = build_question_index(questions)
 
 
-def get_current_question(session):
-    """Return the current unanswered question dict (with progress info), or None."""
+def _next_unanswered(session):
+    """Return the next unanswered question dict (with progress info), or None."""
     responses = session["interview_responses"]
     # Resume from current pointer, skip answered
     start = session.get("current_question_id") or q_order[0]
@@ -172,6 +174,39 @@ def get_current_question(session):
     return None
 
 
+def apply_derived_ratings(session):
+    """Score any aggregate items sitting at the current position.
+
+    These questions ask the patient nothing — they count how other criteria were
+    rated (see `modules/aggregator.py`). Computing them here means neither the
+    clinician nor the simulator is ever presented with one.
+
+    Returns the ratings applied, newest last, for logging.
+    """
+    applied = []
+    while True:
+        q = _next_unanswered(session)
+        if q is None:
+            break
+        rating = derive_rating(q["id"], session["interview_responses"])
+        if rating is None:
+            break
+        summary = rating.pop("summary")
+        store_response(session, q["id"], summary, [], rating)
+        applied.append({"question_id": q["id"], **rating})
+    return applied
+
+
+def get_current_question(session):
+    """Return the question to put to the patient next, or None if finished.
+
+    Aggregate items are computed and stored on the way past, so a caller never
+    sees one. This writes to the session when that happens.
+    """
+    apply_derived_ratings(session)
+    return _next_unanswered(session)
+
+
 def walk_interview_order(session):
     """Walk through all questions following branching, yield (qid, q_data) for answered questions."""
     responses = session["interview_responses"]
@@ -189,6 +224,77 @@ def walk_interview_order(session):
                 idx += 1
         else:
             break
+
+
+def resolve_interviewer_text(q, session):
+    """Pick the right interviewer_text variant for a question.
+
+    Some questions are worded differently depending on how the previous one was
+    scored. Returns a copy with `interviewer_text` set to the variant actually
+    spoken to the patient — this is the single source of truth for what the
+    patient hears, used by the interview page and by the simulator.
+    """
+    idx = q_order.index(q["id"])
+    if idx > 0:
+        prev_id = q_order[idx - 1]
+        prev_score = session["interview_responses"].get(prev_id, {}).get("score", "-")
+    else:
+        prev_score = "-"
+
+    if prev_score == "+" and q.get("interviewer_text_if_previous_plus"):
+        q = dict(q)
+        q["interviewer_text"] = q["interviewer_text_if_previous_plus"]
+    elif prev_score == "-" and q.get("interviewer_text_if_previous_minus"):
+        q = dict(q)
+        q["interviewer_text"] = q["interviewer_text_if_previous_minus"]
+    return q
+
+
+# ---------------------------------------------------------------------------
+# Answer handling — shared by the web routes and tools/simulate_interview.py
+# ---------------------------------------------------------------------------
+
+def build_eval_text(transcript, exchanges):
+    """Flatten an initial answer plus clarification rounds into rater input."""
+    if not exchanges:
+        return transcript
+    parts = [f"[Initial answer]\n{transcript}"]
+    for i, ex in enumerate(exchanges, 1):
+        parts.append(f"[Follow-up question {i}]\n{ex['question']}")
+        parts.append(f"[Follow-up answer {i}]\n{ex['answer']}")
+    return "\n\n".join(parts)
+
+
+def store_response(session, qid, transcript, exchanges, rating):
+    """Save a rated answer and advance the session pointer."""
+    response = {
+        "score": rating["score"],
+        "transcript": transcript,
+        "exchanges": exchanges,
+        "unresolved": rating.get("unresolved", False),
+        "reasoning": rating.get("rationale", "") or rating.get("reasoning", ""),
+        "confidence": rating.get("confidence"),
+    }
+    # Aggregate items carry the arithmetic that produced them, so the report can
+    # show that the score was counted rather than rated.
+    if rating.get("derived"):
+        response["derived"] = rating["derived"]
+    session["interview_responses"][qid] = response
+    session["current_question_id"] = qid
+    save_session(session)
+
+
+def store_skip(session, qid, transcript):
+    """Save an unrated answer (overview/intro question) and advance."""
+    session["interview_responses"][qid] = {
+        "score": "N/A",
+        "transcript": transcript,
+        "exchanges": [],
+        "unresolved": False,
+        "reasoning": "",
+    }
+    session["current_question_id"] = qid
+    save_session(session)
 
 
 # ---------------------------------------------------------------------------
@@ -280,20 +386,7 @@ async def interview_get(request: Request, sid: str):
 
     # For questions with conditional interviewer text, pick the right variant
     # based on the previous question's score.
-    qid = q["id"]
-    idx = q_order.index(qid)
-    if idx > 0:
-        prev_id = q_order[idx - 1]
-        prev_score = session["interview_responses"].get(prev_id, {}).get("score", "-")
-    else:
-        prev_score = "-"
-
-    if prev_score == "+" and q.get("interviewer_text_if_previous_plus"):
-        q = dict(q)
-        q["interviewer_text"] = q["interviewer_text_if_previous_plus"]
-    elif prev_score == "-" and q.get("interviewer_text_if_previous_minus"):
-        q = dict(q)
-        q["interviewer_text"] = q["interviewer_text_if_previous_minus"]
+    q = resolve_interviewer_text(q, session)
 
     # --- new UI (additive) -------------------------------------------------
     use_new_ui = request.query_params.get("ui", "v2") != "old"
@@ -384,15 +477,7 @@ async def interview_skip(request: Request, sid: str):
     qid = form.get("question_id")
     transcript = form.get("transcript", "").strip()
 
-    session["interview_responses"][qid] = {
-        "score": "N/A",
-        "transcript": transcript,
-        "exchanges": [],
-        "unresolved": False,
-        "reasoning": "",
-    }
-    session["current_question_id"] = qid
-    save_session(session)
+    store_skip(session, qid, transcript)
     return RedirectResponse(f"/session/{sid}/interview", status_code=303)
 
 
@@ -413,14 +498,7 @@ async def interview_rate(request: Request, sid: str):
     q_data = q_index.get(qid, {})
 
     # Build full context for multi-round clarification
-    if exchanges:
-        parts = [f"[Initial answer]\n{transcript}"]
-        for i, ex in enumerate(exchanges, 1):
-            parts.append(f"[Follow-up question {i}]\n{ex['question']}")
-            parts.append(f"[Follow-up answer {i}]\n{ex['answer']}")
-        eval_text = "\n\n".join(parts)
-    else:
-        eval_text = transcript
+    eval_text = build_eval_text(transcript, exchanges)
 
     rating = evaluate_response(eval_text, q_data, lang)
 
@@ -439,16 +517,7 @@ async def interview_rate(request: Request, sid: str):
     if rating.get("unresolved"):
         rating["_note"] = "max clarifications reached"
 
-    session["interview_responses"][qid] = {
-        "score": rating["score"],
-        "transcript": transcript,
-        "exchanges": exchanges,
-        "unresolved": rating.get("unresolved", False),
-        "reasoning": rating.get("rationale", "") or rating.get("reasoning", ""),
-        "confidence": rating.get("confidence"),
-    }
-    session["current_question_id"] = qid
-    save_session(session)
+    store_response(session, qid, transcript, exchanges, rating)
 
     return JSONResponse({"status": "done", **rating})
 

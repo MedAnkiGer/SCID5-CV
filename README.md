@@ -98,6 +98,46 @@ All AI components output structured JSON:
 ### Branching Rule
 If a screening question (Stage 1) is "No" (0), skip exploration for that item.
 
+## Computed (Aggregate) Items
+
+Seventeen questions in the booklet ask the patient nothing — they only count how other criteria
+were rated ("AT LEAST FIVE OF THE ABOVE CRITERION A SXS (A1–A9) ARE RATED '+'"). The pipeline
+computes these instead of sending them to the rater, which has no transcript to work from and
+could only return "?". The rules are in `data/derived_rules.json`, each quoting the criterion text
+it encodes so the arithmetic can be checked against the booklet without reading code.
+
+A computed item scores `-` only when even the unrated and `?` members could not carry it over the
+threshold; otherwise it comes back `?` and flagged, naming the criteria that were never settled.
+Where DSM-5 raises a threshold for irritable-only mood, a count that clears the lower threshold
+but not the higher one is scored `+` and flagged for clinician review rather than guessed at.
+
+## In-Silico Testing (Simulated Patient)
+
+A second pipeline supplies the answers, so the interview can be run end to end without a
+participant. A persona file describes a case; a Claude-driven patient agent answers each question
+in character; the ordinary rating, clarification, evaluation and report code does the rest.
+
+```bash
+python tools/simulate_interview.py --list-personas
+python tools/simulate_interview.py --persona mdd_moderate            # full 378-question run
+python tools/simulate_interview.py --persona panic_gad --modules Overview A F
+python tools/simulate_interview.py --resume <session_id>             # continue a stopped run
+```
+
+Four cases ship in `data/personas/`: a healthy control (everything should score `-`), a moderate
+major depressive episode, panic disorder with generalised worry, and a guarded/vague informant
+with the same depression as the second case — the last one exists to exercise the clarification
+loop.
+
+Each persona carries its own ground truth (`expected_scores`, `expected_modules`), so a run ends
+with a scorecard: agreement per question, false positives and misses per module, clarification
+rounds used, and token spend. The session it produces is a normal session and opens in the web UI
+like any other; `simulation.json` and `simulation_transcript.txt` in the session directory hold
+the full run log and the readable dialogue.
+
+The simulated patient is shown only what a real patient would hear — the interviewer's spoken
+question. It never sees the DSM-5 criterion text, the clinician notes, or the rater's reasoning.
+
 ## Clinical Guardrails
 
 - **DSM-5 Fidelity**: Ratings align with diagnostic criteria
